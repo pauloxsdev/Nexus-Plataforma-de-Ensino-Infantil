@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{--ink:#101A4A;--blue:#2B4DFF;--sun:#FFD60A;--green:#19B35A;--pink:#FF5C8A;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;color:var(--ink);font-family:'Nunito','Trebuchet MS',system-ui,sans-serif;font-weight:700;background-color:#E6EDFF;
+ background-image:linear-gradient(#C6D4FF 1px,transparent 1px),linear-gradient(90deg,#C6D4FF 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3,.disp{font-family:'Baloo 2','Arial Rounded MT Bold',system-ui,sans-serif;font-weight:800;line-height:1.05}
+.card{background:#fff;border:3px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--ink)}
+.btn{font-family:'Baloo 2',system-ui,sans-serif;font-weight:800;font-size:1.15rem;border:3px solid var(--ink);border-radius:999px;padding:.55rem 1.4rem;box-shadow:0 5px 0 var(--ink);transition:transform .08s,box-shadow .08s;cursor:pointer;color:var(--ink)}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn:disabled{background:#d8deee!important;color:#7b86ad;cursor:not-allowed}
+.btn:focus-visible,button:focus-visible,input:focus-visible{outline:4px solid var(--pink);outline-offset:3px}
+.blk{position:relative;border:3px solid var(--ink);border-radius:10px;padding:.5rem .8rem;margin-top:8px;text-align:left;width:100%;font-weight:800}
+.blk::before{content:"";position:absolute;top:-9px;left:14px;width:22px;height:8px;background:inherit;border:3px solid var(--ink);border-bottom:0;border-radius:6px 6px 0 0}
+.spot{position:relative;z-index:60;outline:5px solid var(--sun);outline-offset:5px;border-radius:18px}
+@keyframes slap{0%{transform:scale(2.4) rotate(-25deg);opacity:0}60%{transform:scale(.92) rotate(5deg);opacity:1}100%{transform:scale(1) rotate(-6deg)}}.slap{animation:slap .45s ease-out both}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}.up{animation:up .25s ease-out}
+@keyframes fall{from{transform:translateY(-20px) rotate(0)}to{transform:translateY(560px) rotate(300deg)}}.cf{animation:fall 2.4s ease-in infinite}
+@media (prefers-reduced-motion:reduce){.slap,.up,.cf{animation:none}}
