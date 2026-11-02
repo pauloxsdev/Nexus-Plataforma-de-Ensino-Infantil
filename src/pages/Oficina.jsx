@@ -24,7 +24,7 @@ const PASSO_MS = 550;
 // Ao apertar Executar abre o pop-up "Caminho do Nexus" (a tela escurece):
 //   - deu certo: o Nexus anda no pop-up, e aparecem as estrelas ganhas e o que a criança aprendeu;
 //   - deu errado: o Nexus NÃO anda; o pop-up explica o que aconteceu e o circuito marca "Parou aqui".
-export function Work({ fase, onConcluir, irParaFase, go, save, layout = 'vertical' }) {
+export function Work({ fase, onConcluir, irParaFase, go, layout = 'vertical' }) {
   const [estado, setEstado] = useState(() => estadoInicial(fase.circuito));
   const [mao, setMao] = useState(null); // só usado pelo toque (alternativa ao arrastar)
   const [robo, setRobo] = useState(fase.mundo.inicio);
@@ -79,7 +79,7 @@ export function Work({ fase, onConcluir, irParaFase, go, save, layout = 'vertica
         setRobo(p); setPegas(p.estrelasPegas); setPopup({ t: 'rodando', passo: i + 1, total: n, peca: p.peca }); sfx('place');
       }, (i + 1) * PASSO_MS)));
       timers.current.push(setTimeout(() => {
-        setBusy(false); sfx('ok'); save && save(); onConcluir(fase.id, av.estrelas); setPopup({ t: 'ok', av });
+        setBusy(false); sfx('ok'); onConcluir(fase.id, av.estrelas); setPopup({ t: 'ok', av });
       }, (n + 1) * PASSO_MS + 300));
     } else {
       // deu errado: o Nexus não anda

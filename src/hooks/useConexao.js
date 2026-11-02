@@ -1,19 +1,35 @@
-import { useState } from 'react';
-import { SUN, GREEN } from '../theme/tokens';
+import { useEffect, useState } from 'react';
+import { SUN } from '../theme/tokens';
+import { guardarLocal, pendentes } from '../services/sincronizacao';
 
-// Estado de conexão do app. Hoje é SIMULADO (botão "Internet" no topo).
-// TODO: trocar por navigator.onLine + eventos online/offline e ligar em services/sincronizacao.js
+// navigator.onLine informa a rede do navegador, não a disponibilidade de uma API.
 export function useConexao() {
-  const [net, setNet] = useState({ on: true, pending: 0, sync: false });
-  const save = () => setNet((n) => (n.on ? n : { ...n, pending: n.pending + 1 }));
-  const toggle = () => {
-    if (net.on) { setNet({ ...net, on: false }); return; }
-    const enviando = net.pending > 0;
-    setNet({ on: true, pending: 0, sync: enviando });
-    if (enviando) setTimeout(() => setNet((n) => ({ ...n, sync: false })), 1800);
+  const [net, setNet] = useState(() => ({ on: navigator.onLine, pending: 0, saving: false, error: false, loaded: false }));
+  useEffect(() => {
+    let ativo = true;
+    const atualizar = () => setNet((n) => ({ ...n, on: navigator.onLine }));
+    window.addEventListener('online', atualizar);
+    window.addEventListener('offline', atualizar);
+    pendentes().then((fila) => { if (ativo) setNet((n) => ({ ...n, pending: fila.length, loaded: true })); })
+      .catch(() => { if (ativo) setNet((n) => ({ ...n, error: true, loaded: true })); });
+    return () => { ativo = false; window.removeEventListener('online', atualizar); window.removeEventListener('offline', atualizar); };
+  }, []);
+  const save = async (evento) => {
+    setNet((n) => ({ ...n, saving: true }));
+    try {
+      await guardarLocal(evento);
+      const fila = await pendentes();
+      setNet((n) => ({ ...n, pending: fila.length, saving: false, error: false, loaded: true }));
+      return true;
+    } catch {
+      setNet((n) => ({ ...n, saving: false, error: true, loaded: true }));
+      return false;
+    }
   };
-  const chip = !net.on
-    ? ['cloud', SUN, 'Salvo no aparelho' + (net.pending ? ` (${net.pending} para enviar)` : '')]
-    : net.sync ? ['cloud', '#fff', 'Enviando...'] : ['check', GREEN, 'Tudo enviado'];
-  return { net, save, toggle, chip };
+  const texto = net.error ? 'Não foi possível salvar no aparelho'
+    : !net.loaded ? 'Verificando dados locais...'
+    : net.saving ? 'Salvando no aparelho...'
+    : net.pending ? `Salvo no aparelho (${net.pending}); envio indisponível`
+    : 'Envio ao servidor indisponível';
+  return { net, save, chip: ['cloud', SUN, texto] };
 }

@@ -89,7 +89,7 @@ export function BarraLateral({ tela, ir, jogar, codigo, totalEstrelas, fasesFeit
             <Ic n={chip[0]} s={16} w={3} />{!recolhida && chip[2]}
           </span>
           {[[config.internet, 'Internet', 'wifi', 'ligada', 'desligada'], [config.som, 'Som', config.som[0] ? 'som' : 'mudo', 'ligado', 'desligado']].map(([[on, alternarCfg], nome, ic, sim, nao]) => (
-            <button key={nome} onClick={alternarCfg} aria-pressed={on} title={recolhida ? `${nome}: ${on ? sim : nao}` : undefined}
+            <button key={nome} disabled={!alternarCfg} onClick={alternarCfg} aria-pressed={on} title={recolhida ? `${nome}: ${on ? sim : nao}` : undefined}
               className="flex items-center gap-2 rounded-full px-2.5 py-1 text-xs hover:brightness-95" style={{ ...pequeno, justifyContent: recolhida ? 'center' : 'flex-start', opacity: on ? 1 : 0.7 }}>
               <Ic n={ic} s={16} w={2.8} />
               {!recolhida && <span style={{ fontWeight: 800 }}>{nome}: {on ? sim : nao}</span>}

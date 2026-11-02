@@ -33,14 +33,14 @@ src/
 | Telas, tutoriais, avatar, nível, sons | funcionam |
 | Oficina de circuito | 8 fases de lógica (sequência, repetição, SE/SENÃO), com motor próprio em `game/motor.js` |
 | Certificado | gera PDF com jsPDF no navegador; o nome nunca sai do aparelho |
-| Conexão / sincronização | **simulada** (botão "Internet" no topo) |
+| Conexão / sincronização | rede observada pelo navegador; conclusões persistidas em fila IndexedDB. Envio ao servidor indisponível até integração com API |
 | Login por código | aceita só `A1B2C` (fixo no código) |
 | Dados (progresso, turma) | fixos no código |
-| Backend (Spring Boot + PostgreSQL), PWA (Workbox), IndexedDB | **ainda não ligados** |
+| Backend (Spring Boot + PostgreSQL), PWA (Workbox) | **ainda não ligados** |
 
 ## Próximos passos (onde plugar cada coisa)
 1. **Mais fases**: veja `docs/GUIA-DO-CODIGO.md` (como criar uma fase em `src/data/fases.js`).
-2. **IndexedDB + sincronização**: completar `services/sincronizacao.js` e ligar em `hooks/useConexao.js` (trocar o botão simulado por `navigator.onLine`). A API deve ignorar eventos repetidos (id único por evento).
+2. **Sincronização com servidor**: integrar um transporte real a `services/sincronizacao.js`. O transporte só pode retornar `{ confirmado: true, id }` após confirmação da API; a API deve ignorar eventos repetidos pelo ID. A fila IndexedDB já recebe conclusões de fase. Reconectar não comprova envio e não remove pendências. `navigator.onLine` não garante acesso ao servidor.
 3. **PWA / Workbox**: adicionar `vite-plugin-pwa` e um `manifest` com os ícones do Nexi.
 4. **Login e dados reais**: trocar o `A1B2C` fixo por uma chamada à API Java (`services/api.js`).
 5. **Rotas**: trocar as abas do topo por `react-router` (cada arquivo de `pages/` vira uma rota).

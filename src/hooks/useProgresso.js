@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 // Progresso: { [numeroDaFase]: melhorQuantidadeDeEstrelas (1 a 3) }. Fica salvo no aparelho (localStorage).
-// TODO: quando o backend existir, enviar cada conclusão pela fila offline (services/sincronizacao.js).
+// App registra as conclusões na fila IndexedDB; envio depende de uma API disponível.
 const CHAVE = 'nexus:progresso';
 
 function ler() {

@@ -44,7 +44,7 @@
 - O menu mostra só o **código** do aluno, nunca um nome real (LGPD).
 - A setinha recolhe o menu (só ícones); a escolha fica salva. Em telas com menos de 1280 px ele já começa recolhido.
 - Em telas baixas (menos de 820 px de altura) o cartão do Nexi some, para Professor e Sair sempre caberem.
-- No fim do menu ficam os botões **Internet** (ligada/desligada) e **Som** (ligado/desligado). A internet é simulada, para mostrar o modo offline.
+- No fim do menu ficam os botões **Internet** (ligada/desligada) e **Som** (ligado/desligado). A internet mostra o estado de rede informado pelo navegador e não pode ser alternada pelo botão. As conclusões são gravadas em IndexedDB; o envio ao servidor está indisponível até integrar uma API.
 - A bolinha rosa em **Conquistas** mostra quantas conquistas novas a criança ainda não viu.
 
 ## Layout do circuito: vertical ou horizontal

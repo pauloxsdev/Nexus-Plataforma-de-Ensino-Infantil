@@ -29,7 +29,7 @@ export default function App() {
   const [seen, setSeen] = useState({ work: 1 }); // na fase, quem abre sozinha é a MISSÃO (o tutorial fica no botão "?")
   const [tour, setTour] = useState(true);
   const [av, setAv] = useState(lerAvatar); // o Nexus do aluno (forma, cor, rosto e enfeite)
-  const { net, save, toggle: toggleNet, chip } = useConexao();
+  const { net, save, chip } = useConexao();
   const { snd, toggle: toggleSnd } = useSom();
   const { feitas, estrelas, totalEstrelas, concluir, zerar, liberarTodas, proximaId } = useProgresso(FASES.length);
   const [codigo, setCodigo] = useState('A1B2C'); // o código do aluno é a única "identidade" (LGPD)
@@ -61,7 +61,7 @@ export default function App() {
         onVoltar={() => go('courses')} onJogar={() => jogar(aulaId)}
         onOutra={{ anterior: aulaId > 1 ? () => abrirAula(aulaId - 1) : null, proxima: aulaId < FASES.length && liberada(aulaId + 1) ? () => abrirAula(aulaId + 1) : null }} />
     ),
-    work: <Work key={faseAtual.id} fase={faseAtual} onConcluir={concluir} irParaFase={jogar} save={save} go={go} layout="vertical" />,
+    work: <Work key={faseAtual.id} fase={faseAtual} onConcluir={(id, estrelas) => { concluir(id, estrelas); void save({ tipo: 'fase_concluida', codigo, faseId: id, estrelas }); }} irParaFase={jogar} go={go} layout="vertical" />,
     nivel: <Nivel go={go} />,
     ach: <Ach lista={conquistas.lista} novas={conquistas.novas} marcarVistas={conquistas.marcarVistas} />,
     teacher: <Teacher />,
@@ -72,7 +72,7 @@ export default function App() {
         {s !== 'login' && (
           <BarraLateral tela={s} ir={go} jogar={jogar} codigo={codigo} totalEstrelas={totalEstrelas} fasesFeitas={feitas.length} totalFases={FASES.length}
             faseAtualId={faseAtual.id} proximaId={proximaId} chip={chip} novas={conquistas.novas.length}
-            config={{ internet: [net.on, toggleNet], som: [snd, toggleSnd] }} />
+            config={{ internet: [net.on], som: [snd, toggleSnd] }} />
         )}
         <main className="flex-1 min-w-0 pb-28 pl-3">
           {/* keys diferentes: tela e tutorial NÃO podem repetir a mesma key */}
