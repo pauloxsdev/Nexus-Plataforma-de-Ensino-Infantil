@@ -16,7 +16,6 @@ import { Aula } from './pages/Aula';
 import { Work } from './pages/Oficina';
 import { Nivel } from './pages/Nivel';
 import { Ach } from './pages/Conquistas';
-import { Teacher } from './pages/Professor';
 import { BarraLateral } from './components/BarraLateral';
 import { FASES } from './data/fases';
 import { AULAS } from './data/aulas';
@@ -32,7 +31,7 @@ export default function App() {
   const { net, save, chip } = useConexao();
   const { snd, toggle: toggleSnd } = useSom();
   const { feitas, estrelas, totalEstrelas, concluir, zerar, liberarTodas, proximaId } = useProgresso(FASES.length);
-  const [codigo, setCodigo] = useState('A1B2C'); // o código do aluno é a única "identidade" (LGPD)
+  const codigo = null; // Demonstração sem identidade autenticada.
   const [faseId, setFaseId] = useState(null);
   const [aulaId, setAulaId] = useState(1);
   const faseAtual = FASES.find((f) => f.id === (faseId ?? proximaId));
@@ -45,14 +44,14 @@ export default function App() {
     dias: 7, // TODO: vir do backend quando existir
   });
 
-  const go = (k) => { setS(k); setTour(!seen[k]); };
+  const go = (k) => { if (k === 'teacher') return; setS(k); setTour(!seen[k]); };
   const close = () => { setSeen({ ...seen, [s]: 1 }); setTour(false); };
   const jogar = (id) => { setFaseId(id); go('work'); };
   const abrirAula = (id) => { setAulaId(id); go('aula'); };
   const liberada = (id) => id === 1 || feitas.includes(id - 1);
 
   const V = {
-    login: <Login go={go} entrar={(c) => { setCodigo(c); go('dash'); }} />,
+    login: <Login entrar={() => go('dash')} />,
     dash: <Dash go={go} estrelas={totalEstrelas} fase={FASES.find((f) => f.id === proximaId)} />,
     avatar: <Avatar go={go} />,
     courses: <Courses feitas={feitas} estrelas={estrelas} proximaId={proximaId} jogar={jogar} abrirAula={abrirAula} liberarTodas={liberarTodas} zerar={zerar} />,
@@ -64,7 +63,6 @@ export default function App() {
     work: <Work key={faseAtual.id} fase={faseAtual} onConcluir={(id, estrelas) => { concluir(id, estrelas); void save({ tipo: 'fase_concluida', codigo, faseId: id, estrelas }); }} irParaFase={jogar} go={go} layout="vertical" />,
     nivel: <Nivel go={go} />,
     ach: <Ach lista={conquistas.lista} novas={conquistas.novas} marcarVistas={conquistas.marcarVistas} />,
-    teacher: <Teacher />,
   };
   return (
     <AvCtx.Provider value={[av, setAv]}>

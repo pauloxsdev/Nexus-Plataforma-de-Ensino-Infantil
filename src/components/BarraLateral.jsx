@@ -13,7 +13,6 @@ const ITENS = [
   { k: 'avatar', nome: 'Meu Nexus', icone: 'user', cor: '#FFE3EA' },
   { k: 'ach', nome: 'Conquistas', icone: 'trophy', cor: '#FFE8CC' },
 ];
-const PROFESSOR = { k: 'teacher', nome: 'Professor', icone: 'users', cor: '#fff' };
 const CHAVE = 'nexus:menu-recolhido';
 const inicial = () => { try { const v = localStorage.getItem(CHAVE); if (v !== null) return v === '1'; } catch { /* usa o padrão */ } return window.innerWidth < 1280; };
 
@@ -47,12 +46,12 @@ export function BarraLateral({ tela, ir, jogar, codigo, totalEstrelas, fasesFeit
         </div>
 
         {recolhida ? (
-          <div className="flex justify-center" title={`Código ${codigo}`}><Me s={44} /></div>
+          <div className="flex justify-center" title={codigo ? `Código ${codigo}` : 'Demonstração'}><Me s={44} /></div>
         ) : (
           <div className="rounded-2xl p-3 flex flex-col gap-2" style={{ background: '#FFF6B8', border: `3px solid ${INK}`, boxShadow: `4px 4px 0 ${INK}` }}>
             <div className="flex items-center gap-3">
               <Me s={44} />
-              <div><div className="disp text-base leading-tight">Explorador</div><div className="text-xs">Código {codigo}</div></div>
+              <div><div className="disp text-base leading-tight">Explorador</div><div className="text-xs">{codigo ? `Código ${codigo}` : 'Demonstração sem login'}</div></div>
             </div>
             <div className="flex gap-2 flex-wrap">
               <span className="flex items-center gap-1 rounded-full px-2 py-0.5 text-xs" style={pequeno}><Ic n="star" s={14} f={SUN} w={2.5} />{totalEstrelas} estrelas</span>
@@ -99,7 +98,6 @@ export function BarraLateral({ tela, ir, jogar, codigo, totalEstrelas, fasesFeit
         </div>
 
         <div className="pt-2 flex flex-col gap-1" style={{ borderTop: `2px dashed #8F9BD0` }}>
-          {item(PROFESSOR)}
           <button onClick={() => ir('login')} title={recolhida ? 'Sair' : undefined} className="flex items-center gap-3 rounded-2xl w-full hover:bg-[#FFE3EA]" style={{ padding: recolhida ? '3px' : '3px 8px', justifyContent: recolhida ? 'center' : 'flex-start', border: '3px solid transparent' }}>
             <span className="flex items-center justify-center shrink-0" style={{ width: 36, height: 36 }}><Ic n="logout" s={20} /></span>
             {!recolhida && <span className="disp text-base leading-none">Sair</span>}

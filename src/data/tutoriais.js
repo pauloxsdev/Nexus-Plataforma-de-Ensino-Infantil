@@ -3,8 +3,8 @@
 export const TOUR = {
   login: [
     { t: 'Oi! Eu sou o Nexi!', d: 'Eu sou o seu guia. Vou mostrar, passo a passo, como entrar e jogar. Vamos nessa?' },
-    { sel: '[data-t=code]', t: 'Este é o seu código', d: 'Digite as 5 letras que o seu professor deu. Aqui, use A1B2C.' },
-    { sel: '[data-t=enter]', t: 'Hora de decolar!', d: 'Clique em Entrar. Você não precisa de nome nem de e-mail.' },
+    { t: 'Modo de demonstração', d: 'Aqui você pode explorar as atividades sem fazer login. O progresso fica neste navegador.' },
+    { sel: '[data-t=enter]', t: 'Hora de decolar!', d: 'Clique em Explorar demonstração. Você não precisa de nome, e-mail ou código.' },
   ],
   dash: [
     { t: 'Bem-vindo à sua base!', d: 'Aqui você vê o seu nível, as suas estrelas e o que fazer hoje.' },

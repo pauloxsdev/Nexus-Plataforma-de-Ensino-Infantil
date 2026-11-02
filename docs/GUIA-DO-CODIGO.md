@@ -40,10 +40,10 @@
 - Atalhos de teclado na tela de jogo: teclas **1, 2, 3...** pegam a peça e **Enter** executa o circuito (`src/pages/Oficina.jsx`). Passar o mouse destaca botões e espaços.
 
 ## Menu lateral
-- Itens: Início, Trilhas, Fase atual, Meu astronauta, Conquistas. Embaixo: Professor e Sair. Para criar um item, acrescente em `ITENS` (e a tela em `V` no `App.jsx`).
-- O menu mostra só o **código** do aluno, nunca um nome real (LGPD).
+- Itens: Início, Trilhas, Fase atual, Meu astronauta, Conquistas. Embaixo: Sair. A área do professor está indisponível até existir autenticação no backend. Para criar um item, acrescente em `ITENS` (e a tela em `V` no `App.jsx`).
+- O menu identifica o acesso atual como **demonstração sem login**, sem nome ou código de aluno.
 - A setinha recolhe o menu (só ícones); a escolha fica salva. Em telas com menos de 1280 px ele já começa recolhido.
-- Em telas baixas (menos de 820 px de altura) o cartão do Nexi some, para Professor e Sair sempre caberem.
+- Em telas baixas (menos de 820 px de altura) o cartão do Nexi some, para os controles e Sair sempre caberem.
 - No fim do menu ficam os botões **Internet** (ligada/desligada) e **Som** (ligado/desligado). A internet mostra o estado de rede informado pelo navegador e não pode ser alternada pelo botão. As conclusões são gravadas em IndexedDB; o envio ao servidor está indisponível até integrar uma API.
 - A bolinha rosa em **Conquistas** mostra quantas conquistas novas a criança ainda não viu.
 
