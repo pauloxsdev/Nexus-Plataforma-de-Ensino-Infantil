@@ -1,0 +1,88 @@
+// As aulas: uma por fase. Servem para a criança PENSAR antes de jogar, sem entregar a resposta.
+//   ilustracao: desenho (components/Ilustracao.jsx)    resumo: explicação curta
+//   diaADia: exemplos do mundo real                     gancho: pergunta que puxa a curiosidade
+//   experimentos: coisas para testar (não dizem o que montar)
+//   pistas: dicas que aparecem uma por vez, da mais leve para a mais forte
+//   desafio: ideia criativa extra, sem certo ou errado         palavra: vocabulário novo
+export const AULAS = {
+  1: {
+    ilustracao: 'sequencia',
+    resumo: 'Uma sequência é uma lista de ordens feitas uma depois da outra. O Nexus obedece de cima para baixo, sem pular nenhuma.',
+    diaADia: ['Escovar os dentes: pasta, escova, enxaguar. Fora de ordem não dá certo!', 'Uma receita de bolo tem passos na ordem certa.', 'Os passos de uma dança.'],
+    gancho: 'O Nexus só entende ordens simples. O que será que acontece se as ordens estiverem na ordem errada?',
+    experimentos: ['Antes de arrastar qualquer peça, conte com o dedo as casas entre o Nexus e a estrela.', 'Monte o circuito com uma peça a menos do que você acha que precisa. O que o aviso diz?', 'Agora tente com uma peça a mais. O que mudou?'],
+    pistas: ['Olhe o mapa: quantos quadradinhos existem entre os dois?', 'Cada peça Andar leva o Nexus uma casa para frente.', 'O número de peças Andar combina com o número de casas.'],
+    desafio: 'Dá para ganhar a estrela de poucos passos? Descubra qual é o menor circuito que funciona.',
+    palavra: { termo: 'Sequência', sig: 'Ordens feitas uma depois da outra, na ordem certa.' },
+  },
+  2: {
+    ilustracao: 'direcao',
+    resumo: 'Virar muda para onde o Nexus está olhando. Depois de virar, a "frente" dele passa a ser outro lugar!',
+    diaADia: ['Dobrar a esquina no caminho da escola.', 'Ouvir "vire à direita" no GPS do carro.', 'Girar numa brincadeira de roda.'],
+    gancho: 'Se o Nexus virar e depois andar, para onde ele vai? Será que sempre para o mesmo lado?',
+    experimentos: ['Levante e vire o corpo para a direita. Para onde está a sua "frente" agora?', 'No mapa, onde fica a estrela: do lado do Nexus ou embaixo dele?', 'Descubra: é melhor virar logo no começo, no meio ou perto do fim do caminho?'],
+    pistas: ['A setinha amarela mostra para onde o Nexus olha.', 'Ele só anda na direção que está olhando.', 'Você pode andar um pouco antes de virar.'],
+    desafio: 'Conte quantos passos o Nexus faz no seu caminho. Dá para fazer com menos?',
+    palavra: { termo: 'Direção', sig: 'O lado para onde alguém está olhando ou indo.' },
+  },
+  3: {
+    ilustracao: 'pular',
+    resumo: 'Cada peça faz uma coisa diferente. Escolher a peça certa para cada obstáculo é resolver um problema.',
+    diaADia: ['Pular uma poça em vez de dar a volta.', 'Escolher o calçado certo para cada lugar.', 'Usar a ferramenta certa para cada trabalho.'],
+    gancho: 'Uma pedra bloqueia o caminho e andar não resolve. O que mais o Nexus sabe fazer?',
+    experimentos: ['Tente passar pela pedra só com Andar. O que o aviso diz? Errar também ensina!', 'Leia o que a peça Pular faz: quantas casas ela leva?', 'Depois do pulo, onde o Nexus vai pousar? Essa casa precisa estar livre.'],
+    pistas: ['Olhe a descrição da peça Pular.', 'Ele passa por cima da pedra, mas não pousa em cima dela.', 'Depois do pulo, ainda falta chegar até a estrela.'],
+    desafio: 'Será que dá para resolver usando só duas peças? Teste e veja.',
+    palavra: { termo: 'Obstáculo', sig: 'Qualquer coisa que atrapalha o caminho: lava, pedra ou parede.' },
+  },
+  4: {
+    ilustracao: 'repeticao',
+    resumo: 'Repetir é fazer a mesma coisa várias vezes sem escrever tudo de novo. Você só diz quantas vezes!',
+    diaADia: ['Bater palmas 4 vezes: "bata palmas, 4 vezes".', 'Subir os degraus de uma escada.', 'Escovar cada um dos dentes.'],
+    gancho: 'A estrela está longe e você tem um espaço só. Como mandar o Nexus ir longe com uma peça só?',
+    experimentos: ['Olhe a peça REPETIR: o que os botões − e + mudam?', 'Conte as casas até a estrela e compare com o número do REPETIR.', 'E se o número for maior do que o necessário? Teste e veja o que o aviso diz.'],
+    pistas: ['O que está dentro do REPETIR acontece de novo a cada volta.', 'Quantas casas o Nexus precisa andar?', 'O número de voltas combina com o número de casas.'],
+    desafio: 'Invente um jeito de explicar o REPETIR para um colega sem usar a palavra "repetir".',
+    palavra: { termo: 'Repetição (laço)', sig: 'Fazer a mesma coisa várias vezes seguidas.' },
+  },
+  5: {
+    ilustracao: 'padrao',
+    resumo: 'Um padrão é um pedacinho que se repete sempre igual. Em vez de montar tudo, monte só o pedacinho e deixe o REPETIR cuidar do resto.',
+    diaADia: ['Uma escada: sobe um degrau, de novo e de novo.', 'A estampa de um tecido.', 'O ritmo de uma música: batida, batida, pausa.'],
+    gancho: 'Olhe onde estão as estrelas. Que desenho elas formam? O que se repete de uma para a outra?',
+    experimentos: ['Siga com o dedo o caminho de uma estrela até a próxima e conte em voz alta: andei..., virei...', 'O caminho da 2ª para a 3ª estrela é igualzinho ao da 1ª para a 2ª?', 'Monte só UM degrau dentro do REPETIR e teste com 1 volta. O que acontece?'],
+    pistas: ['Cada degrau começa e termina olhando para o mesmo lado.', 'Um degrau tem quatro movimentos.', 'Pense: andar, virar para cima, andar, virar para a frente de novo.'],
+    desafio: 'Desenhe no papel uma escada de 5 degraus e escreva o padrão com setas.',
+    palavra: { termo: 'Padrão', sig: 'Um pedacinho que se repete sempre igual.' },
+  },
+  6: {
+    ilustracao: 'decisao',
+    resumo: 'SE / SENÃO deixa o Nexus decidir. Ele olha para frente e escolhe o que fazer, sem você dizer a cada passo.',
+    diaADia: ['SE está chovendo, levo guarda-chuva. SENÃO, saio sem.', 'SE o sinal está vermelho, eu paro. SENÃO, atravesso.', 'SE a porta está aberta, entro. SENÃO, bato.'],
+    gancho: 'O Nexus não sabe onde tem lava. Como ele pode descobrir sozinho, a cada passo?',
+    experimentos: ['Leia em voz alta a pergunta do cartão verde: "tem obstáculo na frente?"', 'Pense: o que o Nexus deve fazer se a resposta for SIM? E se for NÃO?', 'Quantas vezes ele precisa olhar e decidir? Conte as estrelas e as lavas.'],
+    pistas: ['Com lava na frente, andar vai dar errado.', 'SIM e SENÃO são dois caminhos diferentes.', 'Cada volta do REPETIR é uma decisão nova.'],
+    desafio: 'Invente uma regra SE / SENÃO da sua vida e conte para alguém.',
+    palavra: { termo: 'Condição (SE / SENÃO)', sig: 'Uma pergunta cuja resposta decide o que fazer.' },
+  },
+  7: {
+    ilustracao: 'juntando',
+    resumo: 'Repetição e decisão juntas formam uma regra. A cada volta o Nexus olha e escolhe. Uma regra pequena resolve um caminho grande!',
+    diaADia: ['Lavar a louça: enquanto houver prato sujo, pegue um e lave.', 'Andar no escuro com a mão na parede.', 'Subir uma ladeira: a cada passo, olhar se ainda tem subida.'],
+    gancho: 'Imagine andar no escuro com a mão na parede. Qual é a regra que guia você?',
+    experimentos: ['Diga a regra em uma frase: "Se ..., então ...; senão ...".', 'Quantas voltas o Nexus precisa para dar a volta na sala? Teste números diferentes.', 'O que acontece se você usar virar à esquerda no lugar de virar à direita?'],
+    pistas: ['Aqui, a parede é o obstáculo.', 'Com parede na frente ele vira. Sem parede, ele...', 'As voltas precisam ser suficientes para chegar nos cantos.'],
+    desafio: 'Dá para ganhar a estrela de poucos passos e a de rapidez na mesma fase?',
+    palavra: { termo: 'Regra', sig: 'Um jeito de decidir sempre igual para resolver um problema.' },
+  },
+  8: {
+    ilustracao: 'regra',
+    resumo: 'Uma boa regra funciona em lugares diferentes. Descobrir uma regra assim é pensar como programador!',
+    diaADia: ['A mesma receita serve para cozinhar muitas vezes.', '"Olhar para os dois lados" vale para qualquer rua.', 'Um jogo com as mesmas regras em tabuleiros diferentes.'],
+    gancho: 'Será que a regra da fase anterior funciona aqui, mesmo com uma pedra no meio do caminho?',
+    experimentos: ['Teste a mesma regra da fase anterior, sem mudar nada. O que acontece?', 'Se não deu certo, o que é diferente neste mapa?', 'Para o Nexus, a pedra se parece com a parede. Por quê?'],
+    pistas: ['Para o Nexus, pedra e parede são obstáculos.', 'Este mapa é maior: pense nas voltas.', 'A regra pode ser a mesma. O que muda é a quantidade de voltas.'],
+    desafio: 'Desenhe um mapa 5x5 no papel e peça a um colega para resolver com a regra dele.',
+    palavra: { termo: 'Generalizar', sig: 'Descobrir uma regra que serve para vários casos.' },
+  },
+};

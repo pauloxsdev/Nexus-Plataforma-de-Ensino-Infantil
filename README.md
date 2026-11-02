@@ -21,8 +21,8 @@ src/
   data/tutoriais.js          textos dos tutoriais de cada tela
   hooks/                     useConexao (online/offline), useSom (mudo)
   services/                  som.js (sons e vibração), certificado.js (jsPDF), sincronizacao.js (IndexedDB, esqueleto)
-  blockly/                   blocos próprios, tema e a caixa do Blockly
-  game/                      regras das fases (sem React), com testes
+  game/                      motor do jogo e peças (sem React), com testes
+  data/                      fases, tutoriais
   pages/                     Login, Base, Avatar, Trilha, Oficina (blocos), Nivel, Album, Professor
   App.jsx                    abas de DEMONSTRAÇÃO + montagem das telas
 ```
@@ -31,7 +31,7 @@ src/
 | Parte | Estado |
 |---|---|
 | Telas, tutoriais, avatar, nível, sons | funcionam |
-| Oficina de blocos | **Blockly** com blocos próprios (fase 5). Regras em `game/fase5.js` |
+| Oficina de circuito | 8 fases de lógica (sequência, repetição, SE/SENÃO), com motor próprio em `game/motor.js` |
 | Certificado | gera PDF com jsPDF no navegador; o nome nunca sai do aparelho |
 | Conexão / sincronização | **simulada** (botão "Internet" no topo) |
 | Login por código | aceita só `A1B2C` (fixo no código) |
@@ -39,7 +39,7 @@ src/
 | Backend (Spring Boot + PostgreSQL), PWA (Workbox), IndexedDB | **ainda não ligados** |
 
 ## Próximos passos (onde plugar cada coisa)
-1. **Mais fases no Blockly**: veja `docs/GUIA-DO-CODIGO.md` (como criar a fase 6 e novos blocos).
+1. **Mais fases**: veja `docs/GUIA-DO-CODIGO.md` (como criar uma fase em `src/data/fases.js`).
 2. **IndexedDB + sincronização**: completar `services/sincronizacao.js` e ligar em `hooks/useConexao.js` (trocar o botão simulado por `navigator.onLine`). A API deve ignorar eventos repetidos (id único por evento).
 3. **PWA / Workbox**: adicionar `vite-plugin-pwa` e um `manifest` com os ícones do Nexi.
 4. **Login e dados reais**: trocar o `A1B2C` fixo por uma chamada à API Java (`services/api.js`).

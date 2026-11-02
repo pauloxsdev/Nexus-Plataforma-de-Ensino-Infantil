@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{--ink:#101A4A;--blue:#2B4DFF;--sun:#FFD60A;--green:#19B35A;--pink:#FF5C8A;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;color:var(--ink);font-family:'Nunito','Trebuchet MS',system-ui,sans-serif;font-weight:700;background-color:#E6EDFF;
+ background-image:linear-gradient(#C6D4FF 1px,transparent 1px),linear-gradient(90deg,#C6D4FF 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3,.disp{font-family:'Baloo 2','Arial Rounded MT Bold',system-ui,sans-serif;font-weight:800;line-height:1.05}
+.card{background:#fff;border:3px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--ink)}
+.btn{font-family:'Baloo 2',system-ui,sans-serif;font-weight:800;font-size:1.15rem;border:3px solid var(--ink);border-radius:999px;padding:.55rem 1.4rem;box-shadow:0 5px 0 var(--ink);transition:transform .08s,box-shadow .08s;cursor:pointer;color:var(--ink)}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn:disabled{background:#d8deee!important;color:#7b86ad;cursor:not-allowed}
+.btn:focus-visible,button:focus-visible,input:focus-visible{outline:4px solid var(--pink);outline-offset:3px}
+.blk{position:relative;border:3px solid var(--ink);border-radius:10px;padding:.5rem .8rem;margin-top:8px;text-align:left;width:100%;font-weight:800}
+.blk::before{content:"";position:absolute;top:-9px;left:14px;width:22px;height:8px;background:inherit;border:3px solid var(--ink);border-bottom:0;border-radius:6px 6px 0 0}
+.spot{position:relative;z-index:60;outline:5px solid var(--sun);outline-offset:5px;border-radius:18px}
+@keyframes slap{0%{transform:scale(2.4) rotate(-25deg);opacity:0}60%{transform:scale(.92) rotate(5deg);opacity:1}100%{transform:scale(1) rotate(-6deg)}}.slap{animation:slap .45s ease-out both}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}.up{animation:up .25s ease-out}
+@keyframes fall{from{transform:translateY(-20px) rotate(0)}to{transform:translateY(560px) rotate(300deg)}}.cf{animation:fall 2.4s ease-in infinite}
+@media (prefers-reduced-motion:reduce){.slap,.up,.cf{animation:none}}
+
+/* energia correndo pelos canos horizontais do circuito */
+@keyframes flui { to { background-position: 8px 0; } }
+.cano-h { animation: flui 1s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .cano-h { animation: none; } }
+
+/* o Nexus é só para computador: a tela não encolhe para o formato de celular */
+body { min-width: 1024px; }
+/* efeitos de mouse */
+.btn:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
+[data-slot]:hover, [data-peca]:hover { filter: brightness(1.04); }
+
+/* o destaque do tutorial não pode soltar o menu da lateral */
+[data-t=menu].spot { position: sticky; border-radius: 0; }
+
+/* em telas baixas, o cartão do Nexi no menu some para sobrar espaço para Professor e Sair */
+@media (max-height: 820px) { .so-altos { display: none; } }
+
+/* animações de enfeite (desligadas se o aparelho pedir menos movimento) */
+@keyframes flutua { 50% { transform: translateY(-5px); } }
+.flutua { animation: flutua 3s ease-in-out infinite; }
+@keyframes faisca { 0%, 100% { transform: scale(.5) rotate(0deg); opacity: .4; } 50% { transform: scale(1.1) rotate(20deg); opacity: 1; } }
+.faisca { transform-box: fill-box; transform-origin: center; animation: faisca 1.8s ease-in-out infinite; }
+@keyframes pulsa { 50% { transform: scale(1.08); } }
+.pulsa { animation: pulsa 1.2s ease-in-out infinite; }
+@keyframes pisca { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+.pisca { animation: pisca 2.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .flutua, .faisca, .pulsa, .pisca { animation: none; } }
+
+/* o Nexi aponta para o alvo do tutorial e o bracinho vai e volta */
+@keyframes ap-dir { 50% { transform: translateX(7px); } }
+@keyframes ap-esq { 50% { transform: translateX(-7px); } }
+@keyframes ap-cima { 50% { transform: translateY(-7px); } }
+@keyframes ap-baixo { 50% { transform: translateY(7px); } }
+.ap-dir { animation: ap-dir .8s ease-in-out infinite; }
+.ap-esq { animation: ap-esq .8s ease-in-out infinite; }
+.ap-cima { animation: ap-cima .8s ease-in-out infinite; }
+.ap-baixo { animation: ap-baixo .8s ease-in-out infinite; }
+/* o contorno do elemento destacado "respira" */
+@keyframes contorno { 50% { outline-offset: 9px; } }
+.spot { animation: contorno 1.3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .ap-dir, .ap-esq, .ap-cima, .ap-baixo, .spot { animation: none; } }
