@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { SUN } from './theme/tokens';
 import { Ic } from './components/Icon';
 import { Tutorial } from './components/Tutorial';
@@ -7,6 +7,8 @@ import { AvCtx, AVATAR_PADRAO } from './context/AvatarContext';
 import { useConexao } from './hooks/useConexao';
 import { useSom } from './hooks/useSom';
 import { useProgresso } from './hooks/useProgresso';
+import { useDadoPerfil } from './hooks/useDadoPerfil';
+import { PERFIL_DEMO, chavePerfil } from './services/perfilLocal';
 import { useConquistas } from './hooks/useConquistas';
 import { Login } from './pages/Login';
 import { Dash } from './pages/Base';
@@ -20,23 +22,28 @@ import { BarraLateral } from './components/BarraLateral';
 import { FASES } from './data/fases';
 import { AULAS } from './data/aulas';
 
-const CHAVE_AVATAR = 'nexus:avatar';
-const lerAvatar = () => { try { return { ...AVATAR_PADRAO, ...(JSON.parse(localStorage.getItem(CHAVE_AVATAR)) || {}) }; } catch { return AVATAR_PADRAO; } };
+function normalizarAvatar(valor) {
+  return { ...AVATAR_PADRAO, ...(valor && typeof valor === 'object' && !Array.isArray(valor) ? valor : {}) };
+}
 
 export default function App() {
+  // Substituir pelo perfil da sessão somente após integrar autenticação real.
+  return <AppPerfil key={chavePerfil(PERFIL_DEMO, 'sessao')} perfil={PERFIL_DEMO} />;
+}
+
+function AppPerfil({ perfil }) {
   const [s, setS] = useState('login');
   const [seen, setSeen] = useState({ work: 1 }); // na fase, quem abre sozinha é a MISSÃO (o tutorial fica no botão "?")
   const [tour, setTour] = useState(true);
-  const [av, setAv] = useState(lerAvatar); // o Nexus do aluno (forma, cor, rosto e enfeite)
+  const [av, setAv] = useDadoPerfil(perfil, 'avatar', normalizarAvatar); // o Nexus do aluno (forma, cor, rosto e enfeite)
   const { net, save, chip } = useConexao();
   const { snd, toggle: toggleSnd } = useSom();
-  const { feitas, estrelas, totalEstrelas, concluir, zerar, liberarTodas, proximaId } = useProgresso(FASES.length);
+  const { feitas, estrelas, totalEstrelas, concluir, zerar, liberarTodas, proximaId } = useProgresso(FASES.length, perfil);
   const codigo = null; // Demonstração sem identidade autenticada.
   const [faseId, setFaseId] = useState(null);
   const [aulaId, setAulaId] = useState(1);
   const faseAtual = FASES.find((f) => f.id === (faseId ?? proximaId));
 
-  useEffect(() => { try { localStorage.setItem(CHAVE_AVATAR, JSON.stringify(av)); } catch { /* ignora */ } }, [av]);
   const conquistas = useConquistas({
     fasesFeitas: feitas.length, feitas, totalEstrelas,
     tres: Object.values(estrelas).filter((n) => n >= 3).length,
@@ -60,7 +67,7 @@ export default function App() {
         onVoltar={() => go('courses')} onJogar={() => jogar(aulaId)}
         onOutra={{ anterior: aulaId > 1 ? () => abrirAula(aulaId - 1) : null, proxima: aulaId < FASES.length && liberada(aulaId + 1) ? () => abrirAula(aulaId + 1) : null }} />
     ),
-    work: <Work key={faseAtual.id} fase={faseAtual} onConcluir={(id, estrelas) => { concluir(id, estrelas); void save({ tipo: 'fase_concluida', codigo, faseId: id, estrelas }); }} irParaFase={jogar} go={go} layout="vertical" />,
+    work: <Work key={faseAtual.id} fase={faseAtual} onConcluir={(id, estrelas) => { concluir(id, estrelas); void save({ tipo: 'fase_concluida', perfil: { ...perfil }, codigo, faseId: id, estrelas }); }} irParaFase={jogar} go={go} layout="vertical" />,
     nivel: <Nivel go={go} />,
     ach: <Ach lista={conquistas.lista} novas={conquistas.novas} marcarVistas={conquistas.marcarVistas} />,
   };

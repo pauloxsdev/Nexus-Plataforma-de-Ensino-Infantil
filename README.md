@@ -50,3 +50,21 @@ src/
 - Nenhum dado pessoal: o aluno entra só com o código. O professor guarda o nome fora do sistema.
 - O nome no certificado fica só na memória do navegador (`services/certificado.js`).
 - Sem ranking (Leaderboard descartado) e sem telas punitivas.
+
+## Armazenamento por perfil
+
+Avatar e progresso usam `nexus:v2:<tipo>:<id codificado>:avatar` e
+`nexus:v2:<tipo>:<id codificado>:progresso`. A demonstração usa exclusivamente
+`tipo=demo`, `id=local`; seus dados não pertencem a um aluno.
+As chaves antigas `nexus:avatar` e `nexus:progresso` ficam preservadas, sem leitura
+ou migração automática, pois não identificam o dono. Uma migração futura exige
+atribuição explícita ao perfil correto.
+
+Ao integrar o backend, o perfil deve vir da sessão autenticada, com ID estável
+que inclua o escopo da escola quando necessário. Remonte `AppPerfil` com uma
+`key` derivada desse perfil para reiniciar também os estados das telas.
+Namespaces locais não são controle de acesso. Múltiplos alunos continuam
+indisponíveis até autenticação e autorização no servidor. As novas conclusões
+incluem o perfil no evento da fila; eventos legados sem dono e eventos de demo
+não devem ser enviados como progresso de um aluno. A seleção e autorização da
+fila por identidade devem ser implementadas na integração com a API.

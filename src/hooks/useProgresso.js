@@ -1,20 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useDadoPerfil } from './useDadoPerfil';
 
-// Progresso: { [numeroDaFase]: melhorQuantidadeDeEstrelas (1 a 3) }. Fica salvo no aparelho (localStorage).
-// App registra as conclusões na fila IndexedDB; envio depende de uma API disponível.
-const CHAVE = 'nexus:progresso';
-
-function ler() {
-  try {
-    const v = JSON.parse(localStorage.getItem(CHAVE));
-    if (Array.isArray(v)) return Object.fromEntries(v.map((id) => [id, 1])); // formato antigo
-    return v && typeof v === 'object' ? v : {};
-  } catch { return {}; }
+// Dados legados globais não têm dono conhecido e não são atribuídos a perfis.
+function normalizar(valor) {
+  if (Array.isArray(valor)) return Object.fromEntries(valor.map((id) => [id, 1]));
+  return valor && typeof valor === 'object' ? valor : {};
 }
 
-export function useProgresso(total) {
-  const [estrelas, setEstrelas] = useState(ler);
-  useEffect(() => { try { localStorage.setItem(CHAVE, JSON.stringify(estrelas)); } catch { /* ignora */ } }, [estrelas]);
+export function useProgresso(total, perfil) {
+  const [estrelas, setEstrelas] = useDadoPerfil(perfil, 'progresso', normalizar);
   const feitas = Object.keys(estrelas).map(Number);
   const totalEstrelas = Object.values(estrelas).reduce((s, n) => s + n, 0);
   const concluir = (id, n = 1) => setEstrelas((e) => ({ ...e, [id]: Math.max(e[id] || 0, n) }));
