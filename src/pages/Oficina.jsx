@@ -11,6 +11,7 @@ import { PecaArrastada } from '../components/PecaArrastada';
 import { MissaoFase } from '../components/MissaoFase';
 import { CaminhoPopup } from '../components/CaminhoPopup';
 import { useArrastar } from '../hooks/useArrastar';
+import { useCircuito } from '../hooks/useCircuito';
 import { FASES } from '../data/fases';
 import { estadoInicial, montarPrograma, simular, contarVazios } from '../game/motor';
 import { avaliar } from '../game/avaliacao';
@@ -24,8 +25,8 @@ const PASSO_MS = 550;
 // Ao apertar Executar abre o pop-up "Caminho do Nexus" (a tela escurece):
 //   - deu certo: o Nexus anda no pop-up, e aparecem as estrelas ganhas e o que a criança aprendeu;
 //   - deu errado: o Nexus NÃO anda; o pop-up explica o que aconteceu e o circuito marca "Parou aqui".
-export function Work({ fase, onConcluir, irParaFase, go, layout = 'vertical' }) {
-  const [estado, setEstado] = useState(() => estadoInicial(fase.circuito));
+export function Work({ fase, perfil, projetoId, onConcluir, irParaFase, go, layout = 'vertical' }) {
+  const [estado, setEstado] = useCircuito(perfil, projetoId, fase);
   const [mao, setMao] = useState(null); // só usado pelo toque (alternativa ao arrastar)
   const [robo, setRobo] = useState(fase.mundo.inicio);
   const [pegas, setPegas] = useState([]);

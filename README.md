@@ -68,3 +68,11 @@ indisponíveis até autenticação e autorização no servidor. As novas conclus
 incluem o perfil no evento da fila; eventos legados sem dono e eventos de demo
 não devem ser enviados como progresso de um aluno. A seleção e autorização da
 fila por identidade devem ser implementadas na integração com a API.
+
+A Oficina persiste peças e contagens de repetição em
+`nexus:v2:<tipo>:<id codificado>:circuito:<projeto codificado>:fase:<id>`.
+A trilha atual usa o projeto `trilha-principal`; cada fase mantém seu rascunho.
+Sair da tela ou recarregar restaura o circuito, e **Limpar** salva o estado inicial
+somente desse perfil/projeto/fase. Ao restaurar, peças e espaços incompatíveis
+com a fase são descartados e as repetições respeitam seus limites atuais.
+Essa persistência é local ao navegador; não representa envio ao servidor.

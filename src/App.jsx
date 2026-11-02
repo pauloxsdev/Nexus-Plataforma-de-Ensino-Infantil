@@ -67,7 +67,7 @@ function AppPerfil({ perfil }) {
         onVoltar={() => go('courses')} onJogar={() => jogar(aulaId)}
         onOutra={{ anterior: aulaId > 1 ? () => abrirAula(aulaId - 1) : null, proxima: aulaId < FASES.length && liberada(aulaId + 1) ? () => abrirAula(aulaId + 1) : null }} />
     ),
-    work: <Work key={faseAtual.id} fase={faseAtual} onConcluir={(id, estrelas) => { concluir(id, estrelas); void save({ tipo: 'fase_concluida', perfil: { ...perfil }, codigo, faseId: id, estrelas }); }} irParaFase={jogar} go={go} layout="vertical" />,
+    work: <Work key={faseAtual.id} fase={faseAtual} perfil={perfil} projetoId="trilha-principal" onConcluir={(id, estrelas) => { concluir(id, estrelas); void save({ tipo: 'fase_concluida', perfil: { ...perfil }, codigo, faseId: id, estrelas }); }} irParaFase={jogar} go={go} layout="vertical" />,
     nivel: <Nivel go={go} />,
     ach: <Ach lista={conquistas.lista} novas={conquistas.novas} marcarVistas={conquistas.marcarVistas} />,
   };
