@@ -34,16 +34,19 @@
 | Salvar offline e enviar à API | `src/services/sincronizacao.js`, `src/hooks/useConexao.js` |
 | **Menu lateral** (itens, cartão do aluno, Nexi do menu, recolher, botões de Internet e Som) | `src/components/BarraLateral.jsx` (as telas e a ordem ficam em `src/App.jsx`) |
 
-## O Nexus é só para computador
-- As telas são desenhadas para monitor (largura mínima de 1024 px em `src/index.css`). Se a janela ficar menor, a página **rola para o lado** em vez de virar um layout de celular.
-- Não existem variantes de celular/tablet. Se isso mudar no futuro, é aqui que se começa: `src/index.css` (largura mínima) e as classes de cada tela em `src/pages/`.
-- Atalhos de teclado na tela de jogo: teclas **1, 2, 3...** pegam a peça e **Enter** executa o circuito (`src/pages/Oficina.jsx`). Passar o mouse destaca botões e espaços.
+## Layout em celular, tablet e desktop
+- As telas reorganizam cartões e colunas conforme o espaço, sem largura mínima global.
+- Abaixo de 768 px, use **Abrir menu** no cabeçalho; o menu pode rolar em telas baixas. Escape fecha o menu. A partir de 768 px, o menu lateral continua recolhível.
+- Na Oficina, paleta e mapa ficam acima do circuito em telas estreitas; a partir de 1280 px as três colunas voltam a ficar lado a lado. Executar e Limpar acompanham a área do circuito.
+- Se os ramos excederem a largura, só a região **Circuito da fase** rola horizontalmente. Ela recebe foco pelo teclado e pode ser rolada; a página não exige rolagem horizontal.
+- Arraste as peças com mouse/dedo (as bordas rolam a página), ou toque/clique numa peça e depois num espaço. No teclado, Tab e Enter ativam os botões; com foco no fundo da tela, 1..9 selecionam peças e Enter executa.
+- Missões, mensagens e tutoriais cabem na tela e permitem rolagem interna quando necessário. Escape fecha os diálogos dispensáveis; a animação e o resultado de sucesso mantêm suas ações próprias.
 
 ## Menu lateral
 - Itens: Início, Trilhas, Fase atual, Meu astronauta, Conquistas. Embaixo: Sair. A área do professor está indisponível até existir autenticação no backend. Para criar um item, acrescente em `ITENS` (e a tela em `V` no `App.jsx`).
 - O menu identifica o acesso atual como **demonstração sem login**, sem nome ou código de aluno.
 - A setinha recolhe o menu (só ícones); a escolha fica salva. Em telas com menos de 1280 px ele já começa recolhido.
-- Em telas baixas (menos de 820 px de altura) o cartão do Nexi some, para os controles e Sair sempre caberem.
+- Em telas baixas, o menu permite rolagem para alcançar todos os controles, sem remover o cartão do Nexi.
 - No fim do menu ficam os botões **Internet** (ligada/desligada) e **Som** (ligado/desligado). A internet mostra o estado de rede informado pelo navegador e não pode ser alternada pelo botão. As conclusões são gravadas em IndexedDB; o envio ao servidor está indisponível até integrar uma API.
 - A bolinha rosa em **Conquistas** mostra quantas conquistas novas a criança ainda não viu.
 
@@ -86,3 +89,10 @@ O motor não usa React: dá para testar sozinho (`npm test`).
 - Rode `npm test` antes de enviar ao GitHub.
 - Cor nova? Coloque em `tokens.js` (não escreva `#2B4DFF` direto nas telas).
 - Faça commits pequenos e use uma branch por tarefa.
+
+## Origem dos indicadores
+- `hooks/useProgresso.js` recebe `FASES`, conta conclusões válidas e soma os melhores resultados.
+- `services/atividade.js` calcula datas civis locais, dias únicos e sequência. `hooks/useAtividade.js` persiste por perfil; `Oficina.jsx` registra tentativas com ações.
+- `hooks/useConquistas.js` registra IDs desbloqueados e vistos por perfil, sem repetir a recompensa ao abrir a tela.
+- `Base.jsx`, `BarraLateral.jsx` e `Nivel.jsx` exibem esses dados. Não há XP nem nível numérico: essas regras ainda não foram definidas.
+- `liberar todas as fases` só permite experimentar na sessão de demonstração; não cria progresso. `zerar progresso` limpa fases/estrelas, preservando o histórico de atividade e conquistas já ganhas.

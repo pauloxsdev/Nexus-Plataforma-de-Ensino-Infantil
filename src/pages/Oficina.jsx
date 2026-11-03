@@ -15,17 +15,18 @@ import { useCircuito } from '../hooks/useCircuito';
 import { FASES } from '../data/fases';
 import { estadoInicial, montarPrograma, simular, contarVazios } from '../game/motor';
 import { avaliar } from '../game/avaliacao';
+import { temAcao } from '../services/atividade';
 import { sfx } from '../services/som';
 
 const PASSO_MS = 550;
 
-// Tela de jogo (feita para computador). Dois layouts, escolhidos no botão "Circuito" da barra de demonstração:
+// Oficina responsiva. Dois layouts do circuito:
 //   'vertical'   = peças | circuito de cima para baixo | mapa
 //   'horizontal' = circuito da esquerda para a direita (com a bandeja de peças embaixo) | mapa
 // Ao apertar Executar abre o pop-up "Caminho do Nexus" (a tela escurece):
 //   - deu certo: o Nexus anda no pop-up, e aparecem as estrelas ganhas e o que a criança aprendeu;
 //   - deu errado: o Nexus NÃO anda; o pop-up explica o que aconteceu e o circuito marca "Parou aqui".
-export function Work({ fase, perfil, projetoId, onConcluir, irParaFase, go, layout = 'vertical' }) {
+export function Work({ fase, perfil, projetoId, onAtividade, onConcluir, irParaFase, go, layout = 'vertical' }) {
   const [estado, setEstado] = useCircuito(perfil, projetoId, fase);
   const [mao, setMao] = useState(null); // só usado pelo toque (alternativa ao arrastar)
   const [robo, setRobo] = useState(fase.mundo.inicio);
@@ -69,7 +70,9 @@ export function Work({ fase, perfil, projetoId, onConcluir, irParaFase, go, layo
   const executar = () => {
     if (busy) return;
     sfx('tap'); setFalha(null);
-    const r = simular(fase.mundo, montarPrograma(fase.circuito, estado));
+    const programa = montarPrograma(fase.circuito, estado);
+    if (temAcao(programa)) onAtividade?.();
+    const r = simular(fase.mundo, programa);
     const segundos = Math.round((Date.now() - (inicio.current ?? Date.now())) / 1000);
     setRobo(fase.mundo.inicio); setPegas([]);
     if (r.fim === 'ok') {
@@ -104,46 +107,53 @@ export function Work({ fase, perfil, projetoId, onConcluir, irParaFase, go, layo
   const horizontal = layout === 'horizontal';
   const paleta = <Paleta pecas={fase.pecas} mao={mao} modo={horizontal ? 'bandeja' : 'lista'} onArrastar={iniciar} onPegar={(id) => { if (foiArrasto()) return; sfx('tap'); setMao(mao === id ? null : id); }} />;
   const painelCircuito = (
-    <div className="card p-4 flex flex-col items-center gap-3">
-      <div className="w-full flex items-center justify-between gap-3 flex-wrap">
+    <div className="card min-w-0 p-3 sm:p-4 flex flex-col items-center gap-3">
+      <div className="sticky top-[var(--app-header-height,70px)] md:top-0 z-20 w-full bg-white py-2 flex items-center justify-between gap-3 flex-wrap">
         <h3 className={horizontal ? 'text-2xl' : 'text-3xl'}>Montar circuito</h3>
-        <div className="flex gap-3">
-          <Btn data-t="run" c="#19B35A" className="!text-xl px-8" onClick={executar} disabled={busy}>Executar</Btn>
+        <div className="flex flex-wrap gap-3">
+          <Btn data-t="run" c="#19B35A" className="!text-xl !px-5 sm:!px-8" onClick={executar} disabled={busy}>Executar</Btn>
           <Btn c="#fff" className="!text-base" onClick={limpar} disabled={busy}>Limpar</Btn>
         </div>
       </div>
+      <p id="circuito-rolagem" className="text-xs text-center">Toque em uma peça e depois no espaço. Se necessário, role somente a área do circuito para ver os ramos.</p>
+      <div data-circuito-scroll role="region" aria-label="Circuito da fase" aria-describedby="circuito-rolagem" tabIndex={0} className="w-full overflow-x-auto overscroll-x-contain p-3">
       <Circuito direcao={layout} circuito={fase.circuito} estado={estado} falha={falha} alvo={arrasto ? sobre : null} arrastando={arrasto?.origem !== 'paleta' ? arrasto?.origem : null}
         onEspaco={onEspaco} onRemover={onRemover} onArrastar={iniciar} onVezes={onVezes} />
+      </div>
     </div>
   );
   const painelMapa = (
-    <div data-t="palco" className="card p-4">
+    <div data-t="palco" className="card min-w-0 p-3 sm:p-4">
       <h3 className="text-2xl text-center">Mapa da fase</h3>
       <p className="text-center text-xs mb-2">Veja o mapa e planeje o circuito</p>
       <div className="rounded-full px-3 py-1 flex items-center gap-2 text-xs mb-3" style={{ background: '#FFF6B8', border: `2px solid ${INK}` }}>
         <Ic n="star" s={16} f={SUN} w={2.5} />Objetivo: pegar {total === 1 ? 'a estrela' : `as ${total} estrelas`}
       </div>
       <div className="rounded-xl p-3 flex justify-center" style={{ background: INK }}><Palco mundo={fase.mundo} /></div>
-      <div className="flex items-center justify-between gap-2 mt-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
         <span className="text-xs">Aperte Executar (ou Enter) para ver o Nexus andar.</span>
         <Btn c={BLUE} className="!text-base !py-1 !px-4 !text-white" onClick={() => setHelp(true)}>Ajuda</Btn>
       </div>
     </div>
   );
   return (
-    <div className="max-w-[1400px] mx-auto p-4">
+    <div className="max-w-[1400px] mx-auto p-3 sm:p-4">
       <div className="flex items-center gap-3 flex-wrap mb-3">
         <h2 className="text-3xl">Fase {fase.id}: {fase.titulo}</h2>
         <span className="rounded-full px-3 py-0.5 text-sm" style={{ background: SUN, border: `2px solid ${INK}`, fontWeight: 800 }}>{fase.conceito}</span>
-        <button onClick={() => setMissao(true)} className="underline text-sm">Ver missão</button>
+        <button onClick={() => setMissao(true)} className="underline text-sm min-h-11">Ver missão</button>
       </div>
       {horizontal ? (
-        <div className="grid gap-4 grid-cols-[1fr_300px] items-start">
-          <div className="flex flex-col gap-4">{painelCircuito}{paleta}</div>
+        <div className="grid min-w-0 gap-4 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_300px] items-start">
+          <div className="min-w-0 flex flex-col gap-4">{painelCircuito}{paleta}</div>
           {painelMapa}
         </div>
       ) : (
-        <div className="grid gap-4 grid-cols-[250px_1fr_300px] items-start">{paleta}{painelCircuito}{painelMapa}</div>
+        <div className="grid min-w-0 gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-[250px_minmax(0,1fr)_300px] items-start">
+          <div className="min-w-0 order-1">{paleta}</div>
+          <div className="min-w-0 order-3 md:col-span-2 xl:col-span-1 xl:order-2">{painelCircuito}</div>
+          <div className="min-w-0 order-2 xl:order-3">{painelMapa}</div>
+        </div>
       )}
       <PecaArrastada arrasto={arrasto || volta} voltando={!arrasto && !!volta} />
       {missao && <MissaoFase fase={fase} onFechar={fecharMissao} />}

@@ -2,6 +2,7 @@ import React from 'react';
 import { act, create } from 'react-test-renderer';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { useDadoPerfil } from './useDadoPerfil';
+import { FASES } from '../data/fases';
 import { useProgresso } from './useProgresso';
 import { chavePerfil, PERFIL_DEMO } from '../services/perfilLocal';
 const a = { tipo: 'aluno', id: 'escola:1/aluno:1' };
@@ -9,7 +10,7 @@ const b = { tipo: 'aluno', id: 'escola:1/aluno:2' };
 const avatarPadrao = (v) => v ?? { cor: 'amarelo' };
 let dados, root, atual;
 function Tela({ perfil }) {
-  const progresso = useProgresso(8, perfil);
+  const progresso = useProgresso(FASES, perfil);
   const [avatar, setAvatar] = useDadoPerfil(perfil, 'avatar', avatarPadrao);
   atual = { ...progresso, avatar, setAvatar };
   return null;
@@ -46,7 +47,7 @@ it('preserva dados globais legados sem atribuí-los ao primeiro aluno ou demo', 
 });
 it('zerar e liberar fases altera somente o perfil ativo', () => {
   montar(a); act(() => atual.concluir(1, 3)); trocar(b);
-  act(() => atual.liberarTodas()); expect(atual.feitas).toHaveLength(7);
+  act(() => atual.liberarTodas()); expect(atual.feitas).toHaveLength(0);
   act(() => atual.zerar()); expect(atual.feitas).toEqual([]);
   trocar(a); expect(atual.estrelas).toEqual({ 1: 3 });
 });

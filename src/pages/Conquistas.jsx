@@ -25,8 +25,8 @@ export function Ach({ lista, novas, marcarVistas }) {
     .sort((a, b) => Number(b.desbloqueada) - Number(a.desbloqueada) || b.atual / b.meta - a.atual / a.meta);
 
   return (
-    <div className="max-w-6xl mx-auto p-5">
-      <div className="card p-5 flex items-center gap-6 mb-5" style={{ background: '#FFF6B8' }}>
+    <div className="max-w-6xl mx-auto p-4 sm:p-5">
+      <div className="card p-4 sm:p-5 flex flex-wrap items-center gap-4 sm:gap-6 mb-5" style={{ background: '#FFF6B8' }}>
         <div className="relative shrink-0" style={{ width: 120, height: 120 }}>
           <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label={`${ganhas} de ${lista.length} conquistas`}>
             <circle cx="60" cy="60" r="46" fill="#fff" stroke={INK} strokeWidth="14" />
@@ -34,8 +34,8 @@ export function Ach({ lista, novas, marcarVistas }) {
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center"><span className="disp text-4xl leading-none">{ganhas}</span><span className="text-xs">de {lista.length}</span></div>
         </div>
-        <div className="flex-1">
-          <h2 className="text-4xl">Minhas conquistas</h2>
+        <div className="flex-1 min-w-[180px]">
+          <h2 className="text-3xl sm:text-4xl">Minhas conquistas</h2>
           <p className="mt-1">Cada conquista vale por uma coisa que você aprendeu ou fez. Toque numa para ver como ganhar!</p>
           <div className="flex gap-4 mt-3 flex-wrap">
             {Object.entries(RARIDADES).map(([k, r]) => {
@@ -45,10 +45,10 @@ export function Ach({ lista, novas, marcarVistas }) {
           </div>
         </div>
       </div>
-      <div className="flex gap-2 mb-4" role="group" aria-label="Filtrar conquistas">
+      <div className="flex flex-wrap gap-2 mb-4" role="group" aria-label="Filtrar conquistas">
         {FILTROS.map(([k, t]) => <button key={k} onClick={() => setFiltro(k)} aria-pressed={filtro === k} className="disp text-base rounded-full px-4 py-1.5" style={{ background: filtro === k ? SUN : '#fff', border: `3px solid ${INK}`, boxShadow: filtro === k ? `3px 3px 0 ${INK}` : 'none' }}>{t}</button>)}
       </div>
-      <div data-t="conquistas-grid" className="grid grid-cols-4 gap-4">
+      <div data-t="conquistas-grid" className="grid grid-cols-1 min-[390px]:grid-cols-2 xl:grid-cols-4 gap-4">
         {visiveis.map((c) => {
           const nova = c.desbloqueada && novasAoEntrar.current.includes(c.id);
           const quase = !c.desbloqueada && c.atual / c.meta >= 0.5;

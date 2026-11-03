@@ -11,6 +11,14 @@ npm run dev      # abre em http://localhost:5173
 npm run build    # gera a pasta dist/ (publicável na Vercel)
 ```
 
+## Telas e dispositivos
+
+O layout se adapta a celular, tablet e desktop. No celular, abra a navegação em
+**Abrir menu**. Na Oficina, paleta, mapa e circuito se reorganizam; ramos largos
+podem ser rolados apenas dentro da região do circuito. Arrastar e soltar,
+selecionar por toque/clique e os atalhos de teclado continuam disponíveis.
+A adaptação não altera o modo de demonstração nem fornece autenticação ou backend.
+
 ## Estrutura
 ```
 src/
@@ -76,3 +84,34 @@ Sair da tela ou recarregar restaura o circuito, e **Limpar** salva o estado inic
 somente desse perfil/projeto/fase. Ao restaurar, peças e espaços incompatíveis
 com a fase são descartados e as repetições respeitam seus limites atuais.
 Essa persistência é local ao navegador; não representa envio ao servidor.
+
+## Indicadores locais
+
+- **Atividade:** uma tentativa de execução com pelo menos uma peça/ação no circuito,
+  bem-sucedida ou não. Abrir a aplicação, editar o avatar ou executar um circuito
+  vazio não registra atividade. Datas são dias civis locais (`YYYY-MM-DD`), sem
+  converter por UTC. Cada dia é registrado uma só vez por perfil.
+- **Dias acumulados:** quantidade de datas registradas até hoje. **Sequência atual:**
+  dias consecutivos terminando hoje ou ontem; um dia inteiro sem atividade a
+  interrompe. A tela reavalia a data ao recuperar foco e a cada 30 segundos.
+  Não reconstruímos atividades anteriores a esta atualização.
+- **Fases e estrelas:** o catálogo `FASES` define o total. Só IDs existentes com
+  resultados de 1 a 3 estrelas entram no resumo. Repetir mantém o melhor resultado,
+  sem somar a recompensa de novo. A liberação para experimentar apenas abre as
+  fases na sessão de demonstração, sem gravar conclusões ou atividade.
+- **Conquistas:** reutilizam as regras de `data/conquistas.js`; metade e total da
+  trilha acompanham o catálogo. Desbloqueios e visualizações são registrados por
+  perfil. Uma conquista ganha permanece registrada após interromper a sequência
+  ou zerar as fases; esses eventos não tornam a conquista nova novamente.
+- **Nível e XP:** não havia regra implementada. Os números e recompensas fictícios
+  foram removidos; a antiga tela de nível apresenta somente o resumo registrado.
+  Definir uma política de XP/nível é uma decisão futura, não uma dependência técnica
+  que possa ser resolvida inventando números.
+- **Professor:** continua indisponível; não há dados reais da turma nem agregação
+  do aluno atual para representar outros alunos.
+
+Atividade usa `nexus:v2:<tipo>:<id>:atividade`; conquistas usam o mesmo namespace
+com o sufixo `conquistas`. As chaves globais legadas não são importadas. Progresso
+anterior por perfil é preservado: sem metadados antigos não é possível distinguir
+uma conclusão jogada de uma antiga liberação de demonstração, nem inferir sua data.
+O relógio e o armazenamento são do dispositivo, sem validação pelo servidor.

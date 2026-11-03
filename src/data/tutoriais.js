@@ -7,11 +7,11 @@ export const TOUR = {
     { sel: '[data-t=enter]', t: 'Hora de decolar!', d: 'Clique em Explorar demonstração. Você não precisa de nome, e-mail ou código.' },
   ],
   dash: [
-    { t: 'Bem-vindo à sua base!', d: 'Aqui você vê o seu nível, as suas estrelas e o que fazer hoje.' },
+    { t: 'Bem-vindo à sua base!', d: 'Aqui você vê as fases concluídas, suas estrelas e os dias em que jogou.' },
     { sel: '[data-t=menu]', t: 'O seu menu', d: 'Use esta barra para ir às Trilhas, à fase atual, ao Meu Nexus e às Conquistas. A setinha recolhe o menu.' },
     { sel: '[data-t=avatar]', t: 'Este é o seu Nexus!', d: 'Clique nele para mudar a forma, a cor, o rosto e o enfeite.' },
-    { sel: '[data-t=xp]', t: 'Barra de nível', d: 'Cada fase completa enche um pedacinho. Encheu tudo? Você sobe de nível!' },
-    { sel: '[data-t=streak]', t: 'Dias seguidos', d: 'Volte todo dia para manter a sequência de fogo acesa.' },
+    { sel: '[data-t=xp]', t: 'Progresso da trilha', d: 'Veja quantas fases você concluiu e quantas ainda faltam.' },
+    { sel: '[data-t=streak]', t: 'Dias seguidos', d: 'Execute um circuito com peças para registrar atividade. Tentativas no mesmo dia contam uma vez só.' },
     { sel: '[data-t=go]', t: 'Continue de onde parou', d: 'Este botão leva direto para a sua fase.' },
   ],
   avatar: [
@@ -50,5 +50,5 @@ export const TOUR = {
     { sel: '[data-t=newcode]', t: 'Crie códigos', d: 'Gere um código para cada aluno e anote o nome dele no seu caderno.' },
     { sel: '[data-t=cert]', t: 'Certificado', d: 'Libera quando o aluno completa as 8 fases. O nome é digitado na hora e não vai para o servidor.' },
   ],
-  nivel: [{ t: 'Parabéns!', d: 'Você completou a fase, ganhou XP e subiu de nível.' }],
+  nivel: [{ t: 'Seu progresso', d: 'Aqui estão suas fases concluídas e estrelas registradas. Veja também suas conquistas.' }],
 };

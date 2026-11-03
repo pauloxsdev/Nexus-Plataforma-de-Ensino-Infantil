@@ -10,7 +10,7 @@ export function Palco({ mundo, robo, pegas = [], tam = 40, destaque = null }) {
   const r = robo || mundo.inicio;
   const tem = (lista, x, y) => lista.some(([a, b]) => a === x && b === y);
   const cel = (x, y) => {
-    const base = { width: tam, height: tam, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' };
+    const base = { width: '100%', aspectRatio: '1', minWidth: 0, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' };
     if (destaque && destaque[0] === x && destaque[1] === y) base.boxShadow = `0 0 0 3px ${PINK}, 0 0 0 5px #fff`;
     const k = x + '-' + y;
     if (x === r.x && y === r.y) {
@@ -33,5 +33,5 @@ export function Palco({ mundo, robo, pegas = [], tam = 40, destaque = null }) {
   };
   const cels = [];
   for (let y = 0; y < mundo.h; y++) for (let x = 0; x < mundo.w; x++) cels.push(cel(x, y));
-  return <div className="grid gap-1.5 justify-center" style={{ gridTemplateColumns: `repeat(${mundo.w}, ${tam}px)` }} role="img" aria-label="Mapa da fase">{cels}</div>;
+  return <div className="grid gap-1.5 justify-center [&_svg]:max-w-full [&_svg]:h-auto" style={{ width: mundo.w * tam + (mundo.w - 1) * 6, maxWidth: '100%', gridTemplateColumns: `repeat(${mundo.w}, minmax(0, 1fr))` }} role="img" aria-label="Mapa da fase">{cels}</div>;
 }

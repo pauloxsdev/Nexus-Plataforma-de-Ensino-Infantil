@@ -4,8 +4,8 @@ import React from 'react';
 // voltar a operar quando houver sessão e permissões verificadas pelo backend.
 export function Teacher() {
   return (
-    <div className="max-w-2xl mx-auto p-5">
-      <h2 className="text-4xl">Área do professor indisponível</h2>
+    <div className="max-w-2xl mx-auto p-4 sm:p-5">
+      <h2 className="text-3xl sm:text-4xl">Área do professor indisponível</h2>
       <p className="card p-4 mt-4" role="status">O acesso e a criação de códigos dependem da autenticação de professores, que ainda não está disponível.</p>
     </div>
   );

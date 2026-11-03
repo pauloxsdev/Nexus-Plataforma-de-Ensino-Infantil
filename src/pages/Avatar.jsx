@@ -13,7 +13,7 @@ const Opcao = ({ sel, onClick, rotulo, children }) => (
 );
 const Secao = ({ titulo, dica, t, children }) => (
   <section data-t={t} className="mb-5">
-    <div className="flex items-baseline gap-2 mb-2"><h3 className="text-2xl">{titulo}</h3><span className="text-xs">{dica}</span></div>
+    <div className="flex flex-wrap items-baseline gap-2 mb-2"><h3 className="text-2xl">{titulo}</h3><span className="text-xs">{dica}</span></div>
     <div className="flex flex-wrap gap-3">{children}</div>
   </section>
 );
@@ -23,9 +23,9 @@ export function Avatar({ go }) {
   const mudar = (parte) => { sfx('tap'); setA({ ...a, ...parte }); };
   const sortear = () => { const r = (l) => l[Math.floor(Math.random() * l.length)]; sfx('place'); setA({ forma: r(FORMAS), cor: r(CORES_NEXUS), rosto: r(ROSTOS), acc: r(ENFEITES) }); };
   return (
-    <div className="max-w-5xl mx-auto p-5 grid grid-cols-[320px_1fr] gap-8 items-start">
-      <div className="sticky top-4">
-        <h2 className="text-4xl">Meu Nexus</h2>
+    <div className="max-w-5xl mx-auto p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] gap-6 lg:gap-8 items-start">
+      <div className="lg:sticky lg:top-4">
+        <h2 className="text-3xl sm:text-4xl">Meu Nexus</h2>
         <p className="mt-1 mb-4">Este é o seu personagem no jogo. Monte um Nexus que tenha a sua cara!</p>
         <div className="card p-5 flex flex-col items-center gap-2" style={{ background: '#FFF6B8' }}>
           <NexusAvatar s={210} {...a} />

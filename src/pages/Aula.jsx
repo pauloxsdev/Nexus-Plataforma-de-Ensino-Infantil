@@ -21,21 +21,21 @@ export function Aula({ fase, aula, estrelas, status, onVoltar, onJogar, onOutra,
   const alternar = (i) => { sfx('tap'); setFeitos((f) => (f.includes(i) ? f.filter((x) => x !== i) : [...f, i])); };
   const cor = CORES[(fase.id - 1) % CORES.length];
   return (
-    <div className="max-w-6xl mx-auto p-5">
+    <div className="max-w-6xl mx-auto p-4 sm:p-5">
       <div className="flex items-center gap-3 mb-4 flex-wrap">
         <button onClick={onVoltar} className="flex items-center gap-1 rounded-full px-3 py-1 hover:brightness-95" style={{ background: '#fff', border: `3px solid ${INK}` }}><Ic n="chevL" s={16} w={3.5} /><span className="text-sm" style={{ fontWeight: 800 }}>Trilhas</span></button>
         <span className="text-sm">Aula {fase.id} de {total}</span>
         {status === 'done' && <span className="flex items-center gap-1 text-xs rounded-full px-2 py-0.5" style={{ background: '#DDF6E8', border: `2px solid ${INK}`, fontWeight: 800 }}><Ic n="check" s={14} w={4} />Fase completa, {estrelas || 1} {(estrelas || 1) === 1 ? 'estrela' : 'estrelas'}</span>}
       </div>
-      <div className="grid grid-cols-2 gap-5 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
         <div>
           <section data-t="aula-resumo" className="card mb-4 overflow-hidden">
-            <div className="px-5 py-3 flex items-center justify-between" style={{ background: cor, borderBottom: `3px solid ${INK}` }}>
+            <div className="px-4 sm:px-5 py-3 flex flex-wrap items-center justify-between gap-3" style={{ background: cor, borderBottom: `3px solid ${INK}` }}>
               <h2 className="text-3xl">{fase.titulo}</h2>
               <span className="disp text-base rounded-full px-3" style={{ background: '#fff', border: `3px solid ${INK}` }}>{fase.conceito}</span>
             </div>
-            <div className="p-5">
-              <div className="flex justify-center rounded-2xl py-3 mb-3" style={{ background: '#F3F6FF', border: `3px dashed #8F9BD0` }}><Ilustracao k={aula.ilustracao} s={300} /></div>
+            <div className="p-4 sm:p-5">
+              <div className="flex justify-center rounded-2xl py-3 mb-3 [&>svg]:max-w-full [&>svg]:h-auto" style={{ background: '#F3F6FF', border: `3px dashed #8F9BD0` }}><Ilustracao k={aula.ilustracao} s={300} /></div>
               <p className="text-lg leading-snug">{aula.resumo}</p>
               <div className="mt-3 rounded-xl p-3" style={{ background: '#FFF6B8', border: `2px solid ${INK}` }}>
                 <span className="text-xs">Palavra nova</span>
@@ -82,9 +82,9 @@ export function Aula({ fase, aula, estrelas, status, onVoltar, onJogar, onOutra,
           <div className="flex gap-3 items-center">
             <Btn data-t="aula-ir" c={GREEN} className="flex-1 !text-xl" onClick={onJogar}>{status === 'done' ? `Jogar a fase ${fase.id} de novo` : `Ir para a fase ${fase.id}`}</Btn>
           </div>
-          <div className="flex justify-between mt-3">
-            <button disabled={!onOutra.anterior} onClick={() => onOutra.anterior()} className="underline text-sm disabled:opacity-40">{'← Aula anterior'}</button>
-            <button disabled={!onOutra.proxima} onClick={() => onOutra.proxima()} className="underline text-sm disabled:opacity-40">{'Próxima aula →'}</button>
+          <div className="flex flex-wrap justify-between gap-3 mt-3">
+            <button disabled={!onOutra.anterior} onClick={() => onOutra.anterior()} className="underline text-sm min-h-11 disabled:opacity-40">{'← Aula anterior'}</button>
+            <button disabled={!onOutra.proxima} onClick={() => onOutra.proxima()} className="underline text-sm min-h-11 disabled:opacity-40">{'Próxima aula →'}</button>
           </div>
         </div>
       </div>

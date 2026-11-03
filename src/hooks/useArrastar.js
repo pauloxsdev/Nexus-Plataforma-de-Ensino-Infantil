@@ -48,12 +48,32 @@ export function useArrastar({ onSoltar, desabilitado }) {
     if (desabilitado || (e.button !== undefined && e.button !== 0)) return;
     const x0 = e.clientX, y0 = e.clientY;
     let ativo = false;
+    let ponto = { x: x0, y: y0 };
+    let quadro;
+    const velocidade = (p, inicio, fim) => p < inicio + 48 ? -Math.ceil((inicio + 48 - p) / 4)
+      : p > fim - 48 ? Math.ceil((p - fim + 48) / 4) : 0;
+    // O dedo pode ficar parado na borda enquanto o circuito se aproxima.
+    // Só rola durante um arrasto real; tocar/selecionar não inicia rolagem.
+    const rolar = () => {
+      const dy = Math.max(-16, Math.min(16, velocidade(ponto.y, 0, window.innerHeight)));
+      if (dy) window.scrollBy(0, dy);
+      document.querySelectorAll('[data-circuito-scroll]').forEach((area) => {
+        const r = area.getBoundingClientRect();
+        if (ponto.y < r.top || ponto.y > r.bottom || ponto.x < r.left || ponto.x > r.right) return;
+        const dx = Math.max(-16, Math.min(16, velocidade(ponto.x, r.left, r.right)));
+        if (dx && area.scrollWidth > area.clientWidth) area.scrollLeft += dx;
+      });
+      setSobre(espacoEm(ponto.x, ponto.y));
+      quadro = requestAnimationFrame(rolar);
+    };
     const mover = (ev) => {
-      if (!ativo) { if (Math.hypot(ev.clientX - x0, ev.clientY - y0) < DISTANCIA_MINIMA) return; ativo = true; }
+      ponto = { x: ev.clientX, y: ev.clientY };
+      if (!ativo) { if (Math.hypot(ev.clientX - x0, ev.clientY - y0) < DISTANCIA_MINIMA) return; ativo = true; quadro = requestAnimationFrame(rolar); }
       setArrasto({ peca, origem, x: ev.clientX, y: ev.clientY });
       setSobre(espacoEm(ev.clientX, ev.clientY));
     };
     const remover = () => {
+      cancelAnimationFrame(quadro);
       window.removeEventListener('pointermove', mover);
       window.removeEventListener('pointerup', fim);
       window.removeEventListener('pointercancel', fim);

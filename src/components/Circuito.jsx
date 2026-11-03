@@ -1,5 +1,5 @@
 import React from 'react';
-import { INK, SUN, GREEN } from '../theme/tokens';
+import { INK, SUN, GREEN, PINK } from '../theme/tokens';
 import { PECAS } from '../game/pecas';
 
 const PONTOS = 'radial-gradient(#fff 1.5px, transparent 2px)';
@@ -15,9 +15,9 @@ function CabecalhoRepetir({ n, v, onVezes }) {
   return (
     <div className="flex items-center gap-2 flex-wrap justify-center">
       <span className="disp text-lg">REPETIR</span>
-      <button onClick={() => onVezes(n.id, -1, n.max)} aria-label="Menos uma vez" className="w-8 h-8 rounded-lg disp text-xl" style={{ background: '#fff', border: `3px solid ${INK}` }}>−</button>
+      <button onClick={() => onVezes(n.id, -1, n.max)} aria-label="Menos uma vez" className="w-11 h-11 rounded-lg disp text-xl" style={{ background: '#fff', border: `3px solid ${INK}` }}>−</button>
       <span className="disp text-3xl w-8 text-center" aria-live="polite">{v}</span>
-      <button onClick={() => onVezes(n.id, 1, n.max)} aria-label="Mais uma vez" className="w-8 h-8 rounded-lg disp text-xl" style={{ background: '#fff', border: `3px solid ${INK}` }}>+</button>
+      <button onClick={() => onVezes(n.id, 1, n.max)} aria-label="Mais uma vez" className="w-11 h-11 rounded-lg disp text-xl" style={{ background: '#fff', border: `3px solid ${INK}` }}>+</button>
       <span className="disp text-lg">{v === 1 ? 'vez' : 'vezes'}</span>
     </div>
   );
@@ -40,7 +40,7 @@ function Espaco({ n, rotulo, estado, ativo, falha, alvo, arrastando, onEspaco, o
              : <span className="text-xs px-1 text-center" style={{ fontWeight: 800 }}>{rotulo}</span>}
       </button>
       {def && !n.fixo && (
-        <button onClick={() => onRemover(id)} aria-label={`Tirar a peça de ${rotulo}`} className="absolute -top-2 -right-2 w-6 h-6 rounded-full text-sm leading-none flex items-center justify-center" style={{ background: '#fff', border: `2px solid ${INK}` }}>×</button>
+        <button onClick={() => onRemover(id)} aria-label={`Tirar a peça de ${rotulo}`} className="absolute -top-2 -right-2 w-9 h-9 sm:w-6 sm:h-6 rounded-full text-sm leading-none flex items-center justify-center" style={{ background: '#fff', border: `2px solid ${INK}` }}>×</button>
       )}
       {falha === id && <span className="mt-1 text-[11px] rounded-full px-2" style={{ background: PINK, border: `2px solid ${INK}`, fontWeight: 800 }}>Parou aqui</span>}
     </div>
@@ -96,7 +96,7 @@ export function Circuito({ circuito, estado, ativo, falha, alvo, arrastando, onE
     );
   };
   return (
-    <div data-t="circuito" className={horizontal ? 'flex flex-wrap items-center justify-center gap-y-5' : 'flex flex-col items-center'}>
+    <div data-t="circuito" className={horizontal ? 'w-max min-w-full flex items-center justify-center' : 'w-max min-w-full flex flex-col items-center'}>
       <Marco texto="COMEÇA AQUI" bg={SUN} />
       {circuito.map((n) => <React.Fragment key={n.id}>{horizontal ? <CanoH /> : <CanoVert />}{no(n)}</React.Fragment>)}
       {horizontal ? <CanoH /> : <CanoVert />}<Marco texto="FIM" bg="#fff" />

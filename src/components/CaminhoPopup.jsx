@@ -54,9 +54,9 @@ export function CaminhoPopup({ popup, fase, robo, pegas, proxima, onTentar, onTr
           <Crit ok={av.rapido} texto={av.rapido ? `Rápido: ${av.segundos === 1 ? '1 segundo' : av.segundos + ' segundos'}!` : `Rápido: você levou ${av.segundos} s. A meta é ${av.ideal.segundos} s.`} />
         </ul>
         <div className="text-left text-sm rounded-xl p-3 my-3" style={{ background: '#DDF6E8', border: `2px solid ${INK}` }}><b>O que você aprendeu:</b> {fase.aprendeu}</div>
-        <div className="flex gap-2">
-          <Btn c="#fff" className="flex-1 !text-base" onClick={onTrilha}>Ver trilha</Btn>
-          <Btn className="flex-1 !text-base" onClick={onProxima}>{proxima ? 'Próxima fase' : 'Continuar'}</Btn>
+        <div className="flex flex-wrap gap-2">
+          <Btn c="#fff" className="flex-1 min-w-[120px] !text-base" onClick={onTrilha}>Ver trilha</Btn>
+          <Btn className="flex-1 min-w-[120px] !text-base" onClick={onProxima}>{proxima ? 'Próxima fase' : 'Continuar'}</Btn>
         </div>
       </>
     );
@@ -77,7 +77,7 @@ export function CaminhoPopup({ popup, fase, robo, pegas, proxima, onTentar, onTr
   }
   return (
     <Modal largo onClose={t === 'rodando' || t === 'ok' ? () => {} : onTentar}>
-      <div className="grid grid-cols-[auto_1fr] gap-6 items-center" style={{ maxHeight: '90vh', overflowY: 'auto', padding: '2px 4px 10px' }}>
+      <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-4 sm:gap-6 items-center min-w-0">
         <div>
           <h3 className="text-2xl">Caminho do Nexus</h3>
           <p className="text-xs">Fase {fase.id}: {fase.titulo}</p>

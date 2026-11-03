@@ -5,6 +5,7 @@ import { Tutorial } from './components/Tutorial';
 import { TOUR } from './data/tutoriais';
 import { AvCtx, AVATAR_PADRAO } from './context/AvatarContext';
 import { useConexao } from './hooks/useConexao';
+import { useAtividade } from './hooks/useAtividade';
 import { useSom } from './hooks/useSom';
 import { useProgresso } from './hooks/useProgresso';
 import { useDadoPerfil } from './hooks/useDadoPerfil';
@@ -38,7 +39,8 @@ function AppPerfil({ perfil }) {
   const [av, setAv] = useDadoPerfil(perfil, 'avatar', normalizarAvatar); // o Nexus do aluno (forma, cor, rosto e enfeite)
   const { net, save, chip } = useConexao();
   const { snd, toggle: toggleSnd } = useSom();
-  const { feitas, estrelas, totalEstrelas, concluir, zerar, liberarTodas, proximaId } = useProgresso(FASES.length, perfil);
+  const { feitas, estrelas, totalEstrelas, concluir, zerar, liberarTodas, demoLiberada, proximaId, totalFases, restantes } = useProgresso(FASES, perfil);
+  const atividade = useAtividade(perfil);
   const codigo = null; // Demonstração sem identidade autenticada.
   const [faseId, setFaseId] = useState(null);
   const [aulaId, setAulaId] = useState(1);
@@ -48,38 +50,38 @@ function AppPerfil({ perfil }) {
     fasesFeitas: feitas.length, feitas, totalEstrelas,
     tres: Object.values(estrelas).filter((n) => n >= 3).length,
     avatarMudou: JSON.stringify(av) !== JSON.stringify(AVATAR_PADRAO),
-    dias: 7, // TODO: vir do backend quando existir
-  });
+    dias: atividade.consecutivos, totalFases,
+  }, perfil);
 
-  const go = (k) => { if (k === 'teacher') return; setS(k); setTour(!seen[k]); };
+  const go = (k) => { if (k === 'teacher') return; if (k === 'work' && faseId === null) setFaseId(proximaId); setS(k); setTour(!seen[k]); };
   const close = () => { setSeen({ ...seen, [s]: 1 }); setTour(false); };
   const jogar = (id) => { setFaseId(id); go('work'); };
   const abrirAula = (id) => { setAulaId(id); go('aula'); };
-  const liberada = (id) => id === 1 || feitas.includes(id - 1);
+  const liberada = (id) => demoLiberada || id === 1 || feitas.includes(id - 1);
 
   const V = {
     login: <Login entrar={() => go('dash')} />,
-    dash: <Dash go={go} estrelas={totalEstrelas} fase={FASES.find((f) => f.id === proximaId)} />,
+    dash: <Dash atividade={atividade} feitas={feitas.length} totalFases={totalFases} restantes={restantes} conquistas={conquistas.lista.filter((c) => c.desbloqueada).length} go={(k) => k === 'work' ? jogar(proximaId) : go(k)} estrelas={totalEstrelas} fase={FASES.find((f) => f.id === proximaId)} />,
     avatar: <Avatar go={go} />,
-    courses: <Courses feitas={feitas} estrelas={estrelas} proximaId={proximaId} jogar={jogar} abrirAula={abrirAula} liberarTodas={liberarTodas} zerar={zerar} />,
+    courses: <Courses demoLiberada={demoLiberada} feitas={feitas} estrelas={estrelas} proximaId={proximaId} jogar={jogar} abrirAula={abrirAula} liberarTodas={liberarTodas} zerar={zerar} />,
     aula: (
       <Aula key={aulaId} fase={FASES.find((f) => f.id === aulaId)} aula={AULAS[aulaId]} estrelas={estrelas[aulaId]} status={feitas.includes(aulaId) ? 'done' : 'now'} total={FASES.length}
         onVoltar={() => go('courses')} onJogar={() => jogar(aulaId)}
         onOutra={{ anterior: aulaId > 1 ? () => abrirAula(aulaId - 1) : null, proxima: aulaId < FASES.length && liberada(aulaId + 1) ? () => abrirAula(aulaId + 1) : null }} />
     ),
-    work: <Work key={faseAtual.id} fase={faseAtual} perfil={perfil} projetoId="trilha-principal" onConcluir={(id, estrelas) => { concluir(id, estrelas); void save({ tipo: 'fase_concluida', perfil: { ...perfil }, codigo, faseId: id, estrelas }); }} irParaFase={jogar} go={go} layout="vertical" />,
-    nivel: <Nivel go={go} />,
+    work: <Work key={faseAtual.id} fase={faseAtual} onAtividade={atividade.registrar} perfil={perfil} projetoId="trilha-principal" onConcluir={(id, estrelas) => { concluir(id, estrelas); void save({ tipo: 'fase_concluida', perfil: { ...perfil }, codigo, faseId: id, estrelas }); }} irParaFase={jogar} go={go} layout="vertical" />,
+    nivel: <Nivel go={go} feitas={feitas.length} total={totalFases} estrelas={totalEstrelas} />,
     ach: <Ach lista={conquistas.lista} novas={conquistas.novas} marcarVistas={conquistas.marcarVistas} />,
   };
   return (
     <AvCtx.Provider value={[av, setAv]}>
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen flex-col md:flex-row">
         {s !== 'login' && (
-          <BarraLateral tela={s} ir={go} jogar={jogar} codigo={codigo} totalEstrelas={totalEstrelas} fasesFeitas={feitas.length} totalFases={FASES.length}
+          <BarraLateral dias={atividade.consecutivos} tela={s} ir={go} jogar={jogar} codigo={codigo} totalEstrelas={totalEstrelas} fasesFeitas={feitas.length} totalFases={FASES.length}
             faseAtualId={faseAtual.id} proximaId={proximaId} chip={chip} novas={conquistas.novas.length}
             config={{ internet: [net.on], som: [snd, toggleSnd] }} />
         )}
-        <main className="flex-1 min-w-0 pb-28 pl-3">
+        <main className="flex-1 min-w-0 pb-24 md:pb-28 md:pl-3">
           {/* keys diferentes: tela e tutorial NÃO podem repetir a mesma key */}
           <div key={'tela-' + s}>{V[s]}</div>
         </main>

@@ -12,7 +12,7 @@ export function MissaoFase({ fase, onFechar }) {
   const n = fase.mundo.estrelas.length;
   return (
     <Modal onClose={onFechar} largo>
-      <div className="grid grid-cols-2 gap-6 items-center" style={{ maxHeight: '90vh', overflowY: 'auto', padding: '2px 4px 10px' }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-center min-w-0">
         <div>
         <Nexi s={64} mood="feliz" />
         <div className="text-sm">Fase {fase.id}</div>
