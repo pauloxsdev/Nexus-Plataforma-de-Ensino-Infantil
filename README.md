@@ -3,13 +3,20 @@
 Protótipo navegável do front-end do Nexus, já separado em arquivos. Visual "Amarelinha" (papel quadriculado, contornos grossos, cores chapadas).
 
 ## Como rodar
-Precisa de Node.js 18 ou mais novo.
+Recomendado: Node.js 24 LTS. As ferramentas exigem Node.js 22.12+ na linha 22,
+24.x ou 26+. Node.js 18 e 20 não são suportados pela versão atual do Vitest.
 
 ```bash
-npm install
+npm ci          # instala as versões registradas no package-lock.json
+npm test        # executa os testes automatizados
 npm run dev      # abre em http://localhost:5173
 npm run build    # gera a pasta dist/ (publicável na Vercel)
 ```
+
+Execute os comandos na pasta que contém `package.json` e `package-lock.json`.
+Use `npm audit` para consultar os avisos de segurança atuais. Atualizações de
+dependências devem ser verificadas com testes e build; evite aplicar
+`npm audit fix --force` automaticamente, pois pode alterar versões principais.
 
 ## Telas e dispositivos
 
