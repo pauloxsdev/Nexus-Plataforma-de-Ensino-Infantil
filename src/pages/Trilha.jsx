@@ -105,7 +105,7 @@ export function Courses({ feitas, estrelas = {}, proximaId, jogar, abrirAula, li
                 </div>
               )}
             </div>
-            <p className="text-xs mt-4 text-center">Só para testar: <button className="underline" onClick={liberarTodas}>liberar todas as fases</button>{demoLiberada && <span> (liberadas para experimentar; sem registrar conclusões)</span>} · <button className="underline" onClick={zerar}>zerar progresso</button></p>
+            {liberarTodas && zerar && <p className="text-xs mt-4 text-center">Só para testar: <button className="underline" onClick={liberarTodas}>liberar todas as fases</button>{demoLiberada && <span> (liberadas para experimentar; sem registrar conclusões)</span>} · <button className="underline" onClick={zerar}>zerar progresso</button></p>}
           </div>
         </div>
       ) : (

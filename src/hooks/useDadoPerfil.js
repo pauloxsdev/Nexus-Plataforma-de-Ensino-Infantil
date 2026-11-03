@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { registrarDado } from '../services/sessaoAluno';
 import { chavePerfil, lerPerfil } from '../services/perfilLocal';
 
 // Ao trocar de perfil, nunca renderizar nem persistir o estado do perfil anterior.
@@ -10,9 +11,13 @@ export function useDadoPerfil(perfil, dado, normalizar) {
   useEffect(() => {
     try { localStorage.setItem(chave, JSON.stringify(valor)); } catch { /* permite uso em memória */ }
   }, [chave, valor]);
-  const alterar = (proximo) => setEstado((anterior) => {
-    const atual = anterior.chave === chave ? anterior.valor : inicial;
-    return { chave, valor: typeof proximo === 'function' ? proximo(atual) : proximo };
-  });
+  const atual = useRef({ chave, valor });
+  atual.current = { chave, valor };
+  const alterar = (proximo) => {
+    const novo = typeof proximo === 'function' ? proximo(atual.current.valor) : proximo;
+    atual.current = { chave, valor: novo };
+    setEstado(atual.current);
+    registrarDado(perfil, dado, novo);
+  };
   return [valor, alterar];
 }

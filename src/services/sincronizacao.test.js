@@ -49,3 +49,25 @@ describe('fila persistente de sincronização', () => {
     expect(await pendentes()).toEqual([]);
   });
 });
+
+it('envia somente a identidade selecionada e preserva demo, outro aluno e eventos legados', async () => {
+  const a = { tipo: 'aluno', id: 'aluno-a' }, b = { tipo: 'aluno', id: 'aluno-b' };
+  await guardarLocal({ id: 'a', perfil: a });
+  await guardarLocal({ id: 'b', perfil: b });
+  await guardarLocal({ id: 'demo', perfil: { tipo: 'demo', id: 'local' } });
+  await guardarLocal({ id: 'legado' });
+  const enviar = vi.fn(async (e) => ({ confirmado: true, id: e.id }));
+  await sincronizar(enviar, a);
+  expect(enviar.mock.calls.map(([e]) => e.id)).toEqual(['a']);
+  expect(await pendentes(a)).toEqual([]);
+  expect((await pendentes()).map(e => e.id).sort()).toEqual(['b', 'demo', 'legado']);
+});
+
+it('mantém a ordem de criação das tentativas, não a ordem alfabética dos IDs', async () => {
+  const perfil = { tipo: 'aluno', id: 'aluno' };
+  await guardarLocal({ id: 'z', perfil });
+  await guardarLocal({ id: 'a', perfil });
+  const enviados = [];
+  await sincronizar(async e => { enviados.push(e.id); return { confirmado: true, id: e.id }; }, perfil);
+  expect(enviados).toEqual(['z', 'a']);
+});

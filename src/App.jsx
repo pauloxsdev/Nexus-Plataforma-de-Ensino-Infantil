@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SUN } from './theme/tokens';
 import { Ic } from './components/Icon';
 import { Tutorial } from './components/Tutorial';
@@ -11,6 +11,9 @@ import { useProgresso } from './hooks/useProgresso';
 import { useDadoPerfil } from './hooks/useDadoPerfil';
 import { PERFIL_DEMO, chavePerfil } from './services/perfilLocal';
 import { useConquistas } from './hooks/useConquistas';
+import { api, definirSessao, csrfAtiva } from './services/api';
+import { prepararAluno, enviarFila, encerrarPerfil } from './services/sessaoAluno';
+import { Teacher } from './pages/Professor';
 import { Login } from './pages/Login';
 import { Dash } from './pages/Base';
 import { Avatar } from './pages/Avatar';
@@ -28,20 +31,38 @@ function normalizarAvatar(valor) {
 }
 
 export default function App() {
-  // Substituir pelo perfil da sessão somente após integrar autenticação real.
-  return <AppPerfil key={chavePerfil(PERFIL_DEMO, 'sessao')} perfil={PERFIL_DEMO} />;
+  const [sessao, setSessao] = useState(null), [carregando, setCarregando] = useState(true), [erro, setErro] = useState('');
+  const autenticar = async (s) => { definirSessao(s); const pronta = s.papel === 'aluno' ? await prepararAluno(s) : s; setSessao(pronta); setErro(''); };
+  useEffect(() => {
+    let ativo = true;
+    (async () => { try { const s = await api('/session'); if (ativo) await autenticar(s); } catch (e) { if (ativo && e.status !== 401) setErro(e.message); } finally { if (ativo) setCarregando(false); } })();
+    return () => { ativo = false; };
+  }, []);
+  const sair = async (jaRevogada = false) => {
+    if (sessao?.papel !== 'demo' && !jaRevogada) {
+      // Uma falha de envio preserva a fila, mas não impede revogar a sessão online.
+      if (sessao?.perfil) await enviarFila(sessao.perfil).catch(() => {});
+      try { await api('/auth/logout', { method: 'POST' }); } catch (e) { if (e.status !== 401) throw e; }
+    }
+    encerrarPerfil(); definirSessao(null); setSessao(null);
+  };
+  if (carregando) return <p role="status" className="p-6">Verificando sessão...</p>;
+  if (!sessao) return <>{erro && <p role="alert" className="p-4">{erro}</p>}<Login autenticar={autenticar} entrar={async () => { try { await api('/auth/logout', { method: 'POST' }); } catch (e) { if (e.status !== 401 && csrfAtiva()) { setErro(e.message); return; } } definirSessao(null); setSessao({ papel: 'demo', perfil: PERFIL_DEMO }); }} /></>;
+  if (sessao.papel === 'professor') return <Teacher sair={sair} />;
+  return <AppPerfil key={chavePerfil(sessao.perfil, 'sessao')} perfil={sessao.perfil} sessao={sessao} sair={sair} />;
 }
 
-function AppPerfil({ perfil }) {
-  const [s, setS] = useState('login');
+function AppPerfil({ perfil, sessao, sair }) {
+  const [s, setS] = useState('dash');
+  const [erroSaida, setErroSaida] = useState('');
   const [seen, setSeen] = useState({ work: 1 }); // na fase, quem abre sozinha é a MISSÃO (o tutorial fica no botão "?")
   const [tour, setTour] = useState(true);
   const [av, setAv] = useDadoPerfil(perfil, 'avatar', normalizarAvatar); // o Nexus do aluno (forma, cor, rosto e enfeite)
-  const { net, save, chip } = useConexao();
+  const { net, save, chip } = useConexao(perfil);
   const { snd, toggle: toggleSnd } = useSom();
   const { feitas, estrelas, totalEstrelas, concluir, zerar, liberarTodas, demoLiberada, proximaId, totalFases, restantes } = useProgresso(FASES, perfil);
-  const atividade = useAtividade(perfil);
-  const codigo = null; // Demonstração sem identidade autenticada.
+  const atividade = useAtividade(perfil, sessao.fuso);
+  const codigo = perfil.tipo === 'aluno' ? sessao.rotulo : null;
   const [faseId, setFaseId] = useState(null);
   const [aulaId, setAulaId] = useState(1);
   const faseAtual = FASES.find((f) => f.id === (faseId ?? proximaId));
@@ -53,23 +74,22 @@ function AppPerfil({ perfil }) {
     dias: atividade.consecutivos, totalFases,
   }, perfil);
 
-  const go = (k) => { if (k === 'teacher') return; if (k === 'work' && faseId === null) setFaseId(proximaId); setS(k); setTour(!seen[k]); };
+  const go = (k) => { if (k === 'login') { void sair().catch(e => setErroSaida(e.message)); return; } if (k === 'teacher') return; if (k === 'work' && faseId === null) setFaseId(proximaId); setS(k); setTour(!seen[k]); };
   const close = () => { setSeen({ ...seen, [s]: 1 }); setTour(false); };
   const jogar = (id) => { setFaseId(id); go('work'); };
   const abrirAula = (id) => { setAulaId(id); go('aula'); };
   const liberada = (id) => demoLiberada || id === 1 || feitas.includes(id - 1);
 
   const V = {
-    login: <Login entrar={() => go('dash')} />,
     dash: <Dash atividade={atividade} feitas={feitas.length} totalFases={totalFases} restantes={restantes} conquistas={conquistas.lista.filter((c) => c.desbloqueada).length} go={(k) => k === 'work' ? jogar(proximaId) : go(k)} estrelas={totalEstrelas} fase={FASES.find((f) => f.id === proximaId)} />,
     avatar: <Avatar go={go} />,
-    courses: <Courses demoLiberada={demoLiberada} feitas={feitas} estrelas={estrelas} proximaId={proximaId} jogar={jogar} abrirAula={abrirAula} liberarTodas={liberarTodas} zerar={zerar} />,
+    courses: <Courses demoLiberada={demoLiberada} feitas={feitas} estrelas={estrelas} proximaId={proximaId} jogar={jogar} abrirAula={abrirAula} liberarTodas={perfil.tipo === 'demo' ? liberarTodas : null} zerar={perfil.tipo === 'demo' ? zerar : null} />,
     aula: (
       <Aula key={aulaId} fase={FASES.find((f) => f.id === aulaId)} aula={AULAS[aulaId]} estrelas={estrelas[aulaId]} status={feitas.includes(aulaId) ? 'done' : 'now'} total={FASES.length}
         onVoltar={() => go('courses')} onJogar={() => jogar(aulaId)}
         onOutra={{ anterior: aulaId > 1 ? () => abrirAula(aulaId - 1) : null, proxima: aulaId < FASES.length && liberada(aulaId + 1) ? () => abrirAula(aulaId + 1) : null }} />
     ),
-    work: <Work key={faseAtual.id} fase={faseAtual} onAtividade={atividade.registrar} perfil={perfil} projetoId="trilha-principal" onConcluir={(id, estrelas) => { concluir(id, estrelas); void save({ tipo: 'fase_concluida', perfil: { ...perfil }, codigo, faseId: id, estrelas }); }} irParaFase={jogar} go={go} layout="vertical" />,
+    work: <Work key={faseAtual.id} fase={faseAtual} onAtividade={(tentativa) => { atividade.registrar(); if (perfil.tipo === 'aluno') void save({ tipo: 'tentativa', perfil, ...tentativa }); }} perfil={perfil} projetoId="trilha-principal" onConcluir={(id, estrelas) => { concluir(id, estrelas); if (perfil.tipo === 'demo') void save({ tipo: 'fase_concluida', perfil: { ...perfil }, codigo, faseId: id, estrelas }); }} irParaFase={jogar} go={go} layout="vertical" />,
     nivel: <Nivel go={go} feitas={feitas.length} total={totalFases} estrelas={totalEstrelas} />,
     ach: <Ach lista={conquistas.lista} novas={conquistas.novas} marcarVistas={conquistas.marcarVistas} />,
   };
@@ -82,6 +102,7 @@ function AppPerfil({ perfil }) {
             config={{ internet: [net.on], som: [snd, toggleSnd] }} />
         )}
         <main className="flex-1 min-w-0 pb-24 md:pb-28 md:pl-3">
+          {erroSaida && <p className="p-4 text-red-800" role="alert">{erroSaida}</p>}
           {/* keys diferentes: tela e tutorial NÃO podem repetir a mesma key */}
           <div key={'tela-' + s}>{V[s]}</div>
         </main>

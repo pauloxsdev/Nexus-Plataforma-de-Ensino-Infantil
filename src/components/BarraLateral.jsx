@@ -4,7 +4,7 @@ import { Ic } from './Icon';
 import { Nexi } from './Nexi';
 import { Me } from '../context/AvatarContext';
 
-// Barra lateral do aluno (e do professor). Quem entra só tem um CÓDIGO: nenhum nome real aparece aqui (LGPD).
+// Menu do aluno e da demonstração. Exibe apelido automático, nunca o código secreto ou nome real.
 // Pode ser recolhida (só ícones) para sobrar mais espaço no jogo.
 const ITENS = [
   { k: 'dash', nome: 'Início', icone: 'home', cor: SUN },
@@ -66,12 +66,12 @@ export function BarraLateral({ tela, ir, jogar, codigo, dias, totalEstrelas, fas
         </div>
 
         {compacto ? (
-          <div className="flex justify-center" title={codigo ? `Código ${codigo}` : 'Demonstração'}><Me s={44} /></div>
+          <div className="flex justify-center" title={codigo ? codigo : 'Demonstração'}><Me s={44} /></div>
         ) : (
           <div className="rounded-2xl p-3 flex flex-col gap-2" style={{ background: '#FFF6B8', border: `3px solid ${INK}`, boxShadow: `4px 4px 0 ${INK}` }}>
             <div className="flex items-center gap-3">
               <Me s={44} />
-              <div><div className="disp text-base leading-tight">Explorador</div><div className="text-xs">{codigo ? `Código ${codigo}` : 'Demonstração sem login'}</div></div>
+              <div><div className="disp text-base leading-tight">Explorador</div><div className="text-xs">{codigo ? codigo : 'Demonstração sem login'}</div></div>
             </div>
             <div className="flex gap-2 flex-wrap">
               <span className="flex items-center gap-1 rounded-full px-2 py-0.5 text-xs" style={pequeno}><Ic n="star" s={14} f={SUN} w={2.5} />{totalEstrelas} estrelas</span>

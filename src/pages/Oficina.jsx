@@ -71,9 +71,9 @@ export function Work({ fase, perfil, projetoId, onAtividade, onConcluir, irParaF
     if (busy) return;
     sfx('tap'); setFalha(null);
     const programa = montarPrograma(fase.circuito, estado);
-    if (temAcao(programa)) onAtividade?.();
     const r = simular(fase.mundo, programa);
     const segundos = Math.round((Date.now() - (inicio.current ?? Date.now())) / 1000);
+    if (temAcao(programa)) onAtividade?.({ faseId: fase.id, estado: structuredClone(estado), segundos, ocorridoEm: new Date().toISOString() });
     setRobo(fase.mundo.inicio); setPegas([]);
     if (r.fim === 'ok') {
       const av = avaliar(fase.ideal, { passos: r.passos.length, segundos });

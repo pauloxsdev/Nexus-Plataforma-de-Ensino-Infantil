@@ -1,8 +1,14 @@
-# Nexus 2.0 – Front-end (React + Vite)
+# Nexus 2.0 – React + Spring Boot + PostgreSQL
 
-Protótipo navegável do front-end do Nexus, já separado em arquivos. Visual "Amarelinha" (papel quadriculado, contornos grossos, cores chapadas).
+Aplicação Nexus com frontend React e backend Spring Boot. Visual "Amarelinha" (papel quadriculado, contornos grossos, cores chapadas).
 
-## Como rodar
+## Backend e acesso real
+
+Consulte [o guia do backend](docs/BACKEND.md) para iniciar PostgreSQL e Spring Boot,
+provisionar o primeiro professor e usar turmas, códigos de aluno e sincronização.
+O modo de demonstração continua disponível, separado dos dados autenticados.
+
+## Como rodar o frontend
 Recomendado: Node.js 24 LTS. As ferramentas exigem Node.js 22.12+ na linha 22,
 24.x ou 26+. Node.js 18 e 20 não são suportados pela versão atual do Vitest.
 
@@ -24,7 +30,7 @@ O layout se adapta a celular, tablet e desktop. No celular, abra a navegação e
 **Abrir menu**. Na Oficina, paleta, mapa e circuito se reorganizam; ramos largos
 podem ser rolados apenas dentro da região do circuito. Arrastar e soltar,
 selecionar por toque/clique e os atalhos de teclado continuam disponíveis.
-A adaptação não altera o modo de demonstração nem fornece autenticação ou backend.
+O modo de demonstração permanece separado do acesso autenticado.
 
 ## Estrutura
 ```
@@ -35,34 +41,28 @@ src/
   context/AvatarContext.jsx  astronauta escolhido (cor + acessório)
   data/tutoriais.js          textos dos tutoriais de cada tela
   hooks/                     useConexao (online/offline), useSom (mudo)
-  services/                  som.js (sons e vibração), certificado.js (jsPDF), sincronizacao.js (IndexedDB, esqueleto)
+  services/                  som.js (sons e vibração), certificado.js (jsPDF), sincronizacao.js (fila IndexedDB + API)
   game/                      motor do jogo e peças (sem React), com testes
   data/                      fases, tutoriais
   pages/                     Login, Base, Avatar, Trilha, Oficina (blocos), Nivel, Album, Professor
   App.jsx                    abas de DEMONSTRAÇÃO + montagem das telas
 ```
 
-## O que é de verdade e o que é simulado
+## Recursos
+
 | Parte | Estado |
 |---|---|
-| Telas, tutoriais, avatar, nível, sons | funcionam |
-| Oficina de circuito | 8 fases de lógica (sequência, repetição, SE/SENÃO), com motor próprio em `game/motor.js` |
-| Certificado | gera PDF com jsPDF no navegador; o nome nunca sai do aparelho |
-| Conexão / sincronização | rede observada pelo navegador; conclusões persistidas em fila IndexedDB. Envio ao servidor indisponível até integração com API |
-| Acesso | demonstração sem login; não cria identidades. Área do professor e geração de códigos indisponíveis |
-| Dados | progresso local da demonstração; não isolado por aluno. Sem turma real |
-| Backend (Spring Boot + PostgreSQL), PWA (Workbox) | **ainda não ligados** |
-
-## Próximos passos (onde plugar cada coisa)
-1. **Mais fases**: veja `docs/GUIA-DO-CODIGO.md` (como criar uma fase em `src/data/fases.js`).
-2. **Sincronização com servidor**: integrar um transporte real a `services/sincronizacao.js`. O transporte só pode retornar `{ confirmado: true, id }` após confirmação da API; a API deve ignorar eventos repetidos pelo ID. A fila IndexedDB já recebe conclusões de fase. Reconectar não comprova envio e não remove pendências. `navigator.onLine` não garante acesso ao servidor.
-3. **PWA / Workbox**: adicionar `vite-plugin-pwa` e um `manifest` com os ícones do Nexi.
-4. **Identidades e permissões (pendente de backend)**: autenticar alunos e professores, validar sessões e permissões no servidor, restringir códigos à turma do professor e isolar progresso/fila por identidade. O acesso atual é apenas uma demonstração; não restaurar a área do professor com base em flags no navegador.
-5. **Rotas**: trocar as abas do topo por `react-router` (cada arquivo de `pages/` vira uma rota).
-6. **Qualidade**: ESLint, testes (Vitest + Testing Library), acessibilidade (leitor de tela e teclado).
+| Aulas, oficina e tutoriais | 8 fases, catálogo único em `src/data/fases.js` |
+| Login | Professor com usuário/senha; aluno com código individual; sessão no servidor |
+| Professor | Turmas próprias, gestão de alunos/códigos e progresso individual real |
+| Progresso | Motor validado no servidor, melhor pontuação por fase, eventos idempotentes |
+| Dados do aluno | Avatar, circuitos, atividade e conquistas persistidos no PostgreSQL |
+| Offline | Fila local de alterações da sessão aberta; login e recarga autenticada exigem rede |
+| Certificado | PDF gerado no navegador; nome não enviado ao servidor |
+| XP/nível e PWA | Não implementados; dependem de regras de produto e trabalho específico |
 
 ## Regras do projeto (LGPD)
-- Nenhum dado pessoal: o aluno entra só com o código. O professor guarda o nome fora do sistema.
+- Minimização: o aluno entra só com o código. O professor guarda o nome fora do sistema. Códigos e progresso são dados pseudonimizados e ainda exigem proteção.
 - O nome no certificado fica só na memória do navegador (`services/certificado.js`).
 - Sem ranking (Leaderboard descartado) e sem telas punitivas.
 
@@ -75,14 +75,10 @@ As chaves antigas `nexus:avatar` e `nexus:progresso` ficam preservadas, sem leit
 ou migração automática, pois não identificam o dono. Uma migração futura exige
 atribuição explícita ao perfil correto.
 
-Ao integrar o backend, o perfil deve vir da sessão autenticada, com ID estável
-que inclua o escopo da escola quando necessário. Remonte `AppPerfil` com uma
-`key` derivada desse perfil para reiniciar também os estados das telas.
-Namespaces locais não são controle de acesso. Múltiplos alunos continuam
-indisponíveis até autenticação e autorização no servidor. As novas conclusões
-incluem o perfil no evento da fila; eventos legados sem dono e eventos de demo
-não devem ser enviados como progresso de um aluno. A seleção e autorização da
-fila por identidade devem ser implementadas na integração com a API.
+No acesso autenticado, o perfil vem da sessão validada pelo servidor e remonta
+`AppPerfil` ao trocar de identidade. A API verifica o dono de cada recurso.
+Namespaces locais não são controle de acesso. Eventos antigos sem dono ou de
+demonstração nunca são enviados como dados de um aluno real.
 
 A Oficina persiste peças e contagens de repetição em
 `nexus:v2:<tipo>:<id codificado>:circuito:<projeto codificado>:fase:<id>`.
@@ -90,7 +86,7 @@ A trilha atual usa o projeto `trilha-principal`; cada fase mantém seu rascunho.
 Sair da tela ou recarregar restaura o circuito, e **Limpar** salva o estado inicial
 somente desse perfil/projeto/fase. Ao restaurar, peças e espaços incompatíveis
 com a fase são descartados e as repetições respeitam seus limites atuais.
-Essa persistência é local ao navegador; não representa envio ao servidor.
+Na demonstração, a persistência é local. Para alunos autenticados, alterações são enfileiradas e só aparecem como enviadas após confirmação da API.
 
 ## Indicadores locais
 
@@ -114,11 +110,10 @@ Essa persistência é local ao navegador; não representa envio ao servidor.
   foram removidos; a antiga tela de nível apresenta somente o resumo registrado.
   Definir uma política de XP/nível é uma decisão futura, não uma dependência técnica
   que possa ser resolvida inventando números.
-- **Professor:** continua indisponível; não há dados reais da turma nem agregação
-  do aluno atual para representar outros alunos.
+- **Professor:** consulta os registros de cada aluno de suas próprias turmas. Turmas sem alunos mostram estado vazio.
 
 Atividade usa `nexus:v2:<tipo>:<id>:atividade`; conquistas usam o mesmo namespace
 com o sufixo `conquistas`. As chaves globais legadas não são importadas. Progresso
 anterior por perfil é preservado: sem metadados antigos não é possível distinguir
 uma conclusão jogada de uma antiga liberação de demonstração, nem inferir sua data.
-O relógio e o armazenamento são do dispositivo, sem validação pelo servidor.
+Na demonstração, relógio e armazenamento são locais. No acesso autenticado, veja as regras de datas, validação de soluções e limites do relógio offline em `docs/BACKEND.md`.

@@ -1,5 +1,6 @@
 // Datas civis do navegador: não converter a data de atividade por toISOString.
-export function dataLocal(data = new Date()) {
+export function dataLocal(data = new Date(), fuso) {
+  if (fuso) { const partes = new Intl.DateTimeFormat('en-CA', { timeZone: fuso, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(data); const p = Object.fromEntries(partes.map(v => [v.type, v.value])); return `${p.year}-${p.month}-${p.day}`; }
   return `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, '0')}-${String(data.getDate()).padStart(2, '0')}`;
 }
 export function deslocarDia(chave, quantidade) {

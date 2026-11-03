@@ -10,7 +10,10 @@
     "test": "vitest run",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "backend:catalog": "node scripts/export-catalog.mjs",
+    "backend:fixtures": "node scripts/export-game-fixtures.mjs",
+    "prebuild": "npm run backend:catalog"
   },
   "dependencies": {
     "blockly": "^11.2.2",
