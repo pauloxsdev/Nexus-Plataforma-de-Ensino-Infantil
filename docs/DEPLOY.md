@@ -4,9 +4,24 @@ A interface React e a API Spring Boot são servidas pela mesma aplicação no Re
 O PostgreSQL fica no Neon. O `Dockerfile` gera o frontend e o inclui no JAR.
 Não é necessário hospedar o frontend separadamente nem executar Vite em produção.
 
-Este guia prepara a publicação; não significa que uma instância já foi publicada.
+Este guia descreve a configuração e manutenção da publicação. O registro abaixo
+distingue a confirmação do responsável dos testes executados neste ambiente.
 Os planos e limites gratuitos precisam ser conferidos nos painéis dos provedores.
 Não selecione upgrade pago para seguir estas instruções.
+
+## Estado da publicacao — 09/11/2026
+
+- Endereço público: https://nexus-app-9kau.onrender.com/.
+- Configuração de deploy enviada à `main` no commit `61d60d6`.
+- O responsável confirmou status Live no Render, resposta `ok` em `/api/health`,
+  login de professor/aluno, criação de turma/aluno, conclusão de fase,
+  persistência após novo login e acompanhamento pelo professor.
+- As capturas do painel mostraram Docker, plano Free, `/api/health` e Auto-Deploy Off.
+- Esses resultados de produção foram informados pelo responsável. O agente não
+  os reproduziu: o proxy do ambiente bloqueou o acesso ao domínio Render com 403.
+- Não há medição de disponibilidade, auditoria de segurança ou validação
+  pedagógica decorrente desses testes. As limitações funcionais permanecem
+  registradas em `COERENCIA-DOCUMENTO-PROJETO.md`.
 
 ## 1. Contas e banco
 
@@ -144,10 +159,11 @@ projeto Neon ou suas tabelas para interromper o site. Reiniciar/publicar a aplic
 não deve apagar o banco, mas mudanças de esquema precisam ser avaliadas antes de
 uma reversão de versão. Faça backup antes de alterações destrutivas.
 
-## Limites desta preparação
+## Limites da verificação técnica
 
-A validação local de Docker não comprova deploy no Render, conectividade real com
-Neon, HTTPS público ou comportamento do plano gratuito. As credenciais e contas
+A validação local de Docker, isoladamente, não comprova funcionamento no Render,
+conectividade com Neon, HTTPS público ou comportamento do plano gratuito.
+A confirmação posterior do responsável está registrada no início deste guia. As credenciais e contas
 são configuradas pelo proprietário nos provedores. Nenhum segredo deve ser enviado
 no chat, em capturas de tela ou em commits.
 
@@ -168,3 +184,16 @@ no chat, em capturas de tela ou em commits.
 - YAML inspecionado e interpretado localmente; sem validação remota do Blueprint.
 - Não foram testados navegador em HTTPS público, Render ou Neon reais. O teste
   local verifica o atributo Secure do cookie, mas não simula TLS de produção.
+
+## GitHub e troca de credenciais
+
+Siga `GITHUB.md` para atualizar o código. Com Auto-Deploy Off, commit/push não
+substituem a ação Manual Deploy no Render. Mudanças apenas em documentação e
+regras de exclusão de arquivos não exigem republicar a aplicação em execução.
+
+Se a senha do PostgreSQL for redefinida no Neon, atualize `DATABASE_PASSWORD` no
+Render e nas sessões locais que usam esse banco. URLs do CLI Neon em `.env`
+podem conter a senha antiga; atualize-as privadamente quando forem necessárias.
+A senha do banco é independente da senha do professor. Nunca salve credenciais
+em commits, capturas ou relatórios. Remover um segredo do arquivo atual não o
+remove do histórico; se houver exposição, revogue/substitua a credencial.

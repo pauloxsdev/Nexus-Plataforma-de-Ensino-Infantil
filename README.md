@@ -2,6 +2,14 @@
 
 Aplicação Nexus com frontend React e backend Spring Boot. Visual "Amarelinha" (papel quadriculado, contornos grossos, cores chapadas).
 
+## Site publicado
+
+https://nexus-app-9kau.onrender.com/
+
+Frontend e API são publicados juntos no Render; os dados ficam no PostgreSQL do
+Neon. O deploy é manual. O responsável confirmou em 09/11/2026 o acesso de
+professor/aluno e o fluxo de progresso em produção; veja [o registro](docs/DEPLOY.md#estado-da-publicacao--09112026).
+
 ## Backend e acesso real
 
 Consulte [o guia do backend](docs/BACKEND.md) para iniciar PostgreSQL e Spring Boot,
@@ -16,7 +24,7 @@ Recomendado: Node.js 24 LTS. As ferramentas exigem Node.js 22.12+ na linha 22,
 npm ci          # instala as versões registradas no package-lock.json
 npm test        # executa os testes automatizados
 npm run dev      # abre em http://localhost:5173
-npm run build    # gera a pasta dist/ (publicável na Vercel)
+npm run build    # gera dist/, incluída no JAR pelo build Docker
 ```
 
 Execute os comandos na pasta que contém `package.json` e `package-lock.json`.
@@ -37,15 +45,15 @@ O modo de demonstração permanece separado do acesso autenticado.
 src/
   theme/tokens.js            cores (espelham as variáveis do Figma)
   index.css                  Tailwind + estilos globais (botão 3D, cartão, animações)
-  components/                Btn, Seg (barra), Modal, Icon, Nexi (5 expressões), Astro (avatar), Tutorial
-  context/AvatarContext.jsx  astronauta escolhido (cor + acessório)
+  components/                Btn, Seg (barra), Modal, Icon, Nexi, NexusAvatar (avatar), Tutorial
+  context/AvatarContext.jsx  estado e personalização do avatar
   data/tutoriais.js          textos dos tutoriais de cada tela
   hooks/                     useConexao (online/offline), useSom (mudo)
   services/                  som.js (sons e vibração), certificado.js (jsPDF), sincronizacao.js (fila IndexedDB + API)
   game/                      motor do jogo e peças (sem React), com testes
   data/                      fases, tutoriais
-  pages/                     Login, Base, Avatar, Trilha, Oficina (blocos), Nivel, Album, Professor
-  App.jsx                    abas de DEMONSTRAÇÃO + montagem das telas
+  pages/                     Login, Base, Avatar, Trilha, Oficina (blocos), Nivel, Conquistas, Aula, Professor
+  App.jsx                    sessão, permissões, demonstração e montagem das telas
 ```
 
 ## Recursos
@@ -58,7 +66,7 @@ src/
 | Progresso | Motor validado no servidor, melhor pontuação por fase, eventos idempotentes |
 | Dados do aluno | Avatar, circuitos, atividade e conquistas persistidos no PostgreSQL |
 | Offline | Fila local de alterações da sessão aberta; login e recarga autenticada exigem rede |
-| Certificado | PDF gerado no navegador; nome não enviado ao servidor |
+| Certificado | Gerador PDF isolado no navegador; emissão ainda não integrada às telas |
 | XP/nível e PWA | Não implementados; dependem de regras de produto e trabalho específico |
 
 ## Regras do projeto (LGPD)
@@ -123,3 +131,12 @@ Na demonstração, relógio e armazenamento são locais. No acesso autenticado, 
 Para publicar a interface e a API juntas no Render, com PostgreSQL no Neon, siga
 [docs/DEPLOY.md](docs/DEPLOY.md). O roteiro inclui variáveis, criação do professor
 no banco da nuvem, validação e atualização manual.
+
+## GitHub e manutenção
+
+Veja [o fluxo de Git e publicação](docs/GITHUB.md) para clonar o repositório,
+preservar a pasta ZIP anterior, revisar diferenças, fazer commit/push e publicar
+manualmente. O `.env` e suas cópias não devem ser versionados.
+
+A [revisão de coerência documental](docs/COERENCIA-DOCUMENTO-PROJETO.md) registra
+as diferenças entre o documento acadêmico e o escopo implementado.
