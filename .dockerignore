@@ -11,3 +11,5 @@ backend/target
 **/*.key
 **/*.p12
 **/*.jks
+
+.neon

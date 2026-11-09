@@ -5,3 +5,11 @@ backend/target/
 .env
 .env.*
 !.env.example
+
+# Configuracao local do Neon e material privado
+.neon
+*.log
+*.pem
+*.key
+*.p12
+*.jks
