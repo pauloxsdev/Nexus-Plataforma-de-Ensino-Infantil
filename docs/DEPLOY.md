@@ -4,24 +4,17 @@ A interface React e a API Spring Boot são servidas pela mesma aplicação no Re
 O PostgreSQL fica no Neon. O `Dockerfile` gera o frontend e o inclui no JAR.
 Não é necessário hospedar o frontend separadamente nem executar Vite em produção.
 
-Este guia descreve a configuração e manutenção da publicação. O registro abaixo
-distingue a confirmação do responsável dos testes executados neste ambiente.
-Os planos e limites gratuitos precisam ser conferidos nos painéis dos provedores.
-Não selecione upgrade pago para seguir estas instruções.
+## Ambiente publicado
 
-## Estado da publicacao — 09/11/2026
+Endereço público: https://nexus-app-9kau.onrender.com/.
 
-- Endereço público: https://nexus-app-9kau.onrender.com/.
-- Configuração de deploy enviada à `main` no commit `61d60d6`.
-- O responsável confirmou status Live no Render, resposta `ok` em `/api/health`,
-  login de professor/aluno, criação de turma/aluno, conclusão de fase,
-  persistência após novo login e acompanhamento pelo professor.
-- As capturas do painel mostraram Docker, plano Free, `/api/health` e Auto-Deploy Off.
-- Esses resultados de produção foram informados pelo responsável. O agente não
-  os reproduziu: o proxy do ambiente bloqueou o acesso ao domínio Render com 403.
-- Não há medição de disponibilidade, auditoria de segurança ou validação
-  pedagógica decorrente desses testes. As limitações funcionais permanecem
-  registradas em `COERENCIA-DOCUMENTO-PROJETO.md`.
+A configuração utiliza Docker, PostgreSQL no Neon, health check em `/api/health`
+e publicação manual. O plano gratuito pode suspender o serviço após inatividade;
+consulte os limites atuais nos provedores antes de escolher uma instância.
+
+O health check verifica a conexão com o banco. Ele não substitui os testes
+funcionais nem comprova disponibilidade contínua, desempenho ou segurança.
+As funcionalidades pendentes estão descritas em [Escopo e evolução](ESCOPO.md).
 
 ## 1. Contas e banco
 
@@ -49,8 +42,7 @@ Não há migração automática dos dados do seu computador.
 ## 2. Código e serviço Render
 
 O Render precisa de uma revisão do GitHub que contenha `Dockerfile`, `.dockerignore`,
-`render.yaml` e as configurações atualizadas do backend. Mudanças somente no
-computador ou no ambiente deste chat não chegam ao Render.
+`render.yaml` e as configurações atualizadas do backend. Mudanças locais precisam ser enviadas ao repositório antes da publicação.
 
 No painel Render, crie um **Web Service** a partir do repositório
 `pauloxsdev/Nexus-Plataforma-de-Ensino-Infantil`:
@@ -159,31 +151,17 @@ projeto Neon ou suas tabelas para interromper o site. Reiniciar/publicar a aplic
 não deve apagar o banco, mas mudanças de esquema precisam ser avaliadas antes de
 uma reversão de versão. Faça backup antes de alterações destrutivas.
 
-## Limites da verificação técnica
+## Verificação da publicação
 
-A validação local de Docker, isoladamente, não comprova funcionamento no Render,
-conectividade com Neon, HTTPS público ou comportamento do plano gratuito.
-A confirmação posterior do responsável está registrada no início deste guia. As credenciais e contas
-são configuradas pelo proprietário nos provedores. Nenhum segredo deve ser enviado
-no chat, em capturas de tela ou em commits.
+Antes de publicar, execute os testes pertinentes e gere o build. Depois, confirme
+que o serviço inicia, que `/api/health` retorna `ok` e que os assets são carregados.
+Verifique login, criação de turma/aluno e persistência de progresso conforme o
+roteiro acima, registrando versão e ambiente de execução.
 
-## Verificação local — 04/11/2026
-
-- `npm test`: 49 testes aprovados, em oito arquivos.
-- `npm run build`: concluído com sucesso.
-- Build da imagem `nexus-deploy:local`: concluído. O Maven empacotou com
-  `-DskipTests`; a suíte completa do backend não foi reexecutada nesta preparação.
-- Imagem executada com PostgreSQL 17 descartável, limite de 512 MiB e `PORT=10000`:
-  migrações, provisionamento do professor, health, HTML e assets aprovados.
-- Requisições HTTP locais verificaram login de professor/aluno, criação de turma,
-  origem configurada por `RENDER_EXTERNAL_URL`, atributos Secure/HttpOnly/SameSite
-  do cookie e rejeição de origem incorreta.
-- Dados e sessão preservados após reinicialização do container. O roteiro foi
-  corrigido para consultar novamente a porta efêmera do Docker após reiniciar.
-- Containers, rede e credenciais descartáveis removidos ao terminar.
-- YAML inspecionado e interpretado localmente; sem validação remota do Blueprint.
-- Não foram testados navegador em HTTPS público, Render ou Neon reais. O teste
-  local verifica o atributo Secure do cookie, mas não simula TLS de produção.
+O build Docker empacota o backend com `-DskipTests`; os testes devem ser executados
+separadamente antes da entrega. Um build local bem-sucedido não comprova o
+funcionamento da instalação remota. Os testes Java de integração usam banco
+exclusivo e descartável, nunca o Neon de produção.
 
 ## GitHub e troca de credenciais
 

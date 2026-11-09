@@ -6,9 +6,9 @@ Auto-Deploy está desativado.
 
 ## Migrar da pasta ZIP sem perder alterações
 
-O ambiente deste chat não acessa a pasta Windows do responsável. As mudanças
-feitas localmente, inclusive pelo CLI Neon, precisam ser comparadas antes de
-serem transferidas. Não apague a pasta ZIP nem substitua seus arquivos em massa.
+Ao migrar de uma cópia ZIP para um clone Git, compare as alterações locais antes
+de transferi-las. Preserve a pasta anterior como backup e copie somente os
+arquivos de código que foram modificados intencionalmente.
 
 No PowerShell, confira o Git:
 
@@ -116,12 +116,3 @@ configuração de execução exigem publicação para chegar ao site. O deploy n
 transfere os dados do banco local ao Neon. Migrações de esquema precisam ser
 compatíveis com a versão publicada e com eventual reversão; faça backup antes
 de operações destrutivas.
-
-## Limites da conferência de 09/11/2026
-
-A conferência do agente cobre o checkout deste ambiente e sua referência no
-GitHub. Não cobre arquivos que existem apenas no computador do responsável,
-configurações privadas do Render/Neon ou todos os possíveis formatos de segredo.
-A publicação e os testes funcionais remotos foram confirmados pelo responsável,
-conforme `DEPLOY.md`. As alterações nesta revisão são documentais e de exclusão
-de arquivos; não mudam regras pedagógicas, autenticação ou dados de produção.

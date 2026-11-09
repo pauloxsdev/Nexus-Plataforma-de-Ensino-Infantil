@@ -1,14 +1,13 @@
-# Relatório de implementação do backend
+# Implementação e verificações do backend
 
-Este relatório registra o estado ao finalizar a implementação, antes da autorização
-posterior do usuário para commit e push. A publicação da aplicação não faz parte dessa autorização.
+Referência: entrega de autenticação, turmas e sincronização no commit `d4dfd1a`.
+Este registro descreve o escopo e os testes executados nessa versão; os resultados
+não representam uma execução contínua nem uma auditoria de versões posteriores.
 
-## Estado inicial e escopo
+## Escopo
 
-O Git estava limpo no início, após o commit `d39eeba`. Existiam somente frontend,
-perfis locais e fila IndexedDB; a área do professor estava desabilitada. O trabalho
-implementou Spring Boot + PostgreSQL, conforme a arquitetura escolhida pelo usuário.
-Nenhuma alteração anterior foi removida ou reaplicada. Não houve commit, push ou publicação.
+A API Spring Boot integra o jogo ao PostgreSQL, com autenticação por sessão,
+autorização por turma, validação das tentativas e persistência por aluno.
 
 ## Arquivos e motivos
 
@@ -47,7 +46,7 @@ Nenhuma alteração anterior foi removida ou reaplicada. Não houve commit, push
 - Atividade e conquistas mantêm as regras existentes. Nomes de crianças não são enviados.
   Não foram inventadas regras de XP/nível, ranking ou dados de turma de demonstração.
 
-## Verificações executadas neste ambiente
+## Verificações registradas na implementação
 
 | Comando/procedimento | Objetivo | Resultado |
 |---|---|---|
@@ -66,10 +65,6 @@ Nenhuma alteração anterior foi removida ou reaplicada. Não houve commit, push
 | `npm audit` | Auditoria das dependências JavaScript | Zero vulnerabilidades informadas |
 | `git diff --check` | Formatação do diff | Sem problemas |
 
-Durante a verificação, foi corrigida uma falha de renderização de aluno novo sem
-objeto de progresso. Também houve rodadas interrompidas durante reinício/recompilação
-do servidor de teste; a rodada integrada final foi repetida com o servidor estável.
-
 ## Testar localmente
 
 Siga o procedimento completo de Windows em [BACKEND.md](BACKEND.md): instalar os
@@ -87,8 +82,8 @@ gerar o JAR, provisionar o professor e iniciar API/Vite. Depois:
 
 ## Limites e pendências operacionais
 
-- Não foi feita publicação, configuração de domínio/HTTPS, backup gerenciado ou teste
-  no Windows do usuário. A validação ocorreu em Linux, PostgreSQL real e Chromium.
+- Os testes deste registro utilizaram Linux, PostgreSQL e Chromium. Não abrangem
+  todos os sistemas operacionais, navegadores ou condições de hospedagem.
 - A auditoria npm não cobre as dependências Java. Não foi realizada auditoria externa
   de segurança ou teste de carga.
 - Professores são provisionados pelo administrador; recuperação de senha por e-mail,
@@ -100,11 +95,3 @@ gerar o JAR, provisionar o professor e iniciar API/Vite. Depois:
   colaborativa nem mesclagem de um circuito editado simultaneamente em dois aparelhos.
 - Definições de retenção e operação da escola, hospedagem e futuras regras de XP/nível
   continuam sendo decisões separadas. O guia descreve configuração e responsabilidades.
-
-## Git
-
-Todas as alterações desta entrega são locais, posteriores a `d39eeba`. Os arquivos
-Java compilados, bancos, credenciais temporárias e artefatos de teste não entram no Git.
-O estado inicial estava limpo. Ao concluir, havia 17 arquivos rastreados modificados e
-24 arquivos novos (41 no total, incluindo este relatório). Nenhum commit, push, merge
-ou pull request foi realizado.

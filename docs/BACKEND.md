@@ -3,17 +3,19 @@
 ## Escopo
 
 A API autentica professores e alunos, mantém sessões no PostgreSQL e restringe
-cada turma ao professor responsável. O aluno usa um código aleatório individual;
+cada turma ao professor que a criou. O aluno usa um código aleatório individual;
 o sistema não pede nem armazena seu nome, e-mail ou data de nascimento.
 A correspondência entre o apelido automático e o aluno fica com a escola.
-O nome digitado no certificado continua somente no navegador.
+O serviço isolado de geração de certificado mantém o nome somente no navegador;
+a emissão ainda não está integrada às telas.
 
 Inclui criação/exclusão de turmas, criação/desativação/exclusão de alunos,
 substituição de códigos, troca de senha do professor, progresso, atividade,
 conquistas, avatar e rascunhos de circuito. O painel consulta dados de cada aluno;
 não agrega o perfil conectado como se fosse uma turma. Não há ranking.
 
-Não inclui hospedagem gerenciada, envio de e-mail, cadastro público de professores,
+A hospedagem é configurada conforme [DEPLOY.md](DEPLOY.md). Não inclui envio de
+e-mail, cadastro público de professores,
 PWA, regras novas de XP/nível ou compartilhamento de uma turma entre professores.
 O provisionamento e recuperação de senha são operações administrativas locais.
 
