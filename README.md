@@ -117,3 +117,9 @@ com o sufixo `conquistas`. As chaves globais legadas não são importadas. Progr
 anterior por perfil é preservado: sem metadados antigos não é possível distinguir
 uma conclusão jogada de uma antiga liberação de demonstração, nem inferir sua data.
 Na demonstração, relógio e armazenamento são locais. No acesso autenticado, veja as regras de datas, validação de soluções e limites do relógio offline em `docs/BACKEND.md`.
+
+## Publicação na nuvem
+
+Para publicar a interface e a API juntas no Render, com PostgreSQL no Neon, siga
+[docs/DEPLOY.md](docs/DEPLOY.md). O roteiro inclui variáveis, criação do professor
+no banco da nuvem, validação e atualização manual.

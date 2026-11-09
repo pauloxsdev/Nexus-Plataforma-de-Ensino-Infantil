@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+dist
+backend/target
+.env
+.env.*
+*.log
+*.zip
+**/*.pem
+**/*.key
+**/*.p12
+**/*.jks

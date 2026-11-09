@@ -1,0 +1,28 @@
+# This creates only the application. PostgreSQL is configured separately in Neon.
+services:
+  - type: web
+    name: nexus-app
+    runtime: docker
+    plan: free
+    branch: main
+    autoDeploy: false
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USER
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: SECURE_COOKIE
+        value: "true"
+      - key: BIND_ADDRESS
+        value: "0.0.0.0"
+      - key: DB_POOL_MAX
+        value: "3"
+      - key: DB_POOL_MIN
+        value: "0"
+      - key: DB_IDLE_TIMEOUT
+        value: "30000"
