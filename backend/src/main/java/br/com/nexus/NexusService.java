@@ -140,8 +140,7 @@ class NexusService {
         String key = event.path("chave").asText();
         var value = event.path("valor");
         if (key.equals("avatar")) {
-          game.validateAvatar(value);
-          data.set(key, value);
+          data.set(key, game.validateAvatar(value, data.path("progresso")));
         } else if (key.matches("circuito:trilha-principal:fase:[0-9]+")) {
           int phaseId = Integer.parseInt(key.substring(key.lastIndexOf(':') + 1));
           data.set(key, game.state(game.phase(phaseId), value));

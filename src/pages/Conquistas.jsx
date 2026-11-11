@@ -3,6 +3,7 @@ import { INK, SUN, PINK } from '../theme/tokens';
 import { Btn } from '../components/Btn';
 import { Modal } from '../components/Modal';
 import { Emblema } from '../components/Emblema';
+import { Nexi } from '../components/Nexi';
 import { RARIDADES } from '../data/conquistas';
 
 const FILTROS = [['todas', 'Todas'], ['conquistadas', 'Conquistadas'], ['andamento', 'Em andamento']];
@@ -45,6 +46,7 @@ export function Ach({ lista, novas, marcarVistas }) {
           </div>
         </div>
       </div>
+      <div className="nexi-note mb-5"><Nexi s={64} /><p>Cada descoberta tem seu valor. Escolha uma conquista para conhecer o próximo passo!</p></div>
       <div className="flex flex-wrap gap-2 mb-4" role="group" aria-label="Filtrar conquistas">
         {FILTROS.map(([k, t]) => <button key={k} onClick={() => setFiltro(k)} aria-pressed={filtro === k} className="disp text-base rounded-full px-4 py-1.5" style={{ background: filtro === k ? SUN : '#fff', border: `3px solid ${INK}`, boxShadow: filtro === k ? `3px 3px 0 ${INK}` : 'none' }}>{t}</button>)}
       </div>

@@ -6,6 +6,7 @@ import { useAtividade } from './useAtividade';
 import { useConquistas } from './useConquistas';
 import { FASES } from '../data/fases';
 import { avaliarConquistas } from '../data/conquistas';
+import { colecao, resumoProgresso } from '../data/personalizacao';
 import { dataLocal, resumirAtividade, temAcao } from '../services/atividade';
 const a = { tipo: 'aluno', id: 'a' }, b = { tipo: 'aluno', id: 'b' };
 let root, atual;
@@ -47,6 +48,15 @@ it('atividade e conquistas são isoladas por perfil', () => {
   trocar(b); expect(atual.atividade.acumulados).toBe(0); expect(atual.feitas).toEqual([]); expect(atual.conquistas.novas).toEqual([]);
   act(() => atual.concluir(2, 1)); expect(atual.conquistas.lista.find((c) => c.id === 'primeira').desbloqueada).toBe(false);
   trocar(a); expect(atual.feitas).toEqual([1]); expect(atual.atividade.acumulados).toBe(1);
+});
+it('coleção acompanha o aluno, persiste após reabrir e não duplica ao repetir fase', () => {
+  montar(); act(() => atual.concluir(1, 3));
+  const desbloqueados = () => colecao(resumoProgresso(atual.estrelas)).livres;
+  expect(desbloqueados()).toBe(11);
+  act(() => atual.concluir(1, 1)); expect(desbloqueados()).toBe(11);
+  act(() => root.unmount()); montar(); expect(desbloqueados()).toBe(11);
+  trocar(b); expect(desbloqueados()).toBe(7);
+  trocar(a); expect(desbloqueados()).toBe(11);
 });
 it('conta dias únicos, mantém ontem e interrompe após um dia sem atividade', () => {
   montar(); act(() => { atual.atividade.registrar(); atual.atividade.registrar(); });

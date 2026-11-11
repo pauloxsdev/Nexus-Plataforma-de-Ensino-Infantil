@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { api } from '../services/api';
 import { Btn } from '../components/Btn';
 import { Modal } from '../components/Modal';
+import { CabecalhoAventura } from '../components/CabecalhoAventura';
+import { Nexi } from '../components/Nexi';
 import { FASES } from '../data/fases';
 
 export function Teacher({ sair }) {
@@ -18,11 +20,12 @@ export function Teacher({ sair }) {
   const acao = (url, method, body) => executar(async () => { await api(url, { method, body }); await atualizarAlunos(); });
   return <main className="max-w-6xl mx-auto p-4 sm:p-6 space-y-5">
     <header className="flex flex-wrap justify-between items-center gap-3"><h1 className="text-3xl sm:text-4xl">Área do professor</h1><Btn c="#fff" onClick={() => executar(sair)} disabled={busy}>Sair</Btn></header>
+    <CabecalhoAventura etiqueta="ESPAÇO DO EDUCADOR" titulo="Cada turma, novas descobertas">Organize os encontros e acompanhe os pequenos passos de cada explorador.</CabecalhoAventura>
     <p>Dados reais das suas turmas. Alunos são identificados por apelidos automáticos; guarde a correspondência com nomes fora do sistema.</p>
     {erro && <p className="card p-4 text-red-800" role="alert">{erro}</p>}
     <form onSubmit={criar} className="card p-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[1fr_1fr_auto] items-end gap-3"><label className="min-w-0">Nova turma<input className="w-full border-2 rounded-xl p-3" required maxLength={80} value={nome} onChange={e => setNome(e.target.value)} placeholder="Ex.: Turma da manhã" /></label><label>Fuso das atividades<select className="block w-full border-2 rounded-xl p-3 max-w-full" value={fuso} onChange={e => setFuso(e.target.value)}>{['America/Sao_Paulo', 'America/Manaus', 'America/Rio_Branco', 'America/Noronha', 'Europe/Lisbon'].map(z => <option key={z}>{z}</option>)}</select></label><Btn type="submit" disabled={busy}>Criar turma</Btn></form>
     <label className="block">Turma<select aria-label="Turma" className="w-full border-2 rounded-xl p-3" value={selecionada} disabled={busy} onChange={e => setSelecionada(e.target.value)}><option value="">Selecione uma turma</option>{turmas.map(t => <option value={t.id} key={t.id}>{t.name}</option>)}</select></label>
-    {!turmas.length && !busy && <p className="card p-4">Você ainda não tem turmas. Crie a primeira acima.</p>}
+    {!turmas.length && !busy && <div className="card p-6 flex items-center gap-5" style={{background:"#fff4d6"}}><Nexi s={100} /><div><h2 className="text-2xl">Toda aventura começa com uma turma</h2><p className="mt-2">Crie a primeira acima. Depois, adicione alunos e entregue os códigos de acesso.</p></div></div>}
     {selecionada && <>
       <div className="flex flex-wrap gap-3"><Btn disabled={busy} onClick={() => executar(async () => { const aluno = await api(`/turmas/${selecionada}/alunos`, { method: 'POST' }); setCredencial(aluno); await atualizarAlunos(); })}>Adicionar aluno</Btn><Btn disabled={busy} c="#fff" onClick={() => executar(() => atualizarAlunos())}>Atualizar progresso</Btn><Btn disabled={busy} c="#fff" onClick={() => setConfirmacao({ texto: 'Excluir esta turma e todos os seus alunos, sessões e registros? Esta ação não pode ser desfeita.', fn: async () => { await api(`/turmas/${selecionada}`, { method: 'DELETE' }); setSelecionada(''); await atualizarTurmas(); } })}>Excluir turma</Btn></div>
       {!alunos.length && !busy && <p className="card p-4">Esta turma ainda não tem alunos.</p>}

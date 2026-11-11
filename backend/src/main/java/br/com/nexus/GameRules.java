@@ -12,11 +12,15 @@ import org.springframework.stereotype.Component;
 class GameRules {
   final ObjectMapper json;
   final JsonNode phases;
+  final JsonNode cosmetics;
 
   GameRules(ObjectMapper json) throws java.io.IOException {
     this.json = json;
     try (var in = getClass().getResourceAsStream("/fases.json")) {
       phases = json.readTree(in);
+    }
+    try (var in = getClass().getResourceAsStream("/personalizacao.json")) {
+      cosmetics = json.readTree(in);
     }
   }
 
@@ -225,20 +229,31 @@ class GameRules {
         .put("acc", "nenhum");
   }
 
-  void validateAvatar(JsonNode v) {
+  ObjectNode validateAvatar(JsonNode v, JsonNode progress) {
     require(v.isObject() && v.size() == 4, 400, "Avatar inválido.");
-    require(
-        List.of("orbe", "gota", "bloco", "estrela", "nuvem", "diamante")
-                .contains(v.path("forma").asText())
-            && List.of("feliz", "curioso", "piscando", "animado", "tranquilo", "surpreso")
-                .contains(v.path("rosto").asText())
-            && List.of("nenhum", "antena", "raio", "coroa", "folhas", "chifres", "halo", "laco")
-                .contains(v.path("acc").asText())
-            && List.of(
-                    "#FFD60A", "#FF5C8A", "#2B4DFF", "#19B35A", "#FF9F1C", "#9B7BFF", "#5ED6B0",
-                    "#5BC0FF")
-                .contains(v.path("cor").asText()),
-        400,
-        "Avatar inválido.");
+    int completed = 0, stars = 0;
+    for (var phase : phases) {
+      var value = progress.path(phase.path("id").asText());
+      int score = value.asInt();
+      if (value.isIntegralNumber() && score >= 1 && score <= 3) { completed++; stars += score; }
+    }
+    var available = json.createObjectNode();
+    var fields = cosmetics.fields();
+    while (fields.hasNext()) {
+      var field = fields.next();
+      JsonNode selected = null;
+      for (var item : field.getValue()) {
+        if (item.path("id").asText().equals(v.path(field.getKey()).asText())) selected = item;
+      }
+      require(selected != null, 400, "Avatar inválido.");
+      boolean unlocked = completed >= selected.path("fases").asInt()
+          && stars >= selected.path("estrelas").asInt()
+          && (!selected.path("trilha").asBoolean() || completed == phases.size())
+          && (!selected.path("perfeita").asBoolean() || stars == phases.size() * 3);
+      // Old clients may have queued cosmetics before unlocks existed. Keep the queue
+      // moving, but only persist items earned from server-validated progress.
+      available.put(field.getKey(), (unlocked ? selected : field.getValue().get(0)).path("id").asText());
+    }
+    return available;
   }
 }

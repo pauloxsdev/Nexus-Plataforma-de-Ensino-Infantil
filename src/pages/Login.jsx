@@ -17,9 +17,10 @@ export function Login({ entrar, autenticar }) {
       definirSessao(sessao); await autenticar(sessao);
     } catch (error) { setErro(error.message); } finally { setBusy(false); setSenha(''); }
   };
-  return <div className="max-w-4xl mx-auto p-4 sm:p-5 pt-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center">
-    <div><Nexi s={84} /><h1 className="text-4xl sm:text-5xl mt-3">Conheça o Nexus</h1><p className="mt-3">Aprenda, experimente e continue sua trilha.</p></div>
-    <div className="card p-4 sm:p-6">
+  return <div className="login-layout">
+    <div><span className="eyebrow">NEXUS · APRENDER É UMA AVENTURA</span><div className="login-art"><Nexi s={280} /><span className="login-sticker">Oi, eu sou o Nexi!</span></div><h1 className="text-4xl sm:text-5xl">Pequenas ideias.<br />Grandes descobertas.</h1><p className="mt-4 text-lg">Monte caminhos, resolva desafios e dê vida à sua imaginação.</p>
+      <div className="mt-5"><p className="login-feature"><span>1</span>Aprenda no seu ritmo</p><p className="login-feature"><span>2</span>Experimente com peças de lógica</p><p className="login-feature"><span>3</span>Desbloqueie seu próprio estilo</p></div></div>
+    <div className="card login-form"><span className="eyebrow">SUA JORNADA COMEÇA AQUI</span><h2 className="text-3xl mt-2 mb-5">Vamos explorar?</h2>
       <div className="flex flex-wrap gap-2 mb-5">{['aluno', 'professor'].map((m) => <button key={m} className="btn !text-base" aria-pressed={modo === m} disabled={busy} onClick={() => { setModo(m); setErro(''); }}>{m === 'aluno' ? 'Sou aluno' : 'Sou professor'}</button>)}</div>
       <form onSubmit={enviar} className="grid gap-3">
         {modo === 'aluno' ? <label>Código do aluno<input aria-label="Código do aluno" className="w-full border-2 rounded-xl p-3" value={codigo} onChange={(e) => setCodigo(e.target.value)} autoComplete="off" maxLength={48} required /><span className="text-sm">Use o código entregue pelo professor. Não informe seu nome.</span></label> : <><label>Usuário do professor<input className="w-full border-2 rounded-xl p-3" value={login} onChange={(e) => setLogin(e.target.value)} autoComplete="username" maxLength={80} required /></label><label>Senha<input className="w-full border-2 rounded-xl p-3" type="password" value={senha} onChange={(e) => setSenha(e.target.value)} autoComplete="current-password" required /></label><p className="text-sm">Para criar ou recuperar o acesso, procure o administrador da escola.</p></>}

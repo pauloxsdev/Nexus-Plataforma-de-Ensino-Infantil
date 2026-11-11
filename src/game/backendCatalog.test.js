@@ -4,9 +4,11 @@ import { FASES } from '../data/fases';
 import { simular, montarPrograma } from './motor';
 import { avaliar } from './avaliacao';
 import { temAcao } from '../services/atividade';
+import { catalogo } from '../data/personalizacao';
 const resource = (path) => JSON.parse(readFileSync(new URL(`../../backend/src/${path}`, import.meta.url), 'utf8'));
 it('mantém o catálogo do servidor idêntico à fonte do frontend', () => {
   expect(resource('main/resources/fases.json')).toEqual(FASES);
+  expect(resource('main/resources/personalizacao.json')).toEqual(catalogo);
 });
 it('mantém os 640 casos compartilhados coerentes com o motor atual do frontend', () => {
   const cases = resource('test/resources/game-fixtures.json');

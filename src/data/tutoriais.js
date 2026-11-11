@@ -16,10 +16,10 @@ export const TOUR = {
   ],
   avatar: [
     { t: 'Monte o seu Nexus', d: 'O Nexus é o seu personagem no jogo. Não existe Nexus certo ou errado: misture do seu jeito!' },
-    { sel: '[data-t=av-forma]', t: 'Escolha uma forma', d: 'Bolinha, gota, estrela... clique numa para ver o seu Nexus mudar.' },
-    { sel: '[data-t=av-cor]', t: 'Pinte o seu Nexus', d: 'Escolha a sua cor favorita.' },
-    { sel: '[data-t=av-enfeite]', t: 'Um toque especial', d: 'Coroa, antena, halo... escolha um enfeite (ou nenhum!).' },
-    { sel: '[data-t=av-sortear]', t: 'Sem ideias? Sorteie!', d: 'O botão Sortear monta um Nexus surpresa para você.' },
+    { sel: '[data-t=av-forma]', t: 'Escolha uma forma', d: 'Orbe e bloco já estão disponíveis. As outras formas abrem conforme você conclui fases. Toque no cadeado para ver o desafio.' },
+    { sel: '[data-t=av-cor]', t: 'Pinte o seu Nexus', d: 'Escolha uma cor liberada. Cada nova descoberta pode trazer uma cor para a sua coleção!' },
+    { sel: '[data-t=av-enfeite]', t: 'Um toque especial', d: 'Fases e estrelas liberam enfeites. A regra aparece em cada item; suas estrelas não são gastas.' },
+    { sel: '[data-t=av-sortear]', t: 'Sem ideias? Sorteie!', d: 'O botão Sortear combina apenas os itens que você já desbloqueou.' },
   ],
   courses: [
     { t: 'A sua trilha', d: 'Aqui ficam o mapa com as fases e as aulas. Aprenda nas aulas e pratique no mapa!' },

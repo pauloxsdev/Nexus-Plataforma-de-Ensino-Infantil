@@ -17,6 +17,7 @@ WORKDIR /build
 COPY backend ./backend
 COPY --from=frontend /build/dist ./dist
 COPY --from=frontend /build/backend/src/main/resources/fases.json ./backend/src/main/resources/fases.json
+COPY --from=frontend /build/backend/src/main/resources/personalizacao.json ./backend/src/main/resources/personalizacao.json
 # Secrets are optional on Render. They are never copied into the runtime image.
 RUN --mount=type=secret,id=proxy_ca --mount=type=secret,id=maven_settings \
     set -eu; \

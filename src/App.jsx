@@ -24,6 +24,7 @@ import { Nivel } from './pages/Nivel';
 import { Ach } from './pages/Conquistas';
 import { BarraLateral } from './components/BarraLateral';
 import { FASES } from './data/fases';
+import { avatarDisponivel, resumoProgresso } from './data/personalizacao';
 import { AULAS } from './data/aulas';
 
 function normalizarAvatar(valor) {
@@ -61,6 +62,9 @@ function AppPerfil({ perfil, sessao, sair }) {
   const { net, save, chip } = useConexao(perfil);
   const { snd, toggle: toggleSnd } = useSom();
   const { feitas, estrelas, totalEstrelas, concluir, zerar, liberarTodas, demoLiberada, proximaId, totalFases, restantes } = useProgresso(FASES, perfil);
+  const progressoAvatar = resumoProgresso(estrelas);
+  const avatarVisivel = avatarDisponivel(av, progressoAvatar);
+  const escolherAvatar = (valor) => setAv(avatarDisponivel(valor, progressoAvatar));
   const atividade = useAtividade(perfil, sessao.fuso);
   const codigo = perfil.tipo === 'aluno' ? sessao.rotulo : null;
   const [faseId, setFaseId] = useState(null);
@@ -82,7 +86,7 @@ function AppPerfil({ perfil, sessao, sair }) {
 
   const V = {
     dash: <Dash atividade={atividade} feitas={feitas.length} totalFases={totalFases} restantes={restantes} conquistas={conquistas.lista.filter((c) => c.desbloqueada).length} go={(k) => k === 'work' ? jogar(proximaId) : go(k)} estrelas={totalEstrelas} fase={FASES.find((f) => f.id === proximaId)} />,
-    avatar: <Avatar go={go} />,
+    avatar: <Avatar go={go} progresso={progressoAvatar} />,
     courses: <Courses demoLiberada={demoLiberada} feitas={feitas} estrelas={estrelas} proximaId={proximaId} jogar={jogar} abrirAula={abrirAula} liberarTodas={perfil.tipo === 'demo' ? liberarTodas : null} zerar={perfil.tipo === 'demo' ? zerar : null} />,
     aula: (
       <Aula key={aulaId} fase={FASES.find((f) => f.id === aulaId)} aula={AULAS[aulaId]} estrelas={estrelas[aulaId]} status={feitas.includes(aulaId) ? 'done' : 'now'} total={FASES.length}
@@ -90,11 +94,11 @@ function AppPerfil({ perfil, sessao, sair }) {
         onOutra={{ anterior: aulaId > 1 ? () => abrirAula(aulaId - 1) : null, proxima: aulaId < FASES.length && liberada(aulaId + 1) ? () => abrirAula(aulaId + 1) : null }} />
     ),
     work: <Work key={faseAtual.id} fase={faseAtual} onAtividade={(tentativa) => { atividade.registrar(); if (perfil.tipo === 'aluno') void save({ tipo: 'tentativa', perfil, ...tentativa }); }} perfil={perfil} projetoId="trilha-principal" onConcluir={(id, estrelas) => { concluir(id, estrelas); if (perfil.tipo === 'demo') void save({ tipo: 'fase_concluida', perfil: { ...perfil }, codigo, faseId: id, estrelas }); }} irParaFase={jogar} go={go} layout="vertical" />,
-    nivel: <Nivel go={go} feitas={feitas.length} total={totalFases} estrelas={totalEstrelas} />,
+    nivel: <Nivel go={go} feitas={feitas.length} total={totalFases} estrelas={totalEstrelas} progresso={progressoAvatar} />,
     ach: <Ach lista={conquistas.lista} novas={conquistas.novas} marcarVistas={conquistas.marcarVistas} />,
   };
   return (
-    <AvCtx.Provider value={[av, setAv]}>
+    <AvCtx.Provider value={[avatarVisivel, escolherAvatar]}>
       <div className="flex min-h-screen flex-col md:flex-row">
         {s !== 'login' && (
           <BarraLateral dias={atividade.consecutivos} tela={s} ir={go} jogar={jogar} codigo={codigo} totalEstrelas={totalEstrelas} fasesFeitas={feitas.length} totalFases={FASES.length}

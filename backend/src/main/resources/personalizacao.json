@@ -1,0 +1,6 @@
+{
+  "forma": [{"id":"orbe"},{"id":"bloco"},{"id":"gota","fases":1},{"id":"estrela","fases":3},{"id":"nuvem","fases":4},{"id":"diamante","trilha":true}],
+  "cor": [{"id":"#FFD60A","nome":"Sol"},{"id":"#2B4DFF","nome":"Azul"},{"id":"#FF5C8A","nome":"Rosa","fases":1},{"id":"#19B35A","nome":"Verde","fases":2},{"id":"#FF9F1C","nome":"Laranja","fases":3},{"id":"#9B7BFF","nome":"Lilás","fases":4},{"id":"#5ED6B0","nome":"Menta","fases":5},{"id":"#5BC0FF","nome":"Céu","trilha":true}],
+  "rosto": [{"id":"feliz"},{"id":"curioso"},{"id":"piscando","fases":1},{"id":"animado","fases":2},{"id":"tranquilo","fases":4},{"id":"surpreso","fases":6}],
+  "acc": [{"id":"nenhum"},{"id":"antena","fases":1},{"id":"folhas","fases":2},{"id":"laco","fases":3},{"id":"raio","estrelas":9},{"id":"chifres","fases":5},{"id":"halo","trilha":true},{"id":"coroa","perfeita":true}]
+}

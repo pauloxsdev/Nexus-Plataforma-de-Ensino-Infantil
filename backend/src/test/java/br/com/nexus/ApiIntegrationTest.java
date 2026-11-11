@@ -252,7 +252,7 @@ class ApiIntegrationTest {
   void persistsAvatarDraftAndFiltersUnawardedAchievements() throws Exception {
     var s = student(createStudent(teacher("prof1")));
     var e = attempt(s).put("tipo", "dado").put("chave", "avatar");
-    var avatar = game.defaultAvatar().put("forma", "gota");
+    var avatar = game.defaultAvatar().put("forma", "bloco");
     e.set("valor", avatar);
     call("POST", "/aluno/eventos", e, s, 200);
     e = attempt(s).put("tipo", "dado").put("chave", "circuito:trilha-principal:fase:1");
@@ -265,12 +265,32 @@ class ApiIntegrationTest {
             Map.of("ganhas", List.of("completa"), "vistas", List.of("completa", "meunexus"))));
     call("POST", "/aluno/eventos", e, s, 200);
     var d = body(call("GET", "/aluno/estado", null, s, 200)).path("dados");
-    assertEquals("gota", d.path("avatar").path("forma").asText());
+    assertEquals("bloco", d.path("avatar").path("forma").asText());
     assertEquals(3, d.path("circuito:trilha-principal:fase:1").path("slots").size());
     assertEquals(
         List.of("meunexus"), json.convertValue(d.path("conquistas").path("ganhas"), List.class));
     assertEquals(
         List.of("meunexus"), json.convertValue(d.path("conquistas").path("vistas"), List.class));
+  }
+
+  @Test
+  void cosmeticUnlocksUseValidatedProgressAndPreserveOldQueues() throws Exception {
+    var t = teacher("prof1");
+    var s = student(createStudent(t));
+    var avatar = game.defaultAvatar().put("forma", "gota").put("acc", "antena");
+    var e = attempt(s).put("tipo", "dado").put("chave", "avatar");
+    e.set("valor", avatar);
+    call("POST", "/aluno/eventos", e, s, 200);
+    assertEquals(game.defaultAvatar(), body(call("GET", "/aluno/estado", null, s, 200)).path("dados").path("avatar"));
+    call("POST", "/aluno/eventos", attempt(s), s, 200);
+    e.put("id", UUID.randomUUID().toString());
+    call("POST", "/aluno/eventos", e, s, 200);
+    assertEquals(avatar, body(call("GET", "/aluno/estado", null, s, 200)).path("dados").path("avatar"));
+    var other = student(createStudent(t));
+    var otherEvent = attempt(other).put("tipo", "dado").put("chave", "avatar");
+    otherEvent.set("valor", avatar);
+    call("POST", "/aluno/eventos", otherEvent, other, 200);
+    assertEquals(game.defaultAvatar(), body(call("GET", "/aluno/estado", null, other, 200)).path("dados").path("avatar"));
   }
 
   @Test
