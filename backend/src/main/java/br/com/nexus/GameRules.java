@@ -12,12 +12,19 @@ import org.springframework.stereotype.Component;
 class GameRules {
   final ObjectMapper json;
   final JsonNode phases;
+  final JsonNode phasesV1, phasesV2;
   final JsonNode cosmetics;
 
   GameRules(ObjectMapper json) throws java.io.IOException {
     this.json = json;
     try (var in = getClass().getResourceAsStream("/fases.json")) {
       phases = json.readTree(in);
+    }
+    try (var in = getClass().getResourceAsStream("/fases-v1.json")) {
+      phasesV1 = json.readTree(in);
+    }
+    try (var in = getClass().getResourceAsStream("/fases-v2.json")) {
+      phasesV2 = json.readTree(in);
     }
     try (var in = getClass().getResourceAsStream("/personalizacao.json")) {
       cosmetics = json.readTree(in);
@@ -26,6 +33,19 @@ class GameRules {
 
   JsonNode phase(int id) {
     for (var f : phases) if (f.path("id").asInt() == id) return f;
+    throw new ApiError(400, "Fase inválida.");
+  }
+
+  // Unversioned payloads were produced by the original client. Never rewrite
+  // their IDs or contents: they may already have reached the idempotent endpoint.
+  JsonNode phaseForState(int id, JsonNode state) {
+    var version = state.path("versaoRegras");
+    require(!state.has("versaoRegras")
+        || (version.isIntegralNumber() && version.canConvertToInt()
+            && (version.asInt() == 1 || version.asInt() == 2)),
+        400, "Versão de regras desconhecida.");
+    var catalog = version.asInt(1) == 1 ? phasesV1 : phasesV2;
+    for (var phase : catalog) if (phase.path("id").asInt() == id) return phase;
     throw new ApiError(400, "Fase inválida.");
   }
 
@@ -40,7 +60,7 @@ class GameRules {
         "Circuito inválido.");
     var slots = json.createObjectNode();
     var loops = json.createObjectNode();
-    visit(phase.path("circuito"), phase.path("pecas"), value, slots, loops);
+    visit(circuit(phase, value), phase.path("pecas"), value, slots, loops);
     require(
         value.path("slots").size() == slots.size() && value.path("vezes").size() == loops.size(),
         400,
@@ -48,7 +68,27 @@ class GameRules {
     var out = json.createObjectNode();
     out.set("slots", slots);
     out.set("vezes", loops);
+    if (value.has("estrutura")) out.set("estrutura", value.get("estrutura"));
+    if (value.has("versaoRegras")) out.set("versaoRegras", value.get("versaoRegras"));
     return out;
+  }
+
+  JsonNode circuit(JsonNode phase, JsonNode state) {
+    if (!state.has("estrutura")) return phase.path("circuito");
+    for (var option : phase.path("alternativas"))
+      if (option.path("id").asText().equals(state.path("estrutura").asText())) return option.path("circuito");
+    throw new ApiError(400, "Estrutura de programa inválida.");
+  }
+
+  int pieces(JsonNode nodes, JsonNode state) {
+    int count = 0;
+    for (var n : nodes) {
+      String type = n.path("tipo").asText();
+      if (type.equals("espaco") && (n.has("fixo") || state.path("slots").has(n.path("id").asText()))) count++;
+      if (type.equals("repetir")) count += pieces(n.path("dentro"), state);
+      if (type.equals("se")) count += pieces(n.path("sim"), state) + pieces(n.path("nao"), state);
+    }
+    return count;
   }
 
   void visit(JsonNode nodes, JsonNode pieces, JsonNode value, ObjectNode slots, ObjectNode loops) {
@@ -86,17 +126,24 @@ class GameRules {
   record Result(boolean activity, boolean success, int stars, int steps) {}
 
   Result simulate(JsonNode phase, JsonNode state, int seconds) {
+    var nodes = circuit(phase, state);
     var run = new Run(phase, state);
-    run.run(phase.path("circuito"));
+    run.activity = run.hasAction(nodes);
+    run.run(nodes);
     boolean success =
         !run.failed
             && run.collected.size() == phase.path("mundo").path("estrelas").size()
             && run.activity;
+    // Archived v1 attempts keep their original time-based rule. Current
+    // attempts reward written action pieces, independent of exploration time.
+    boolean extra = phase.path("ideal").has("segundos")
+        ? seconds <= phase.path("ideal").path("segundos").asInt()
+        : pieces(nodes, state) <= phase.path("ideal").path("pecas").asInt();
     int stars =
         success
             ? 1
                 + (run.steps <= phase.path("ideal").path("passos").asInt() ? 1 : 0)
-                + (seconds <= phase.path("ideal").path("segundos").asInt() ? 1 : 0)
+                + (extra ? 1 : 0)
             : 0;
     return new Result(run.activity, success, stars, run.steps);
   }
@@ -114,7 +161,6 @@ class GameRules {
       x = world.path("inicio").path("x").asInt();
       y = world.path("inicio").path("y").asInt();
       dir = List.of("N", "E", "S", "W").indexOf(world.path("inicio").path("dir").asText());
-      activity = hasAction(phase.path("circuito"));
     }
 
     boolean hasAction(JsonNode nodes) {

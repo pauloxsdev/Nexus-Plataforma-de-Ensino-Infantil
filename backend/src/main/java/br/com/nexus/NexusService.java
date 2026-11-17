@@ -101,7 +101,7 @@ class NexusService {
     switch (event.path("tipo").asText()) {
       case "tentativa" -> {
         int phaseId = event.path("faseId").asInt();
-        var phase = game.phase(phaseId);
+        var phase = game.phaseForState(phaseId, event.path("estado"));
         require(
             phaseId == 1 || data.path("progresso").path("" + (phaseId - 1)).asInt() > 0,
             409,
@@ -143,7 +143,7 @@ class NexusService {
           data.set(key, game.validateAvatar(value, data.path("progresso")));
         } else if (key.matches("circuito:trilha-principal:fase:[0-9]+")) {
           int phaseId = Integer.parseInt(key.substring(key.lastIndexOf(':') + 1));
-          data.set(key, game.state(game.phase(phaseId), value));
+          data.set(key, game.state(game.phaseForState(phaseId, value), value));
         } else if (key.equals("conquistas")) {
           var c = game.object(data.path("conquistas"));
           Set<String> earned = new HashSet<>(), seen = new LinkedHashSet<>();

@@ -1,0 +1,535 @@
+[
+  {
+    "id": 1,
+    "titulo": "Primeiros passos",
+    "conceito": "Sequência",
+    "ideal": {
+      "passos": 3,
+      "segundos": 45
+    },
+    "mundo": {
+      "w": 5,
+      "h": 3,
+      "inicio": {
+        "x": 0,
+        "y": 1,
+        "dir": "E"
+      },
+      "lavas": [],
+      "pedras": [],
+      "estrelas": [
+        [
+          3,
+          1
+        ]
+      ]
+    },
+    "pecas": [
+      "andar"
+    ],
+    "circuito": [
+      {
+        "tipo": "espaco",
+        "id": "a"
+      },
+      {
+        "tipo": "espaco",
+        "id": "b"
+      },
+      {
+        "tipo": "espaco",
+        "id": "c"
+      },
+      {
+        "tipo": "espaco",
+        "id": "d"
+      },
+      {
+        "tipo": "espaco",
+        "id": "e"
+      }
+    ],
+    "historia": "O Nexus quer pegar a estrela. Ele só faz o que você mandar, uma peça de cada vez.",
+    "novo": {
+      "titulo": "Sequência",
+      "texto": "O Nexus faz as peças de cima para baixo, na ordem. Cada peça Andar leva ele 1 casa para frente. Você não precisa usar todos os espaços."
+    },
+    "dica": "Conte as casas até a estrela. São 3 casas.",
+    "aprendeu": "Uma sequência é uma lista de ordens feitas na ordem certa."
+  },
+  {
+    "id": 2,
+    "titulo": "Vire à direita",
+    "conceito": "Direção",
+    "ideal": {
+      "passos": 5,
+      "segundos": 60
+    },
+    "mundo": {
+      "w": 5,
+      "h": 3,
+      "inicio": {
+        "x": 0,
+        "y": 0,
+        "dir": "E"
+      },
+      "lavas": [],
+      "pedras": [],
+      "estrelas": [
+        [
+          2,
+          2
+        ]
+      ]
+    },
+    "pecas": [
+      "andar",
+      "virar_dir"
+    ],
+    "circuito": [
+      {
+        "tipo": "espaco",
+        "id": "a"
+      },
+      {
+        "tipo": "espaco",
+        "id": "b"
+      },
+      {
+        "tipo": "espaco",
+        "id": "c"
+      },
+      {
+        "tipo": "espaco",
+        "id": "d"
+      },
+      {
+        "tipo": "espaco",
+        "id": "e"
+      },
+      {
+        "tipo": "espaco",
+        "id": "f"
+      }
+    ],
+    "historia": "A estrela está lá embaixo. O Nexus precisa virar para chegar nela.",
+    "novo": {
+      "titulo": "Virar",
+      "texto": "Virar muda para onde o Nexus olha. Depois de virar à direita, \"frente\" passa a ser para baixo."
+    },
+    "dica": "Ande até ficar em cima da estrela. Depois vire à direita e ande até ela.",
+    "aprendeu": "A ordem das peças muda o caminho. Virar na hora certa leva o Nexus ao lugar certo."
+  },
+  {
+    "id": 3,
+    "titulo": "Pule a pedra",
+    "conceito": "Escolher a peça certa",
+    "ideal": {
+      "passos": 2,
+      "segundos": 60
+    },
+    "mundo": {
+      "w": 5,
+      "h": 3,
+      "inicio": {
+        "x": 0,
+        "y": 1,
+        "dir": "E"
+      },
+      "lavas": [],
+      "pedras": [
+        [
+          1,
+          1
+        ]
+      ],
+      "estrelas": [
+        [
+          3,
+          1
+        ]
+      ]
+    },
+    "pecas": [
+      "andar",
+      "pular"
+    ],
+    "circuito": [
+      {
+        "tipo": "espaco",
+        "id": "a"
+      },
+      {
+        "tipo": "espaco",
+        "id": "b"
+      },
+      {
+        "tipo": "espaco",
+        "id": "c"
+      },
+      {
+        "tipo": "espaco",
+        "id": "d"
+      }
+    ],
+    "historia": "Tem uma pedra no caminho. O Nexus não passa por ela andando.",
+    "novo": {
+      "titulo": "Pular",
+      "texto": "Pular leva o Nexus 2 casas para frente, por cima da pedra. Ele precisa pousar numa casa livre."
+    },
+    "dica": "Pule a pedra e depois ande até a estrela. Pode deixar um espaço vazio.",
+    "aprendeu": "Cada peça faz uma coisa diferente. Escolher a peça certa é resolver um problema."
+  },
+  {
+    "id": 4,
+    "titulo": "Repita!",
+    "conceito": "Repetição",
+    "ideal": {
+      "passos": 4,
+      "segundos": 45
+    },
+    "mundo": {
+      "w": 5,
+      "h": 3,
+      "inicio": {
+        "x": 0,
+        "y": 1,
+        "dir": "E"
+      },
+      "lavas": [],
+      "pedras": [],
+      "estrelas": [
+        [
+          4,
+          1
+        ]
+      ]
+    },
+    "pecas": [
+      "andar"
+    ],
+    "circuito": [
+      {
+        "tipo": "repetir",
+        "id": "r",
+        "inicial": 2,
+        "max": 6,
+        "dentro": [
+          {
+            "tipo": "espaco",
+            "id": "a"
+          }
+        ]
+      }
+    ],
+    "historia": "A estrela está longe. Em vez de usar muitas peças, vamos repetir uma só.",
+    "novo": {
+      "titulo": "Repetir",
+      "texto": "A peça REPETIR faz o que está dentro dela várias vezes. Use + e − para escolher quantas."
+    },
+    "dica": "Quantas casas até a estrela? Repita o Andar essa quantidade de vezes.",
+    "aprendeu": "Repetir poupa trabalho. Uma peça repetida 4 vezes faz o mesmo que 4 peças iguais."
+  },
+  {
+    "id": 5,
+    "titulo": "A escada",
+    "conceito": "Repetir um padrão",
+    "ideal": {
+      "passos": 12,
+      "segundos": 150
+    },
+    "mundo": {
+      "w": 5,
+      "h": 5,
+      "inicio": {
+        "x": 0,
+        "y": 4,
+        "dir": "E"
+      },
+      "lavas": [],
+      "pedras": [],
+      "estrelas": [
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          1
+        ]
+      ]
+    },
+    "pecas": [
+      "andar",
+      "virar_dir",
+      "virar_esq"
+    ],
+    "circuito": [
+      {
+        "tipo": "repetir",
+        "id": "r",
+        "inicial": 1,
+        "max": 4,
+        "dentro": [
+          {
+            "tipo": "espaco",
+            "id": "a"
+          },
+          {
+            "tipo": "espaco",
+            "id": "b"
+          },
+          {
+            "tipo": "espaco",
+            "id": "c"
+          },
+          {
+            "tipo": "espaco",
+            "id": "d"
+          }
+        ]
+      }
+    ],
+    "historia": "O Nexus vai subir uma escada e pegar uma estrela em cada degrau.",
+    "novo": {
+      "titulo": "Padrão",
+      "texto": "Todo degrau é igual. Monte só UM degrau dentro do REPETIR e deixe ele repetir."
+    },
+    "dica": "Um degrau é: andar, virar à esquerda, andar, virar à direita. São 3 degraus.",
+    "aprendeu": "Quando algo se repete igual, a gente monta só o padrão e usa REPETIR."
+  },
+  {
+    "id": 6,
+    "titulo": "Cuidado com a lava",
+    "conceito": "Decisão (SE / SENÃO)",
+    "ideal": {
+      "passos": 2,
+      "segundos": 90
+    },
+    "mundo": {
+      "w": 5,
+      "h": 3,
+      "inicio": {
+        "x": 0,
+        "y": 1,
+        "dir": "E"
+      },
+      "lavas": [
+        [
+          1,
+          1
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "pedras": [],
+      "estrelas": [
+        [
+          2,
+          1
+        ],
+        [
+          4,
+          1
+        ]
+      ]
+    },
+    "pecas": [
+      "andar",
+      "pular"
+    ],
+    "circuito": [
+      {
+        "tipo": "repetir",
+        "id": "r",
+        "inicial": 1,
+        "max": 3,
+        "dentro": [
+          {
+            "tipo": "se",
+            "id": "s",
+            "cond": "obstaculo",
+            "sim": [
+              {
+                "tipo": "espaco",
+                "id": "a"
+              }
+            ],
+            "nao": [
+              {
+                "tipo": "espaco",
+                "id": "b"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "historia": "Tem lava no caminho. O Nexus precisa olhar para frente antes de agir.",
+    "novo": {
+      "titulo": "SE / SENÃO",
+      "texto": "SE tiver obstáculo na frente (lava, pedra ou parede), o Nexus faz o que está no SIM. SENÃO, faz o que está no SENÃO."
+    },
+    "dica": "Obstáculo na frente? Pule. Senão, ande. O Nexus precisa decidir 2 vezes.",
+    "aprendeu": "SE e SENÃO deixam o Nexus escolher o que fazer olhando o que tem na frente."
+  },
+  {
+    "id": 7,
+    "titulo": "Siga a parede",
+    "conceito": "Repetir + SE / SENÃO",
+    "ideal": {
+      "passos": 8,
+      "segundos": 150
+    },
+    "mundo": {
+      "w": 3,
+      "h": 3,
+      "inicio": {
+        "x": 0,
+        "y": 0,
+        "dir": "E"
+      },
+      "lavas": [],
+      "pedras": [],
+      "estrelas": [
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          2
+        ]
+      ]
+    },
+    "pecas": [
+      "andar",
+      "virar_dir",
+      "virar_esq",
+      "pular"
+    ],
+    "circuito": [
+      {
+        "tipo": "repetir",
+        "id": "r",
+        "inicial": 1,
+        "max": 10,
+        "dentro": [
+          {
+            "tipo": "se",
+            "id": "s",
+            "cond": "obstaculo",
+            "sim": [
+              {
+                "tipo": "espaco",
+                "id": "a"
+              }
+            ],
+            "nao": [
+              {
+                "tipo": "espaco",
+                "id": "b"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "historia": "O Nexus vai passear pela beirada da sala e pegar as estrelas dos cantos.",
+    "novo": {
+      "titulo": "Juntando tudo",
+      "texto": "A cada volta do REPETIR, o Nexus olha para frente. SE tem parede, vira. SENÃO, anda."
+    },
+    "dica": "Parede na frente? Vire à direita. Senão, ande. O Nexus precisa de pelo menos 8 voltas.",
+    "aprendeu": "Repetir e SE/SENÃO juntos formam uma regra que resolve o caminho sozinha."
+  },
+  {
+    "id": 8,
+    "titulo": "Missão final",
+    "conceito": "Uma regra para vários mapas",
+    "ideal": {
+      "passos": 10,
+      "segundos": 180
+    },
+    "mundo": {
+      "w": 4,
+      "h": 4,
+      "inicio": {
+        "x": 0,
+        "y": 0,
+        "dir": "E"
+      },
+      "lavas": [],
+      "pedras": [
+        [
+          2,
+          0
+        ]
+      ],
+      "estrelas": [
+        [
+          1,
+          3
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    "pecas": [
+      "andar",
+      "virar_dir",
+      "virar_esq",
+      "pular"
+    ],
+    "circuito": [
+      {
+        "tipo": "repetir",
+        "id": "r",
+        "inicial": 1,
+        "max": 12,
+        "dentro": [
+          {
+            "tipo": "se",
+            "id": "s",
+            "cond": "obstaculo",
+            "sim": [
+              {
+                "tipo": "espaco",
+                "id": "a"
+              }
+            ],
+            "nao": [
+              {
+                "tipo": "espaco",
+                "id": "b"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "historia": "Outro lugar, outro mapa. Será que a mesma regra funciona aqui?",
+    "novo": {
+      "titulo": "Regra que serve para tudo",
+      "texto": "Uma boa regra funciona em vários lugares. Pedra ou parede na frente? Vire. Senão, ande."
+    },
+    "dica": "Use a mesma ideia da fase anterior. Aqui o Nexus precisa de pelo menos 10 voltas.",
+    "aprendeu": "Você criou uma regra que funciona em mapas diferentes. Isso é pensar como programador!"
+  }
+]

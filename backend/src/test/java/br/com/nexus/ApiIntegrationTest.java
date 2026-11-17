@@ -363,4 +363,51 @@ class ApiIntegrationTest {
     call("GET", "/turmas", null, t, 401);
     call("POST", "/auth/professor", Map.of("login", "prof1", "senha", "é".repeat(50)), null, 400);
   }
+
+  @Test
+  void acceptsOriginalAndVersionedQueuesWithoutRewritingResults() throws Exception {
+    var s = student(createStudent(teacher("prof1")));
+    String[] solutions = {
+      "{\"slots\":{\"a\":\"andar\",\"b\":\"andar\",\"c\":\"andar\"},\"vezes\":{}}",
+      "{\"slots\":{\"a\":\"andar\",\"b\":\"andar\",\"c\":\"virar_dir\",\"d\":\"andar\",\"e\":\"andar\"},\"vezes\":{}}",
+      "{\"slots\":{\"a\":\"pular\",\"b\":\"andar\"},\"vezes\":{}}",
+      "{\"slots\":{\"a\":\"andar\"},\"vezes\":{\"r\":4}}",
+      "{\"slots\":{\"a\":\"andar\",\"b\":\"virar_esq\",\"c\":\"andar\",\"d\":\"virar_dir\"},\"vezes\":{\"r\":3}}"
+    };
+    for (int i = 0; i < solutions.length; i++) {
+      var e = attempt(s).put("faseId", i + 1);
+      e.set("estado", json.readTree(solutions[i]));
+      assertTrue(body(call("POST", "/aluno/eventos", e, s, 200)).path("resultado").path("concluida").asBoolean());
+    }
+    var old = attempt(s).put("faseId", 6);
+    old.set("estado", json.readTree("{\"slots\":{\"a\":\"pular\",\"b\":\"andar\"},\"vezes\":{\"r\":2}}"));
+    var original = body(call("POST", "/aluno/eventos", old, s, 200));
+    assertEquals(3, original.path("resultado").path("estrelas").asInt());
+    assertEquals(original, body(call("POST", "/aluno/eventos", old, s, 200)));
+    assertEquals(6, auth.db.queryForObject("SELECT count(*) FROM events", Integer.class));
+    var current = old.deepCopy().put("id", UUID.randomUUID().toString()).put("segundos", 600);
+    ((ObjectNode) current.path("estado")).put("versaoRegras", 2);
+    assertFalse(body(call("POST", "/aluno/eventos", current, s, 200)).path("resultado").path("concluida").asBoolean());
+    current.put("id", UUID.randomUUID().toString());
+    ((ObjectNode) current.path("estado").path("vezes")).put("r", 3);
+    assertEquals(3, body(call("POST", "/aluno/eventos", current, s, 200)).path("resultado").path("estrelas").asInt());
+    assertEquals(original, body(call("POST", "/aluno/eventos", old, s, 200)));
+    assertEquals(3, body(call("GET", "/aluno/estado", null, s, 200)).path("dados").path("progresso").path("6").asInt());
+
+    var sequence = json.readTree("{\"versaoRegras\":2,\"estrutura\":\"sequencia\",\"slots\":{\"livre1\":\"andar\",\"livre2\":\"andar\",\"livre3\":\"andar\",\"livre4\":\"andar\"},\"vezes\":{}}");
+    var draft = attempt(s).put("tipo", "dado").put("chave", "circuito:trilha-principal:fase:4");
+    draft.set("valor", sequence);
+    call("POST", "/aluno/eventos", draft, s, 200);
+    assertEquals(sequence, body(call("GET", "/aluno/estado", null, s, 200)).path("dados").path("circuito:trilha-principal:fase:4"));
+    var play = attempt(s).put("faseId", 4); play.set("estado", sequence);
+    assertEquals(2, body(call("POST", "/aluno/eventos", play, s, 200)).path("resultado").path("estrelas").asInt());
+    assertEquals(3, body(call("GET", "/aluno/estado", null, s, 200)).path("dados").path("progresso").path("4").asInt());
+
+    // An old client can resume writing drafts after reverting the interface.
+    draft.put("id", UUID.randomUUID().toString()); draft.set("valor", json.readTree(solutions[3]));
+    call("POST", "/aluno/eventos", draft, s, 200);
+    assertEquals(json.readTree(solutions[3]), body(call("GET", "/aluno/estado", null, s, 200)).path("dados").path("circuito:trilha-principal:fase:4"));
+    ((ObjectNode) play.path("estado")).put("versaoRegras", 3); play.put("id", UUID.randomUUID().toString());
+    call("POST", "/aluno/eventos", play, s, 400);
+  }
 }
