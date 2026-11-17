@@ -1,93 +1,37 @@
-import React, { useState } from 'react';
-import { INK, SUN, PINK, GREEN } from '../theme/tokens';
-import { Ic } from '../components/Icon';
+import React, { useEffect, useState } from 'react';
 import { Btn } from '../components/Btn';
 import { Nexi } from '../components/Nexi';
+import { Ic } from '../components/Icon';
 import { Ilustracao } from '../components/Ilustracao';
-import { sfx } from '../services/som';
+import { LaboratorioAula } from '../components/LaboratorioAula';
+import { DESCOBERTAS } from '../data/descobertas';
 
-const CORES = [SUN, '#FFE3EA', '#DDF6E8', '#DCE4FF', '#FFE8CC', '#FFF6B8', '#E9E1FF', '#D6F5F0'];
-const Cartao = ({ titulo, cor = '#fff', children, t, tracejado }) => (
-  <section data-t={t} className="card p-4 mb-4" style={{ background: cor, ...(tracejado ? { borderStyle: 'dashed', boxShadow: 'none' } : {}) }}>
-    <h3 className="text-2xl mb-2">{titulo}</h3>{children}
-  </section>
-);
-
-// Aula da fase: explica a ideia SEM entregar a resposta. O "tutorial" é uma investigação:
-// a criança testa, anota o que viu e só pede pista se quiser (as pistas vão do leve ao forte).
 export function Aula({ fase, aula, estrelas, status, onVoltar, onJogar, onOutra, total }) {
-  const [feitos, setFeitos] = useState([]);
-  const [pistas, setPistas] = useState(0);
-  const alternar = (i) => { sfx('tap'); setFeitos((f) => (f.includes(i) ? f.filter((x) => x !== i) : [...f, i])); };
-  const cor = CORES[(fase.id - 1) % CORES.length];
-  return (
-    <div className="max-w-6xl mx-auto p-4 sm:p-5">
-      <div className="flex items-center gap-3 mb-4 flex-wrap">
-        <button onClick={onVoltar} className="flex items-center gap-1 rounded-full px-3 py-1 hover:brightness-95" style={{ background: '#fff', border: `3px solid ${INK}` }}><Ic n="chevL" s={16} w={3.5} /><span className="text-sm" style={{ fontWeight: 800 }}>Trilhas</span></button>
-        <span className="text-sm">Aula {fase.id} de {total}</span>
-        {status === 'done' && <span className="flex items-center gap-1 text-xs rounded-full px-2 py-0.5" style={{ background: '#DDF6E8', border: `2px solid ${INK}`, fontWeight: 800 }}><Ic n="check" s={14} w={4} />Fase completa, {estrelas || 1} {(estrelas || 1) === 1 ? 'estrela' : 'estrelas'}</span>}
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
-        <div>
-          <section data-t="aula-resumo" className="card mb-4 overflow-hidden">
-            <div className="px-4 sm:px-5 py-3 flex flex-wrap items-center justify-between gap-3" style={{ background: cor, borderBottom: `3px solid ${INK}` }}>
-              <h2 className="text-3xl">{fase.titulo}</h2>
-              <span className="disp text-base rounded-full px-3" style={{ background: '#fff', border: `3px solid ${INK}` }}>{fase.conceito}</span>
-            </div>
-            <div className="p-4 sm:p-5">
-              <div className="flex justify-center rounded-2xl py-3 mb-3 [&>svg]:max-w-full [&>svg]:h-auto" style={{ background: '#F3F6FF', border: `3px dashed #8F9BD0` }}><Ilustracao k={aula.ilustracao} s={300} /></div>
-              <p className="text-lg leading-snug">{aula.resumo}</p>
-              <div className="mt-3 rounded-xl p-3" style={{ background: '#FFF6B8', border: `2px solid ${INK}` }}>
-                <span className="text-xs">Palavra nova</span>
-                <div className="disp text-xl leading-tight">{aula.palavra.termo}</div>
-                <p className="text-sm">{aula.palavra.sig}</p>
-              </div>
-            </div>
-          </section>
-          <Cartao titulo="No dia a dia">
-            <ul className="space-y-2">{aula.diaADia.map((x, i) => (
-              <li key={i} className="flex gap-3 items-start"><span className="disp shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ background: cor, border: `3px solid ${INK}` }}>{i + 1}</span><span>{x}</span></li>
-            ))}</ul>
-          </Cartao>
-          <section className="card p-4 flex items-start gap-3" style={{ background: '#E6EDFF' }}>
-            <Nexi s={64} mood="curioso" />
-            <div><h3 className="text-xl">Pense nisso</h3><p className="text-lg leading-snug">{aula.gancho}</p></div>
-          </section>
-        </div>
-        <div>
-          <Cartao titulo="Tutorial: descubra sozinho" t="aula-tutorial" cor="#fff">
-            <p className="text-sm mb-3">Aqui não tem resposta pronta. Você vai investigar! Teste cada ideia no jogo e marque quando fizer.</p>
-            <ul className="space-y-2">{aula.experimentos.map((x, i) => {
-              const ok = feitos.includes(i);
-              return (
-                <li key={i}><button onClick={() => alternar(i)} aria-pressed={ok} className="w-full flex gap-3 items-start text-left rounded-xl p-2 hover:brightness-95" style={{ background: ok ? '#DDF6E8' : '#F3F6FF', border: `2px solid ${INK}` }}>
-                  <span className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: '#fff', border: `3px solid ${INK}` }}>{ok && <Ic n="check" s={18} w={4.5} />}</span>
-                  <span>{x}</span></button></li>
-              );
-            })}</ul>
-            <p className="text-xs mt-2" style={{ fontWeight: 800 }}>{feitos.length} de {aula.experimentos.length} testados</p>
-          </Cartao>
-          <Cartao titulo="Quer uma pista?" t="aula-pista" cor="#FFF6B8">
-            <p className="text-sm mb-2">Tente sozinho primeiro! As pistas começam leves e vão ficando mais fortes.</p>
-            <ol className="space-y-2 mb-3">{aula.pistas.slice(0, pistas).map((x, i) => (
-              <li key={i} className="flex gap-2 items-start rounded-xl p-2 up" style={{ background: '#fff', border: `2px solid ${INK}` }}><Ic n="star" s={20} f={SUN} w={2.5} /><span><b>Pista {i + 1}:</b> {x}</span></li>
-            ))}</ol>
-            {pistas < aula.pistas.length
-              ? <Btn c="#fff" className="!text-base !py-1" onClick={() => { sfx('tap'); setPistas(pistas + 1); }}>{pistas === 0 ? 'Mostrar a primeira pista' : 'Mais uma pista'}</Btn>
-              : <p className="text-sm">Acabaram as pistas. Agora é com você!</p>}
-          </Cartao>
-          <Cartao titulo="Desafio criativo" tracejado cor="#FFE3EA">
-            <div className="flex gap-3 items-start"><Ic n="bolt" s={26} f={SUN} /><p className="text-lg leading-snug">{aula.desafio}</p></div>
-          </Cartao>
-          <div className="flex gap-3 items-center">
-            <Btn data-t="aula-ir" c={GREEN} className="flex-1 !text-xl" onClick={onJogar}>{status === 'done' ? `Jogar a fase ${fase.id} de novo` : `Ir para a fase ${fase.id}`}</Btn>
-          </div>
-          <div className="flex flex-wrap justify-between gap-3 mt-3">
-            <button disabled={!onOutra.anterior} onClick={() => onOutra.anterior()} className="underline text-sm min-h-11 disabled:opacity-40">{'← Aula anterior'}</button>
-            <button disabled={!onOutra.proxima} onClick={() => onOutra.proxima()} className="underline text-sm min-h-11 disabled:opacity-40">{'Próxima aula →'}</button>
-          </div>
-        </div>
-      </div>
+  const d = DESCOBERTAS[fase.id];
+  const [etapa, setEtapa] = useState(0), [resposta, setResposta] = useState(null), [pistas, setPistas] = useState(0), [voz, setVoz] = useState(false);
+  const podeOuvir = typeof window !== 'undefined' && 'speechSynthesis' in window;
+  useEffect(() => () => { if (podeOuvir) window.speechSynthesis.cancel(); }, [podeOuvir]);
+  const ouvir = () => {
+    if (voz) { window.speechSynthesis.cancel(); setVoz(false); return; }
+    const texto = [d.titulo, d.objetivo, etapa === 0 ? d.definicao : etapa === 1 ? `${d.pergunta} ${d.opcoes.join('. ')}` : d.transfere].join('. ');
+    const fala = new SpeechSynthesisUtterance(texto); fala.lang = 'pt-BR'; fala.rate = .9;
+    fala.onend = fala.onerror = () => setVoz(false); window.speechSynthesis.speak(fala); setVoz(true);
+  };
+  const trocar = e => { setEtapa(e); if (podeOuvir) window.speechSynthesis.cancel(); setVoz(false); };
+  return <div className="lesson-page max-w-6xl mx-auto p-4 sm:p-6">
+    <div className="flex flex-wrap items-center justify-between gap-3 mb-5"><button className="lesson-back" onClick={onVoltar}>← Trilhas</button><span className="text-sm">Descoberta {fase.id} de {total}{status === 'done' ? ` · ${estrelas || 1} estrelas na fase` : ''}</span></div>
+    <header className="lesson-hero" data-t="aula-resumo"><div><span className="eyebrow">LABORATÓRIO DE IDEIAS</span><h2>{d.titulo}</h2><p>{d.objetivo}</p></div><div className="lesson-guide"><Nexi s={112} /><span>Vamos descobrir?</span></div></header>
+    <div className="lesson-steps" role="group" aria-label="Etapas da descoberta">{['Veja', 'Preveja', 'Experimente'].map((label,i)=><button key={label} aria-pressed={etapa===i} className={etapa===i?'active':''} onClick={()=>trocar(i)}><span>{i+1}</span>{label}</button>)}</div>
+    <div className="lesson-layout">
+      <section className="card lesson-example"><LaboratorioAula key={fase.id} descoberta={d} /></section>
+      <section className="card lesson-explore" data-t="aula-tutorial">
+        <div className="flex justify-between items-center gap-2"><span className="eyebrow">{etapa===0?'UMA IDEIA PARA LEVAR':etapa===1?'QUAL É A SUA PREVISÃO?':'SUA VEZ DE INVESTIGAR'}</span>{podeOuvir&&<button aria-label={voz?'Parar leitura':'Ouvir explicação'} className="listen-button" onClick={ouvir}><Ic n={voz?'mudo':'som'} s={20}/></button>}</div>
+        {etapa===0&&<><div className="lesson-concept-art" aria-hidden="true"><Ilustracao k={aula.ilustracao} s={200}/></div><h3 className="text-3xl">{d.palavra}</h3><p className="text-lg mt-2">{d.definicao}</p><button className="btn mt-6 w-full !text-base" onClick={()=>trocar(1)}>Tenho um palpite →</button></>}
+        {etapa===1&&<><h3 className="text-2xl mt-4">{d.pergunta}</h3><div className="prediction-options">{d.opcoes.map((op,i)=><button key={op} aria-pressed={resposta===i} className={resposta===i?'chosen':''} onClick={()=>setResposta(i)}><span>{String.fromCharCode(65+i)}</span>{op}</button>)}</div>{resposta!==null&&<div className={`prediction-feedback ${resposta===d.correta?'correct':''}`} role="status"><b>{resposta===d.correta?'Boa descoberta!':'Vamos investigar juntos?'}</b><p>{resposta===d.correta?d.explica:'Use “Um passo” no exemplo, observe e escolha novamente.'}</p></div>}<button className="lesson-reset w-full mt-3" onClick={()=>trocar(2)}>Experimentar na fase →</button></>}
+        {etapa===2&&<><div className="lesson-concept-art compact" aria-hidden="true"><Ic n="bolt" s={64} f="#ffdb30"/></div><h3 className="text-2xl">E se mudasse alguma coisa?</h3><p className="text-lg mt-3">{d.transfere}</p><div className="nexi-note mt-5 text-sm">Na fase, monte seu programa. Depois explique: qual comando fez a diferença?</div><Btn className="w-full mt-6 !text-base" onClick={onJogar}>Montar meu programa →</Btn></>}
+      </section>
     </div>
-  );
+    <div className="lesson-bottom"><details className="card p-4"><summary>Uma ideia do dia a dia</summary><p className="mt-3">{aula.diaADia[0]}</p></details><details className="card p-4" data-t="aula-pista"><summary>Preciso de uma pista para a fase</summary><ol className="mt-3 space-y-2">{aula.pistas.slice(0,pistas).map((x,i)=><li key={x}>{i+1}. {x}</li>)}</ol>{pistas<aula.pistas.length&&<button className="lesson-reset mt-2" onClick={()=>setPistas(p=>p+1)}>Revelar uma pista</button>}</details></div>
+    <div className="lesson-footer"><button disabled={!onOutra.anterior} onClick={()=>onOutra.anterior?.()}>← Aula anterior</button><button data-t="aula-ir" onClick={onJogar}>Ir para a fase {fase.id} →</button><button disabled={!onOutra.proxima} onClick={()=>onOutra.proxima?.()}>Próxima aula →</button></div>
+  </div>;
 }

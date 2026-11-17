@@ -144,10 +144,24 @@ ou ontem e se interrompe após um dia inteiro sem atividade.
 O servidor aceita tentativas offline desde a criação do aluno, com tolerância de
 cinco minutos de relógio; rejeita datas futuras além dessa tolerância. Horário e duração
 continuam sendo informações do dispositivo, pois tentativas offline não têm cronômetro
-confiável no servidor. A solução e a quantidade de passos são verificadas pelo backend;
-a estrela por tempo não é prova antifraude. Não há ranking ou recompensa financeira.
+confiável no servidor. Nas novas tentativas (v2), a duração permanece no protocolo
+por compatibilidade, mas não concede estrelas. O backend verifica a solução, os passos executados e as peças de ação
+escritas (incluindo ambos os ramos, sem multiplicar pelas repetições). Os critérios são
+concluir, atingir a meta de passos e atingir a meta de peças declarada no catálogo.
+O melhor resultado anterior é preservado. Não há ranking ou recompensa financeira.
 
-O catálogo Java é gerado de `src/data/fases.js`, não editado separadamente:
+A partir da fase 4, o estado pode incluir `estrutura: "sequencia"`. Sem esse campo,
+o circuito original continua válido. O servidor aceita apenas as estruturas, peças,
+espaços e repetições cadastrados para cada fase. A fase 6 agora exige três decisões
+e exercita os ramos SIM e SENÃO; um rascunho antigo pode precisar ser ajustado.
+
+Novos estados recebem `versaoRegras: 2` quando são criados ou editados. Eventos já
+na fila não são alterados. Sem versão, o servidor usa o mapa e a pontuação v1,
+inclusive a regra antiga de tempo; a API mantém a confirmação idempotente e os
+melhores resultados. Versões desconhecidas são rejeitadas. Veja
+[Compatibilidade das regras](COMPATIBILIDADE-JOGO.md).
+
+O catálogo atual Java é gerado de `src/data/fases.js`, não editado separadamente:
 
 ```powershell
 npm run backend:catalog
@@ -155,7 +169,9 @@ npm run backend:fixtures
 ```
 
 `npm run build` atualiza o catálogo automaticamente. Ao mudar motor, fases ou regras,
-regenere também os casos de comparação e execute os testes dos dois lados. Conquistas
+regenere também os casos de comparação e execute os testes dos dois lados. Os
+catálogos numerados são históricos e não devem ser sobrescritos por regras novas;
+crie outra versão quando mapas, estruturas ou critérios mudarem de forma incompatível. Conquistas
 seguem as regras atuais; mantenha `GameRules.awards` e `data/conquistas.js` coerentes.
 Não foram criadas regras de XP ou nível.
 

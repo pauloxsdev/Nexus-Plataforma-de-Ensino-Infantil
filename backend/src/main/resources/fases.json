@@ -5,7 +5,7 @@
     "conceito": "Sequência",
     "ideal": {
       "passos": 3,
-      "segundos": 45
+      "pecas": 3
     },
     "mundo": {
       "w": 5,
@@ -63,7 +63,7 @@
     "conceito": "Direção",
     "ideal": {
       "passos": 5,
-      "segundos": 60
+      "pecas": 5
     },
     "mundo": {
       "w": 5,
@@ -126,7 +126,7 @@
     "conceito": "Escolher a peça certa",
     "ideal": {
       "passos": 2,
-      "segundos": 60
+      "pecas": 2
     },
     "mundo": {
       "w": 5,
@@ -186,7 +186,7 @@
     "conceito": "Repetição",
     "ideal": {
       "passos": 4,
-      "segundos": 45
+      "pecas": 1
     },
     "mundo": {
       "w": 5,
@@ -228,7 +228,39 @@
       "texto": "A peça REPETIR faz o que está dentro dela várias vezes. Use + e − para escolher quantas."
     },
     "dica": "Quantas casas até a estrela? Repita o Andar essa quantidade de vezes.",
-    "aprendeu": "Repetir poupa trabalho. Uma peça repetida 4 vezes faz o mesmo que 4 peças iguais."
+    "aprendeu": "Repetir poupa trabalho. Uma peça repetida 4 vezes faz o mesmo que 4 peças iguais.",
+    "alternativas": [
+      {
+        "id": "sequencia",
+        "nome": "Uma ação por vez",
+        "circuito": [
+          {
+            "tipo": "espaco",
+            "id": "livre1"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre2"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre3"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre4"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre5"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre6"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 5,
@@ -236,7 +268,7 @@
     "conceito": "Repetir um padrão",
     "ideal": {
       "passos": 12,
-      "segundos": 150
+      "pecas": 4
     },
     "mundo": {
       "w": 5,
@@ -300,15 +332,79 @@
       "texto": "Todo degrau é igual. Monte só UM degrau dentro do REPETIR e deixe ele repetir."
     },
     "dica": "Um degrau é: andar, virar à esquerda, andar, virar à direita. São 3 degraus.",
-    "aprendeu": "Quando algo se repete igual, a gente monta só o padrão e usa REPETIR."
+    "aprendeu": "Quando algo se repete igual, a gente monta só o padrão e usa REPETIR.",
+    "alternativas": [
+      {
+        "id": "sequencia",
+        "nome": "Uma ação por vez",
+        "circuito": [
+          {
+            "tipo": "espaco",
+            "id": "livre1"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre2"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre3"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre4"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre5"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre6"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre7"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre8"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre9"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre10"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre11"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre12"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre13"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre14"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 6,
     "titulo": "Cuidado com a lava",
     "conceito": "Decisão (SE / SENÃO)",
     "ideal": {
-      "passos": 2,
-      "segundos": 90
+      "passos": 3,
+      "pecas": 2
     },
     "mundo": {
       "w": 5,
@@ -320,18 +416,14 @@
       },
       "lavas": [
         [
-          1,
-          1
-        ],
-        [
-          3,
+          2,
           1
         ]
       ],
       "pedras": [],
       "estrelas": [
         [
-          2,
+          1,
           1
         ],
         [
@@ -349,7 +441,7 @@
         "tipo": "repetir",
         "id": "r",
         "inicial": 1,
-        "max": 3,
+        "max": 5,
         "dentro": [
           {
             "tipo": "se",
@@ -376,8 +468,36 @@
       "titulo": "SE / SENÃO",
       "texto": "SE tiver obstáculo na frente (lava, pedra ou parede), o Nexus faz o que está no SIM. SENÃO, faz o que está no SENÃO."
     },
-    "dica": "Obstáculo na frente? Pule. Senão, ande. O Nexus precisa decidir 2 vezes.",
-    "aprendeu": "SE e SENÃO deixam o Nexus escolher o que fazer olhando o que tem na frente."
+    "dica": "Obstáculo na frente? Pule. Senão, ande. São 3 decisões: caminho livre, lava e caminho livre outra vez.",
+    "aprendeu": "SE e SENÃO deixam o Nexus escolher o que fazer olhando o que tem na frente.",
+    "alternativas": [
+      {
+        "id": "sequencia",
+        "nome": "Uma ação por vez",
+        "circuito": [
+          {
+            "tipo": "espaco",
+            "id": "livre1"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre2"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre3"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre4"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre5"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 7,
@@ -385,7 +505,7 @@
     "conceito": "Repetir + SE / SENÃO",
     "ideal": {
       "passos": 8,
-      "segundos": 150
+      "pecas": 2
     },
     "mundo": {
       "w": 3,
@@ -451,7 +571,55 @@
       "texto": "A cada volta do REPETIR, o Nexus olha para frente. SE tem parede, vira. SENÃO, anda."
     },
     "dica": "Parede na frente? Vire à direita. Senão, ande. O Nexus precisa de pelo menos 8 voltas.",
-    "aprendeu": "Repetir e SE/SENÃO juntos formam uma regra que resolve o caminho sozinha."
+    "aprendeu": "Repetir e SE/SENÃO juntos formam uma regra que resolve o caminho sozinha.",
+    "alternativas": [
+      {
+        "id": "sequencia",
+        "nome": "Uma ação por vez",
+        "circuito": [
+          {
+            "tipo": "espaco",
+            "id": "livre1"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre2"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre3"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre4"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre5"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre6"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre7"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre8"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre9"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre10"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 8,
@@ -459,7 +627,7 @@
     "conceito": "Uma regra para vários mapas",
     "ideal": {
       "passos": 10,
-      "segundos": 180
+      "pecas": 2
     },
     "mundo": {
       "w": 4,
@@ -526,10 +694,66 @@
     ],
     "historia": "Outro lugar, outro mapa. Será que a mesma regra funciona aqui?",
     "novo": {
-      "titulo": "Regra que serve para tudo",
-      "texto": "Uma boa regra funciona em vários lugares. Pedra ou parede na frente? Vire. Senão, ande."
+      "titulo": "Uma regra, novos caminhos",
+      "texto": "Teste se a sua regra funciona neste novo mapa. Pedra ou parede na frente? Vire. Senão, ande."
     },
     "dica": "Use a mesma ideia da fase anterior. Aqui o Nexus precisa de pelo menos 10 voltas.",
-    "aprendeu": "Você criou uma regra que funciona em mapas diferentes. Isso é pensar como programador!"
+    "aprendeu": "Você criou uma regra que funciona em mapas diferentes. Isso é pensar como programador!",
+    "alternativas": [
+      {
+        "id": "sequencia",
+        "nome": "Uma ação por vez",
+        "circuito": [
+          {
+            "tipo": "espaco",
+            "id": "livre1"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre2"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre3"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre4"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre5"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre6"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre7"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre8"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre9"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre10"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre11"
+          },
+          {
+            "tipo": "espaco",
+            "id": "livre12"
+          }
+        ]
+      }
+    ]
   }
 ]

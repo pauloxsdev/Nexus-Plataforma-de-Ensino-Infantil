@@ -29,8 +29,8 @@ export const TOUR = {
   ],
   aula: [
     { t: 'Bem-vindo à aula!', d: 'Aqui você descobre a ideia da fase antes de jogar. Sem pressa e sem resposta pronta.' },
-    { sel: '[data-t=aula-resumo]', t: 'A ideia em poucas palavras', d: 'Leia o resumo, olhe o desenho e anote a palavra nova.' },
-    { sel: '[data-t=aula-tutorial]', t: 'Descubra sozinho', d: 'Teste cada ideia no jogo e marque quando fizer. Errar também ensina!' },
+    { sel: '[data-t=aula-resumo]', t: 'A ideia em poucas palavras', d: 'Veja uma ideia curta e explore o exemplo em movimento.' },
+    { sel: '[data-t=aula-tutorial]', t: 'Descubra sozinho', d: 'Passe por Veja, Preveja e Experimente. Escolha um palpite, observe e tente outra vez.' },
     { sel: '[data-t=aula-pista]', t: 'Travou? Peça uma pista', d: 'As pistas começam leves e vão ficando mais fortes. Tente sozinho primeiro!' },
     { sel: '[data-t=aula-ir]', t: 'Hora de jogar', d: 'Quando estiver pronto, vá para a fase e coloque a ideia em prática.' },
   ],
@@ -39,7 +39,7 @@ export const TOUR = {
     { sel: '[data-t=paleta]', t: '1. Pegue uma peça', d: 'Segure uma peça da lista e puxe com o mouse.' },
     { sel: '[data-t=circuito]', t: '2. Solte no circuito', d: 'Arraste até um espaço e solte. Ele acende em verde quando a peça está em cima. Para tirar, arraste para fora ou clique no ×.' },
     { sel: '[data-t=run]', t: '3. Executar', d: 'Clique em Executar (ou aperte Enter) para o Nexus seguir o circuito.' },
-    { sel: '[data-t=palco]', t: 'O mapa da fase', d: 'Veja onde estão as estrelas, a lava e as pedras. Quanto menos passos e mais rápido, mais estrelas você ganha!' },
+    { sel: '[data-t=palco]', t: 'O mapa da fase', d: 'Veja onde estão as estrelas, a lava e as pedras. Explore sem pressa. Poucos passos e poucas peças podem render estrelas extras.' },
   ],
   ach: [
     { t: 'Suas conquistas', d: 'Cada conquista é um prêmio por algo que você aprendeu ou fez.' },

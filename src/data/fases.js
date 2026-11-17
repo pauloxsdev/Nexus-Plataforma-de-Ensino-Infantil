@@ -2,7 +2,7 @@
 //
 // mundo:    w/h (até 5x5), inicio {x,y,dir: 'N'|'E'|'S'|'W'}, lavas, pedras, estrelas = listas de [x,y]
 //           (x vai da esquerda para a direita, y de cima para baixo; começa em 0)
-// ideal:    meta para ganhar estrelas extras: passos do Nexus e segundos (veja game/avaliacao.js)
+// ideal:    meta para ganhar estrelas extras: passos do Nexus e peças de ação escritas (veja game/avaliacao.js)
 // pecas:    quais peças aparecem na lista da esquerda (ids de game/pecas.js)
 // circuito: o circuito já vem montado, com espaços vazios para a criança preencher:
 //           espaco(id) | repetir(id, inicial, max, [espacos]) | se(id, [espacos do SIM], [espacos do SENÃO])
@@ -14,7 +14,7 @@ const TODAS = ['andar', 'virar_dir', 'virar_esq', 'pular'];
 export const FASES = [
   {
     id: 1, titulo: 'Primeiros passos', conceito: 'Sequência',
-    ideal: { passos: 3, segundos: 45 },
+    ideal: { passos: 3, pecas: 3 },
     mundo: { w: 5, h: 3, inicio: { x: 0, y: 1, dir: 'E' }, lavas: [], pedras: [], estrelas: [[3, 1]] },
     pecas: ['andar'], circuito: [esp('a'), esp('b'), esp('c'), esp('d'), esp('e')],
     historia: 'O Nexus quer pegar a estrela. Ele só faz o que você mandar, uma peça de cada vez.',
@@ -24,7 +24,7 @@ export const FASES = [
   },
   {
     id: 2, titulo: 'Vire à direita', conceito: 'Direção',
-    ideal: { passos: 5, segundos: 60 },
+    ideal: { passos: 5, pecas: 5 },
     mundo: { w: 5, h: 3, inicio: { x: 0, y: 0, dir: 'E' }, lavas: [], pedras: [], estrelas: [[2, 2]] },
     pecas: ['andar', 'virar_dir'], circuito: [esp('a'), esp('b'), esp('c'), esp('d'), esp('e'), esp('f')],
     historia: 'A estrela está lá embaixo. O Nexus precisa virar para chegar nela.',
@@ -34,7 +34,7 @@ export const FASES = [
   },
   {
     id: 3, titulo: 'Pule a pedra', conceito: 'Escolher a peça certa',
-    ideal: { passos: 2, segundos: 60 },
+    ideal: { passos: 2, pecas: 2 },
     mundo: { w: 5, h: 3, inicio: { x: 0, y: 1, dir: 'E' }, lavas: [], pedras: [[1, 1]], estrelas: [[3, 1]] },
     pecas: ['andar', 'pular'], circuito: [esp('a'), esp('b'), esp('c'), esp('d')],
     historia: 'Tem uma pedra no caminho. O Nexus não passa por ela andando.',
@@ -44,7 +44,7 @@ export const FASES = [
   },
   {
     id: 4, titulo: 'Repita!', conceito: 'Repetição',
-    ideal: { passos: 4, segundos: 45 },
+    ideal: { passos: 4, pecas: 1 },
     mundo: { w: 5, h: 3, inicio: { x: 0, y: 1, dir: 'E' }, lavas: [], pedras: [], estrelas: [[4, 1]] },
     pecas: ['andar'], circuito: [repetir('r', 2, 6, [esp('a')])],
     historia: 'A estrela está longe. Em vez de usar muitas peças, vamos repetir uma só.',
@@ -54,7 +54,7 @@ export const FASES = [
   },
   {
     id: 5, titulo: 'A escada', conceito: 'Repetir um padrão',
-    ideal: { passos: 12, segundos: 150 },
+    ideal: { passos: 12, pecas: 4 },
     mundo: { w: 5, h: 5, inicio: { x: 0, y: 4, dir: 'E' }, lavas: [], pedras: [], estrelas: [[1, 3], [2, 2], [3, 1]] },
     pecas: ['andar', 'virar_dir', 'virar_esq'], circuito: [repetir('r', 1, 4, [esp('a'), esp('b'), esp('c'), esp('d')])],
     historia: 'O Nexus vai subir uma escada e pegar uma estrela em cada degrau.',
@@ -64,17 +64,17 @@ export const FASES = [
   },
   {
     id: 6, titulo: 'Cuidado com a lava', conceito: 'Decisão (SE / SENÃO)',
-    ideal: { passos: 2, segundos: 90 },
-    mundo: { w: 5, h: 3, inicio: { x: 0, y: 1, dir: 'E' }, lavas: [[1, 1], [3, 1]], pedras: [], estrelas: [[2, 1], [4, 1]] },
-    pecas: ['andar', 'pular'], circuito: [repetir('r', 1, 3, [se('s', [esp('a')], [esp('b')])])],
+    ideal: { passos: 3, pecas: 2 },
+    mundo: { w: 5, h: 3, inicio: { x: 0, y: 1, dir: 'E' }, lavas: [[2, 1]], pedras: [], estrelas: [[1, 1], [4, 1]] },
+    pecas: ['andar', 'pular'], circuito: [repetir('r', 1, 5, [se('s', [esp('a')], [esp('b')])])],
     historia: 'Tem lava no caminho. O Nexus precisa olhar para frente antes de agir.',
     novo: { titulo: 'SE / SENÃO', texto: 'SE tiver obstáculo na frente (lava, pedra ou parede), o Nexus faz o que está no SIM. SENÃO, faz o que está no SENÃO.' },
-    dica: 'Obstáculo na frente? Pule. Senão, ande. O Nexus precisa decidir 2 vezes.',
+    dica: 'Obstáculo na frente? Pule. Senão, ande. São 3 decisões: caminho livre, lava e caminho livre outra vez.',
     aprendeu: 'SE e SENÃO deixam o Nexus escolher o que fazer olhando o que tem na frente.',
   },
   {
     id: 7, titulo: 'Siga a parede', conceito: 'Repetir + SE / SENÃO',
-    ideal: { passos: 8, segundos: 150 },
+    ideal: { passos: 8, pecas: 2 },
     mundo: { w: 3, h: 3, inicio: { x: 0, y: 0, dir: 'E' }, lavas: [], pedras: [], estrelas: [[2, 0], [2, 2], [0, 2]] },
     pecas: TODAS, circuito: [repetir('r', 1, 10, [se('s', [esp('a')], [esp('b')])])],
     historia: 'O Nexus vai passear pela beirada da sala e pegar as estrelas dos cantos.',
@@ -84,12 +84,21 @@ export const FASES = [
   },
   {
     id: 8, titulo: 'Missão final', conceito: 'Uma regra para vários mapas',
-    ideal: { passos: 10, segundos: 180 },
+    ideal: { passos: 10, pecas: 2 },
     mundo: { w: 4, h: 4, inicio: { x: 0, y: 0, dir: 'E' }, lavas: [], pedras: [[2, 0]], estrelas: [[1, 3], [0, 3], [0, 1]] },
     pecas: TODAS, circuito: [repetir('r', 1, 12, [se('s', [esp('a')], [esp('b')])])],
     historia: 'Outro lugar, outro mapa. Será que a mesma regra funciona aqui?',
-    novo: { titulo: 'Regra que serve para tudo', texto: 'Uma boa regra funciona em vários lugares. Pedra ou parede na frente? Vire. Senão, ande.' },
+    novo: { titulo: 'Uma regra, novos caminhos', texto: 'Teste se a sua regra funciona neste novo mapa. Pedra ou parede na frente? Vire. Senão, ande.' },
     dica: 'Use a mesma ideia da fase anterior. Aqui o Nexus precisa de pelo menos 10 voltas.',
     aprendeu: 'Você criou uma regra que funciona em mapas diferentes. Isso é pensar como programador!',
   },
 ];
+
+// A partir da repetição, o aluno também escolhe a estrutura do programa.
+// A estrutura original é preservada para restaurar circuitos de versões anteriores.
+for (const fase of FASES) {
+  if (fase.id >= 4) fase.alternativas = [{
+    id: 'sequencia', nome: 'Uma ação por vez',
+    circuito: Array.from({ length: fase.ideal.passos + 2 }, (_, i) => esp(`livre${i + 1}`)),
+  }];
+}

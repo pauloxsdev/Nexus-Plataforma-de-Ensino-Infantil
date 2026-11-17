@@ -78,9 +78,9 @@ function AppPerfil({ perfil, sessao, sair }) {
     dias: atividade.consecutivos, totalFases,
   }, perfil);
 
-  const go = (k) => { if (k === 'login') { void sair().catch(e => setErroSaida(e.message)); return; } if (k === 'teacher') return; if (k === 'work' && faseId === null) setFaseId(proximaId); setS(k); setTour(!seen[k]); };
+  const go = (k, destinoFase) => { if (k === 'login') { void sair().catch(e => setErroSaida(e.message)); return; } if (k === 'teacher') return; if (k === 'work') setFaseId(destinoFase ?? faseId ?? proximaId); setS(k); setTour(!seen[k]); };
   const close = () => { setSeen({ ...seen, [s]: 1 }); setTour(false); };
-  const jogar = (id) => { setFaseId(id); go('work'); };
+  const jogar = (id) => go('work', id);
   const abrirAula = (id) => { setAulaId(id); go('aula'); };
   const liberada = (id) => demoLiberada || id === 1 || feitas.includes(id - 1);
 

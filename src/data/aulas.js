@@ -58,9 +58,9 @@ export const AULAS = {
   6: {
     ilustracao: 'decisao',
     resumo: 'SE / SENÃO deixa o Nexus decidir. Ele olha para frente e escolhe o que fazer, sem você dizer a cada passo.',
-    diaADia: ['SE está chovendo, levo guarda-chuva. SENÃO, saio sem.', 'SE o sinal está vermelho, eu paro. SENÃO, atravesso.', 'SE a porta está aberta, entro. SENÃO, bato.'],
+    diaADia: ['SE está chovendo, levo guarda-chuva. SENÃO, saio sem.', 'SE o lápis quebrou, eu aponto. SENÃO, continuo desenhando.', 'SE a porta está aberta, entro. SENÃO, bato.'],
     gancho: 'O Nexus não sabe onde tem lava. Como ele pode descobrir sozinho, a cada passo?',
-    experimentos: ['Leia em voz alta a pergunta do cartão verde: "tem obstáculo na frente?"', 'Pense: o que o Nexus deve fazer se a resposta for SIM? E se for NÃO?', 'Quantas vezes ele precisa olhar e decidir? Conte as estrelas e as lavas.'],
+    experimentos: ['Leia em voz alta a pergunta do cartão verde: "tem obstáculo na frente?"', 'Pense: o que o Nexus deve fazer se a resposta for SIM? E se for NÃO?', 'Quantas vezes ele precisa olhar e decidir? Observe também os trechos livres entre os obstáculos.'],
     pistas: ['Com lava na frente, andar vai dar errado.', 'SIM e SENÃO são dois caminhos diferentes.', 'Cada volta do REPETIR é uma decisão nova.'],
     desafio: 'Invente uma regra SE / SENÃO da sua vida e conte para alguém.',
     palavra: { termo: 'Condição (SE / SENÃO)', sig: 'Uma pergunta cuja resposta decide o que fazer.' },
@@ -72,7 +72,7 @@ export const AULAS = {
     gancho: 'Imagine andar no escuro com a mão na parede. Qual é a regra que guia você?',
     experimentos: ['Diga a regra em uma frase: "Se ..., então ...; senão ...".', 'Quantas voltas o Nexus precisa para dar a volta na sala? Teste números diferentes.', 'O que acontece se você usar virar à esquerda no lugar de virar à direita?'],
     pistas: ['Aqui, a parede é o obstáculo.', 'Com parede na frente ele vira. Sem parede, ele...', 'As voltas precisam ser suficientes para chegar nos cantos.'],
-    desafio: 'Dá para ganhar a estrela de poucos passos e a de rapidez na mesma fase?',
+    desafio: 'Dá para usar poucos passos e poucas peças no mesmo programa?',
     palavra: { termo: 'Regra', sig: 'Um jeito de decidir sempre igual para resolver um problema.' },
   },
   8: {

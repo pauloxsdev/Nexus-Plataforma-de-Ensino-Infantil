@@ -33,7 +33,8 @@ export function contarVazios(circuito, estado) {
 export function simular(mundo, programa) {
   let { x, y, dir } = mundo.inicio;
   const chaves = mundo.estrelas.map(([a, b]) => a + ',' + b);
-  const pegas = new Set(); const passos = [];
+  const pegas = new Set(); const passos = [], eventos = [], voltas = [];
+  const evento = (id, texto, extra = {}) => eventos.push({ id, texto, x, y, dir, estrelasPegas: [...pegas], voltas: [...voltas], ...extra });
   let fim = null, noFalha = null, celulaFalha = null, acoes = 0;
   const tipo = (a, b) => {
     if (a < 0 || b < 0 || a >= mundo.w || b >= mundo.h) return 'parede';
@@ -45,10 +46,11 @@ export function simular(mundo, programa) {
   const registrar = (id, peca) => {
     const c = x + ',' + y; if (chaves.includes(c)) pegas.add(c);
     passos.push({ x, y, dir, estrelasPegas: [...pegas], id, peca });
+    evento(id, { andar: 'Andar uma casa', pular: 'Pular duas casas', virar_dir: 'Virar à direita', virar_esq: 'Virar à esquerda' }[peca], { tipo: 'acao', peca });
   };
   const pisar = (a, b, id, peca) => {
     const t = tipo(a, b);
-    if (t !== 'livre') { fim = t; noFalha = id; celulaFalha = [a, b]; return; }
+    if (t !== 'livre') { fim = t; noFalha = id; celulaFalha = [a, b]; evento(id, 'Este comando encontra um obstáculo.', { tipo: 'erro' }); return; }
     x = a; y = b; registrar(id, peca);
   };
   const girar = (d, id, peca) => { dir = DIRS[(DIRS.indexOf(dir) + d + 4) % 4]; registrar(id, peca); };
@@ -64,13 +66,22 @@ export function simular(mundo, programa) {
       if (fim) return;
       if (++acoes > LIMITE) { fim = 'limite'; return; }
       if (b.t === 'acao') agir(b.peca, b.id);
-      else if (b.t === 'repetir') { for (let i = 0; i < b.n && !fim; i++) rodar(b.faz); }
-      else if (b.t === 'se') rodar(condicao(b.cond) ? b.sim : b.nao);
+      else if (b.t === 'repetir') {
+        for (let i = 0; i < b.n && !fim; i++) {
+          voltas.push(`Volta ${i + 1} de ${b.n}`);
+          evento(b.id, `Repetir: volta ${i + 1} de ${b.n}`, { tipo: 'repetir' });
+          rodar(b.faz); voltas.pop();
+        }
+      } else if (b.t === 'se') {
+        const sim = condicao(b.cond);
+        evento(b.id, sim ? 'Tem obstáculo: caminho SIM' : 'Caminho livre: SENÃO', { tipo: 'se', ramo: sim ? 'sim' : 'nao' });
+        rodar(sim ? b.sim : b.nao);
+      }
     }
   };
   rodar(programa);
   if (!fim) fim = programa.length === 0 ? 'vazio' : pegas.size === chaves.length ? 'ok' : 'faltou';
-  return { fim, passos, estrelas: pegas.size, total: chaves.length, noFalha, celulaFalha };
+  return { fim, passos, eventos, estrelas: pegas.size, total: chaves.length, noFalha, celulaFalha };
 }
 
 // estado inicial do circuito de uma fase: nenhum espaço preenchido e cada REPETIR no valor inicial
@@ -82,4 +93,13 @@ export function estadoInicial(circuito) {
   });
   varre(circuito);
   return { slots: {}, vezes };
+}
+
+export function circuitoDaFase(fase, estado) {
+  return fase.alternativas?.find(a => a.id === estado?.estrutura)?.circuito ?? fase.circuito;
+}
+
+// Conta as peças de ação escritas, inclusive nos dois ramos, sem expandir laços.
+export function contarPecas(programa) {
+  return programa.reduce((n, p) => n + (p.t === 'acao' ? 1 : p.t === 'repetir' ? contarPecas(p.faz) : contarPecas(p.sim) + contarPecas(p.nao)), 0);
 }

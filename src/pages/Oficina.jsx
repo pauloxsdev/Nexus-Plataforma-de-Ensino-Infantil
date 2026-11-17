@@ -13,21 +13,29 @@ import { CaminhoPopup } from '../components/CaminhoPopup';
 import { useArrastar } from '../hooks/useArrastar';
 import { useCircuito } from '../hooks/useCircuito';
 import { FASES } from '../data/fases';
-import { estadoInicial, montarPrograma, simular, contarVazios } from '../game/motor';
+import { estadoInicial, montarPrograma, simular, contarVazios, circuitoDaFase, contarPecas } from '../game/motor';
+import { CodigoPrograma } from '../components/CodigoPrograma';
+import { ExecucaoPrograma } from '../components/ExecucaoPrograma';
 import { avaliar } from '../game/avaliacao';
 import { temAcao } from '../services/atividade';
 import { sfx } from '../services/som';
 
-const PASSO_MS = 550;
 
 // Oficina responsiva. Dois layouts do circuito:
 //   'vertical'   = peças | circuito de cima para baixo | mapa
 //   'horizontal' = circuito da esquerda para a direita (com a bandeja de peças embaixo) | mapa
-// Ao apertar Executar abre o pop-up "Caminho do Nexus" (a tela escurece):
-//   - deu certo: o Nexus anda no pop-up, e aparecem as estrelas ganhas e o que a criança aprendeu;
-//   - deu errado: o Nexus NÃO anda; o pop-up explica o que aconteceu e o circuito marca "Parou aqui".
+// Executar mostra as instruções, decisões e voltas antes do resultado.
 export function Work({ fase, perfil, projetoId, onAtividade, onConcluir, irParaFase, go, layout = 'vertical' }) {
   const [estado, setEstado] = useCircuito(perfil, projetoId, fase);
+  const circuito = circuitoDaFase(fase, estado);
+  const programa = montarPrograma(circuito, estado);
+  const [confirmarEstrutura, setConfirmarEstrutura] = useState(null);
+  const [palpite, setPalpite] = useState(null);
+  const trocarEstrutura = id => {
+    const nos = fase.alternativas?.find(a => a.id === id)?.circuito ?? fase.circuito;
+    const novo = estadoInicial(nos); if (id !== 'guiada') novo.estrutura = id;
+    setEstado(novo); setConfirmarEstrutura(null); setMao(null); setFalha(null);
+  };
   const [mao, setMao] = useState(null); // só usado pelo toque (alternativa ao arrastar)
   const [robo, setRobo] = useState(fase.mundo.inicio);
   const [pegas, setPegas] = useState([]);
@@ -36,9 +44,7 @@ export function Work({ fase, perfil, projetoId, onAtividade, onConcluir, irParaF
   const [busy, setBusy] = useState(false);
   const [missao, setMissao] = useState(true);
   const [help, setHelp] = useState(false);
-  const timers = useRef([]);
   const inicio = useRef(null); // quando a criança começou a jogar (fechou a missão)
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
   const proxima = FASES.find((f) => f.id === fase.id + 1);
   const fecharMissao = () => { if (inicio.current === null) inicio.current = Date.now(); setMissao(false); };
@@ -65,31 +71,17 @@ export function Work({ fase, perfil, projetoId, onAtividade, onConcluir, irParaF
   };
   const onRemover = (id) => { if (busy) return; setFalha(null); sfx('tap'); setEstado((e) => { const s = { ...e.slots }; delete s[id]; return { ...e, slots: s }; }); };
   const onVezes = (id, d, max) => { if (busy) return; sfx('tap'); setEstado((e) => ({ ...e, vezes: { ...e.vezes, [id]: Math.max(1, Math.min(max, e.vezes[id] + d)) } })); };
-  const limpar = () => { if (busy) return; setEstado(estadoInicial(fase.circuito)); setFalha(null); };
+  const limpar = () => { if (busy) return; setEstado({ ...estadoInicial(circuito), ...(estado.estrutura ? { estrutura: estado.estrutura } : {}) }); setFalha(null); };
 
   const executar = () => {
     if (busy) return;
     sfx('tap'); setFalha(null);
-    const programa = montarPrograma(fase.circuito, estado);
     const r = simular(fase.mundo, programa);
     const segundos = Math.round((Date.now() - (inicio.current ?? Date.now())) / 1000);
     if (temAcao(programa)) onAtividade?.({ faseId: fase.id, estado: structuredClone(estado), segundos, ocorridoEm: new Date().toISOString() });
     setRobo(fase.mundo.inicio); setPegas([]);
-    if (r.fim === 'ok') {
-      const av = avaliar(fase.ideal, { passos: r.passos.length, segundos });
-      const n = r.passos.length;
-      setBusy(true); setPopup({ t: 'rodando', passo: 0, total: n });
-      r.passos.forEach((p, i) => timers.current.push(setTimeout(() => {
-        setRobo(p); setPegas(p.estrelasPegas); setPopup({ t: 'rodando', passo: i + 1, total: n, peca: p.peca }); sfx('place');
-      }, (i + 1) * PASSO_MS)));
-      timers.current.push(setTimeout(() => {
-        setBusy(false); sfx('ok'); onConcluir(fase.id, av.estrelas); setPopup({ t: 'ok', av });
-      }, (n + 1) * PASSO_MS + 300));
-    } else {
-      // deu errado: o Nexus não anda
-      setFalha(r.noFalha); sfx('soft');
-      setPopup({ t: r.fim, r, vazios: contarVazios(fase.circuito, estado), celula: r.celulaFalha });
-    }
+    const av = avaliar(fase.ideal, { passos: r.passos.length, pecas: contarPecas(programa) });
+    setBusy(true); setPopup({ t: 'observando', r, av, programa });
   };
 
   // atalhos de teclado (computador): 1..9 pegam a peça, Enter executa
@@ -115,11 +107,13 @@ export function Work({ fase, perfil, projetoId, onAtividade, onConcluir, irParaF
           <Btn c="#fff" className="!text-base" onClick={limpar} disabled={busy}>Limpar</Btn>
         </div>
       </div>
+      {fase.alternativas && <fieldset className="strategy-picker"><legend>Como você quer escrever seu programa?</legend>{[{ id: 'guiada', nome: fase.id < 6 ? 'Usar repetição' : 'Repetir uma decisão' }, ...fase.alternativas].map(a=><button key={a.id} disabled={busy} aria-pressed={(estado.estrutura||'guiada')===a.id} onClick={()=>{if((estado.estrutura||'guiada')!==a.id)setConfirmarEstrutura(a.id);}}>{a.nome}</button>)}</fieldset>}
       <p id="circuito-rolagem" className="text-xs text-center">Toque em uma peça e depois no espaço. Se necessário, role somente a área do circuito para ver os ramos.</p>
       <div data-circuito-scroll role="region" aria-label="Circuito da fase" aria-describedby="circuito-rolagem" tabIndex={0} className="w-full overflow-x-auto overscroll-x-contain p-3">
-      <Circuito direcao={layout} circuito={fase.circuito} estado={estado} falha={falha} alvo={arrasto ? sobre : null} arrastando={arrasto?.origem !== 'paleta' ? arrasto?.origem : null}
+      <Circuito direcao={layout} circuito={circuito} estado={estado} falha={falha} alvo={arrasto ? sobre : null} arrastando={arrasto?.origem !== 'paleta' ? arrasto?.origem : null}
         onEspaco={onEspaco} onRemover={onRemover} onArrastar={iniciar} onVezes={onVezes} />
       </div>
+      <details className="w-full program-details"><summary>Ler meu algoritmo em português</summary><CodigoPrograma programa={programa}/></details>
     </div>
   );
   const painelMapa = (
@@ -129,6 +123,7 @@ export function Work({ fase, perfil, projetoId, onAtividade, onConcluir, irParaF
       <div className="rounded-full px-3 py-1 flex items-center gap-2 text-xs mb-3" style={{ background: '#FFF6B8', border: `2px solid ${INK}` }}>
         <Ic n="star" s={16} f={SUN} w={2.5} />Objetivo: pegar {total === 1 ? 'a estrela' : `as ${total} estrelas`}
       </div>
+      <div className="prediction-mini"><b>Antes de executar, qual é seu palpite?</b><div className="flex gap-2 mt-2">{['Vai chegar!', 'Preciso testar'].map(t=><button aria-pressed={palpite===t} key={t} onClick={()=>setPalpite(t)}>{t}</button>)}</div><p className="text-xs mt-2">Observe o resultado e compare com sua ideia.</p></div>
       <div className="rounded-xl p-3 flex justify-center" style={{ background: INK }}><Palco mundo={fase.mundo} /></div>
       <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
         <span className="text-xs">Aperte Executar (ou Enter) para ver o Nexus andar.</span>
@@ -157,7 +152,13 @@ export function Work({ fase, perfil, projetoId, onAtividade, onConcluir, irParaF
       )}
       <PecaArrastada arrasto={arrasto || volta} voltando={!arrasto && !!volta} />
       {missao && <MissaoFase fase={fase} onFechar={fecharMissao} />}
-      {popup && <CaminhoPopup popup={popup} fase={fase} robo={robo} pegas={pegas} proxima={proxima}
+      {confirmarEstrutura && <Modal titulo="Mudar a estratégia" onClose={()=>setConfirmarEstrutura(null)}><h3 className="text-2xl">Experimentar outro jeito?</h3><p className="mt-3">A troca limpa as peças deste circuito. Seu progresso e suas estrelas continuam salvos.</p><div className="flex flex-wrap gap-3 mt-5"><Btn onClick={()=>trocarEstrutura(confirmarEstrutura)}>Trocar estrutura</Btn><Btn c="#fff" onClick={()=>setConfirmarEstrutura(null)}>Continuar aqui</Btn></div></Modal>}
+      {popup?.t === 'observando' && <ExecucaoPrograma fase={fase} programa={popup.programa} resultado={popup.r} onFim={()=>{
+        const {r,av}=popup; setBusy(false); setRobo(r.passos.at(-1)||fase.mundo.inicio); setPegas(r.passos.at(-1)?.estrelasPegas||[]);
+        if(r.fim==='ok'){onConcluir(fase.id,av.estrelas);sfx('ok');setPopup({t:'ok',av});}
+        else{setFalha(r.noFalha);sfx('soft');setPopup({t:r.fim,r,vazios:contarVazios(circuito,estado),celula:r.celulaFalha});}
+      }}/>}
+      {popup && popup.t !== 'observando' && <CaminhoPopup popup={popup} fase={fase} robo={robo} pegas={pegas} proxima={proxima}
         onTentar={() => setPopup(null)} onTrilha={() => go('courses')} onProxima={() => (proxima ? irParaFase(proxima.id) : go('nivel'))} />}
       {help && (
         <Modal onClose={() => setHelp(false)}>

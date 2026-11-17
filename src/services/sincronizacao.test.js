@@ -71,3 +71,18 @@ it('mantém a ordem de criação das tentativas, não a ordem alfabética dos ID
   await sincronizar(async e => { enviados.push(e.id); return { confirmado: true, id: e.id }; }, perfil);
   expect(enviados).toEqual(['z', 'a']);
 });
+
+it('preserva versões e payloads de filas antigas e novas ao retentar o envio', async () => {
+  const perfil = { tipo: 'aluno', id: 'a' };
+  const antigo = { id: 'antigo', tipo: 'tentativa', perfil, faseId: 6, estado: { slots: { a: 'pular', b: 'andar' }, vezes: { r: 2 } } };
+  const novo = { ...antigo, id: 'novo', estado: { ...antigo.estado, vezes: { r: 3 }, versaoRegras: 2 } };
+  await guardarLocal(antigo); await guardarLocal(novo);
+  const antes = await pendentes(perfil);
+  await expect(sincronizar(async () => { throw new Error('conexão interrompida'); }, perfil)).rejects.toThrow('interrompida');
+  expect(await pendentes(perfil)).toEqual(antes);
+  const recebidos = [];
+  await sincronizar(async evento => { recebidos.push(evento); return { confirmado: true, id: evento.id }; }, perfil);
+  expect(recebidos.map(e => e.estado)).toEqual([antigo.estado, novo.estado]);
+  expect(recebidos.map(e => e.id)).toEqual(['antigo', 'novo']);
+  expect(await pendentes(perfil)).toEqual([]);
+});

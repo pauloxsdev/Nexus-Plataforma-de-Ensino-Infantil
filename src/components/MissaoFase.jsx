@@ -26,11 +26,11 @@ export function MissaoFase({ fase, onFechar }) {
           <b>Novidade: {fase.novo.titulo}.</b> {fase.novo.texto}
         </div>
         <div className="text-left text-sm rounded-xl p-3 my-3" style={{ background: '#DDF6E8', border: `2px solid ${INK}` }}>
-          <b>Ganhe até 3 estrelas:</b>
+          <b>Explore no seu ritmo. Até 3 estrelas:</b>
           <ul className="mt-1 space-y-0.5">
             <li>1ª: completar a fase.</li>
             <li>2ª: o Nexus fazer até {fase.ideal.passos} passos (andar, virar ou pular conta 1 passo).</li>
-            <li>3ª: terminar em até {fase.ideal.segundos} segundos.</li>
+            <li>3ª: usar até {fase.ideal.pecas} peças de ação no programa.</li>
           </ul>
         </div>
         <ol className="text-left space-y-2 my-3">

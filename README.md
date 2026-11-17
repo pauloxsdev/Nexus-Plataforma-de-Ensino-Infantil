@@ -22,10 +22,11 @@ O serviço gratuito pode levar mais tempo para abrir após um período de inativ
 
 ## Funcionalidades
 
-- Oito fases com aulas e tutoriais de lógica de programação.
-- Oficina com montagem de circuitos por arrastar e soltar ou clique/toque.
+- Oito fases com aulas visuais em três etapas: Veja, Preveja e Experimente.
+- Exemplos interativos, perguntas com feedback e pseudocódigo em português.
+- Oficina por arrastar e soltar ou clique/toque, com escolha de estratégia e execução passo a passo.
 - Avatar personalizável, estrelas, conquistas e registro de dias de atividade.
-- Progressão por fases, preservando o melhor resultado a cada repetição.
+- Progressão por fases e estrelas pela solução, movimentos e peças de ação, preservando o melhor resultado.
 - Área do professor com turmas, códigos de acesso e acompanhamento individual.
 - Persistência de progresso e circuitos por aluno no PostgreSQL.
 - Fila local de alterações e sincronização com confirmação do servidor.

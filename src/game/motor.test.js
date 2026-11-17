@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { FASES } from '../data/fases';
-import { montarPrograma, simular, contarVazios } from './motor';
+import { montarPrograma, simular, contarVazios, contarPecas, circuitoDaFase } from './motor';
 import { avaliar } from './avaliacao';
 
 const roda = (id, slots = {}, vezes = {}) => {
@@ -37,9 +37,9 @@ describe('fases: a solução certa vence e as erradas não', () => {
   });
   it('6: lava → pular, senão andar', () => {
     const s = { a: 'pular', b: 'andar' };
-    expect(roda(6, s, { r: 2 }).fim).toBe('ok');
+    expect(roda(6, s, { r: 3 }).fim).toBe('ok');
     expect(roda(6, s, { r: 1 }).fim).toBe('faltou');
-    expect(roda(6, s, { r: 3 }).fim).toBe('parede');
+    expect(roda(6, s, { r: 4 }).fim).toBe('parede');
     expect(roda(6, { a: 'andar', b: 'andar' }, { r: 2 }).fim).toBe('lava');
   });
   it('7: seguir a parede', () => {
@@ -65,24 +65,56 @@ describe('fases: a solução certa vence e as erradas não', () => {
     expect(ok(3, { a: 'pular', b: 'andar' })).toBe(2);
     expect(ok(4, { a: 'andar' }, { r: 4 })).toBe(4);
     expect(ok(5, { a: 'andar', b: 'virar_esq', c: 'andar', d: 'virar_dir' }, { r: 3 })).toBe(12);
-    expect(ok(6, { a: 'pular', b: 'andar' }, { r: 2 })).toBe(2);
+    expect(ok(6, { a: 'pular', b: 'andar' }, { r: 3 })).toBe(3);
     expect(ok(7, { a: 'virar_dir', b: 'andar' }, { r: 8 })).toBe(8);
     expect(ok(8, { a: 'virar_dir', b: 'andar' }, { r: 10 })).toBe(10);
   });
   it('todas as fases têm meta (ideal) coerente', () => {
-    for (const f of FASES) { expect(f.ideal.passos > 0).toBe(true); expect(f.ideal.segundos > 0).toBe(true); }
+    for (const f of FASES) { expect(f.ideal.passos > 0).toBe(true); expect(f.ideal.pecas > 0).toBe(true); }
   });
   it('a casa onde o Nexi falhou vem na resposta', () => {
     expect(roda(3, { a: 'andar' }).celulaFalha).toEqual([1, 1]);
   });
 });
 
-describe('avaliar (estrelas)', () => {
-  const ideal = { passos: 3, segundos: 45 };
-  it('3 estrelas: poucos passos e rápido', () => { expect(avaliar(ideal, { passos: 3, segundos: 30 }).estrelas).toBe(3); });
-  it('2 estrelas: só poucos passos ou só rápido', () => {
-    expect(avaliar(ideal, { passos: 3, segundos: 90 }).estrelas).toBe(2);
-    expect(avaliar(ideal, { passos: 5, segundos: 20 }).estrelas).toBe(2);
+describe('estrelas por solução, passos e peças escritas', () => {
+  const ideal = { passos: 4, pecas: 1 };
+  it('não reduz estrelas pelo tempo de exploração', () => {
+    for (const segundos of [0, 30, 900, 86400]) expect(avaliar(ideal, { passos: 4, pecas: 1, segundos }).estrelas).toBe(3);
   });
-  it('1 estrela: completou, mas com mais passos e mais tempo', () => { expect(avaliar(ideal, { passos: 6, segundos: 120 }).estrelas).toBe(1); });
+  it('distingue passos executados de peças escritas', () => {
+    expect(avaliar(ideal, { passos: 4, pecas: 4 }).estrelas).toBe(2);
+    expect(avaliar(ideal, { passos: 6, pecas: 1 }).estrelas).toBe(2);
+    expect(avaliar(ideal, { passos: 6, pecas: 4 }).estrelas).toBe(1);
+  });
+  it('aceita duas estratégias na fase 4 e reconhece a forma compacta', () => {
+    const f = FASES[3];
+    for (const [estado, pecas, estrelas] of [
+      [{ slots: { a: 'andar' }, vezes: { r: 4 } }, 1, 3],
+      [{ estrutura: 'sequencia', slots: { livre1: 'andar', livre2: 'andar', livre3: 'andar', livre4: 'andar' }, vezes: {} }, 4, 2],
+    ]) {
+      const p = montarPrograma(circuitoDaFase(f, estado), estado), r = simular(f.mundo, p);
+      expect(r.fim).toBe('ok'); expect(r.passos).toHaveLength(4); expect(contarPecas(p)).toBe(pecas);
+      expect(avaliar(f.ideal, { passos: r.passos.length, pecas }).estrelas).toBe(estrelas);
+    }
+  });
+});
+
+describe('execução observável', () => {
+  it('fase 6 exercita SENÃO, SIM e SENÃO; ramo vazio ou incorreto não vence', () => {
+    const r = roda(6, { a: 'pular', b: 'andar' }, { r: 3 });
+    expect(r.eventos.filter(e => e.tipo === 'se').map(e => e.ramo)).toEqual(['nao', 'sim', 'nao']);
+    expect(r.eventos.filter(e => e.tipo === 'acao').map(e => [e.x, e.y])).toEqual([[1, 1], [3, 1], [4, 1]]);
+    expect(r.eventos.filter(e => e.tipo === 'repetir').map(e => e.texto)).toEqual(['Repetir: volta 1 de 3', 'Repetir: volta 2 de 3', 'Repetir: volta 3 de 3']);
+    expect(r.eventos.at(-1).estrelasPegas).toEqual(['1,1', '4,1']);
+    for (let n = 1; n <= 5; n++) {
+      expect(roda(6, { a: 'pular' }, { r: n }).fim).not.toBe('ok');
+      expect(roda(6, { a: 'pular', b: 'pular' }, { r: n }).fim).not.toBe('ok');
+    }
+  });
+  it('registra o comando que falhou e preserva a última posição válida', () => {
+    const r = roda(3, { a: 'andar' });
+    expect(r.eventos.at(-1)).toMatchObject({ tipo: 'erro', id: 'a', x: 0, y: 1 });
+    expect(r.passos).toHaveLength(0);
+  });
 });
