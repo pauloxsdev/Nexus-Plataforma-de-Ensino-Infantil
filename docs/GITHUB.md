@@ -89,6 +89,11 @@ git check-ignore .env .env.backup-teste .neon
 O `.env.example` versionado contém apenas um exemplo sem credencial real. Ignore
 não protege um arquivo já rastreado; confira o conteúdo que será enviado.
 
+O exemplo abaixo pressupõe que você está na branch `main`. Confira com
+`git branch --show-current`: `git push origin main` envia a branch local `main`,
+não necessariamente a branch em que você está trabalhando. Em outra branch,
+use o fluxo de branch/pull request descrito após o exemplo.
+
 Adicione apenas os arquivos pretendidos, substituindo os caminhos de exemplo:
 
 ```powershell

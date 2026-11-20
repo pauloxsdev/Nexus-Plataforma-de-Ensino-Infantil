@@ -1,98 +1,116 @@
-# Guia do código: onde mexer em cada coisa
+# Guia do código
 
-## Quero mudar...
-| Quero mudar | Arquivo |
+## Onde alterar cada recurso
+
+| Recurso | Arquivos principais |
 |---|---|
-| **Uma fase** (mapa, peças, circuito, textos) ou **criar uma fase nova** | `src/data/fases.js` |
-| Regras do jogo (andar, virar, pular, SE, REPETIR, lava, pedra) | `src/game/motor.js` |
-| Uma peça nova (nome, cor, desenho) | `src/game/pecas.js` (+ `agir()` em `motor.js`) |
-| Tela do jogo (3 painéis, botão Executar) | `src/pages/Oficina.jsx` |
-| Desenho do circuito (caixas, canos, REPETIR, SE/SENÃO) | `src/components/Circuito.jsx` |
-| Bandeja de peças (embaixo do circuito) | `src/components/Paleta.jsx` |
-| **Arrastar e soltar** (mouse e toque) | `src/hooks/useArrastar.js` e `src/components/PecaArrastada.jsx` |
-| Mapa e Nexi andando (palco) | `src/components/Palco.jsx` |
-| Janela de **missão** no começo da fase | `src/components/MissaoFase.jsx` (os textos ficam em `fases.js`) |
-| **Pop-up "Caminho do Nexi"** (Nexi andando, erro e acerto) | `src/components/CaminhoPopup.jsx` |
-| **Estrelas por passos e tempo** (regra e metas) | `src/game/avaliacao.js` e o campo `ideal` de cada fase em `src/data/fases.js` |
-| Trilha (amarelinha) e quais fases estão abertas | `src/pages/Trilha.jsx`, `src/hooks/useProgresso.js` |
-| **Meu Nexus** (avatar do aluno: formas, cores, rostos, enfeites) | `src/components/NexusAvatar.jsx` (as listas no topo) e `src/pages/Avatar.jsx` |
-| **Aulas** (resumo, dia a dia, experimentos, pistas, desafio) | `src/data/aulas.js` (um bloco por fase) |
-| Desenhos das aulas | `src/components/Ilustracao.jsx` |
-| Tela da aula | `src/pages/Aula.jsx` |
-| **Conquistas** (regras, metas, raridade) | `src/data/conquistas.js` |
-| Símbolos e molduras das conquistas | `src/components/Emblema.jsx` |
-| Tela de conquistas (filtros, "Nova!", detalhe) | `src/pages/Conquistas.jsx` |
-| **Tutorial** (balão, posição, atalhos de teclado) | `src/components/Tutorial.jsx` |
-| Nexi apontando (bracinho animado) | `src/components/NexiApontando.jsx` e as classes `.ap-*` em `src/index.css` |
-| Mapa da trilha (cenário, mundos, abas Mapa/Aulas) | `src/pages/Trilha.jsx` |
-| Uma cor do app | `src/theme/tokens.js` |
-| Estilo global (botão 3D, cartão, fundo quadriculado) | `src/index.css` |
-| Textos dos tutoriais (botão ?) | `src/data/tutoriais.js` |
-| Nexi (rosto) e astronauta | `src/components/Nexi.jsx`, `Astro.jsx` |
+| Fases, mapas, peças permitidas, metas e estratégias alternativas | `src/data/fases.js` |
+| Montagem e simulação dos programas | `src/game/motor.js` |
+| Peças: identificadores, nomes, cores e símbolos | `src/game/pecas.js` |
+| Estrelas por conclusão, movimentos e peças de ação | `src/game/avaliacao.js`, campo `ideal` em `fases.js` |
+| Oficina e coordenação da tentativa | `src/pages/Oficina.jsx` |
+| Circuito, espaços, REPETIR e SE/SENÃO | `src/components/Circuito.jsx` |
+| Paleta e arraste por mouse/toque | `src/components/Paleta.jsx`, `src/hooks/useArrastar.js`, `src/components/PecaArrastada.jsx` |
+| Mapa e personagem do aluno | `src/components/Palco.jsx` |
+| Missão e resultado da fase | `src/components/MissaoFase.jsx`, `src/components/CaminhoPopup.jsx` |
+| Execução passo a passo e pseudocódigo | `src/components/ExecucaoPrograma.jsx`, `src/components/CodigoPrograma.jsx` |
+| Trilha e desbloqueio de fases | `src/pages/Trilha.jsx`, `src/hooks/useProgresso.js` |
+| Conteúdo das aulas | `src/data/aulas.js`, `src/pages/Aula.jsx` |
+| Experimentos e ilustrações | `src/components/LaboratorioAula.jsx`, `src/components/Ilustracao.jsx`, `src/components/BlocosPrograma.jsx` |
+| Avatar e tela de personalização | `src/components/NexusAvatar.jsx`, `src/pages/Avatar.jsx` |
+| Regras de desbloqueio dos cosméticos | `src/data/personalizacao.json`, `src/data/personalizacao.js` |
+| Conquistas e sua apresentação | `src/data/conquistas.js`, `src/hooks/useConquistas.js`, `src/components/Emblema.jsx`, `src/pages/Conquistas.jsx` |
+| Tutorial e guia Nexi | `src/components/Tutorial.jsx`, `src/data/tutoriais.js`, `src/components/Nexi.jsx`, `src/components/NexiApontando.jsx` |
+| Cores, estilos e decorações | `src/theme/tokens.js`, `src/index.css`, `src/components/CabecalhoAventura.jsx` |
+| Menu e navegação | `src/components/BarraLateral.jsx`, `src/App.jsx` |
 | Sons e vibração | `src/services/som.js` |
-| Certificado em PDF | `src/services/certificado.js` |
-| Salvar offline e enviar à API | `src/services/sincronizacao.js`, `src/hooks/useConexao.js` |
-| **Menu lateral** (itens, cartão do aluno, Nexi do menu, recolher, botões de Internet e Som) | `src/components/BarraLateral.jsx` (as telas e a ordem ficam em `src/App.jsx`) |
+| Geração de PDF, ainda sem integração às telas | `src/services/certificado.js` |
+| Sessão, API e sincronização | `src/services/api.js`, `src/services/sessaoAluno.js`, `src/services/sincronizacao.js`, `src/hooks/useConexao.js` |
+| Persistência do rascunho | `src/hooks/useCircuito.js`, `src/hooks/useDadoPerfil.js` |
+| Autorização e persistência no servidor | `backend/src/main/java/br/com/nexus/ApiController.java`, `Auth.java`, `NexusService.java` no mesmo diretório |
+| Validação do jogo e recompensas no servidor | `backend/src/main/java/br/com/nexus/GameRules.java` |
 
-## Layout em celular, tablet e desktop
-- As telas reorganizam cartões e colunas conforme o espaço, sem largura mínima global.
-- Abaixo de 768 px, use **Abrir menu** no cabeçalho; o menu pode rolar em telas baixas. Escape fecha o menu. A partir de 768 px, o menu lateral continua recolhível.
-- Na Oficina, paleta e mapa ficam acima do circuito em telas estreitas; a partir de 1280 px as três colunas voltam a ficar lado a lado. Executar e Limpar acompanham a área do circuito.
-- Se os ramos excederem a largura, só a região **Circuito da fase** rola horizontalmente. Ela recebe foco pelo teclado e pode ser rolada; a página não exige rolagem horizontal.
-- Arraste as peças com mouse/dedo (as bordas rolam a página), ou toque/clique numa peça e depois num espaço. No teclado, Tab e Enter ativam os botões; com foco no fundo da tela, 1..9 selecionam peças e Enter executa.
-- Missões, mensagens e tutoriais cabem na tela e permitem rolagem interna quando necessário. Escape fecha os diálogos dispensáveis; a animação e o resultado de sucesso mantêm suas ações próprias.
+## Layout e interação
 
-## Menu lateral
-- Itens: Início, Trilhas, Fase atual, Meu astronauta, Conquistas. Embaixo: Sair. A área do professor tem acesso separado, autenticado pelo backend; não pertence ao menu do aluno. Para criar um item, acrescente em `ITENS` (e a tela em `V` no `App.jsx`).
-- O menu identifica a demonstração como **demonstração sem login** ou mostra o apelido automático do aluno autenticado. O código secreto de acesso não é exibido no menu.
-- A setinha recolhe o menu (só ícones); a escolha fica salva. Em telas com menos de 1280 px ele já começa recolhido.
-- Em telas baixas, o menu permite rolagem para alcançar todos os controles, sem remover o cartão do Nexi.
-- No fim do menu ficam os botões **Internet** (ligada/desligada) e **Som** (ligado/desligado). A internet mostra o estado de rede informado pelo navegador e não pode ser alternada pelo botão. Alterações são gravadas em IndexedDB por identidade e enviadas à API; a interface só confirma o envio após a resposta do servidor. Veja `BACKEND.md`.
-- A bolinha rosa em **Conquistas** mostra quantas conquistas novas a criança ainda não viu.
+- As telas reorganizam cartões e colunas, sem largura mínima global de desktop.
+- Abaixo de 768 px, o botão **Abrir menu** controla o menu lateral; Escape fecha esse menu. Em telas maiores, ele pode ser recolhido.
+- A Oficina possui layouts vertical e horizontal. O escolhido em `App.jsx` é `layout="vertical"`; o parâmetro controla a direção do circuito fora da apresentação compacta.
+- A reorganização móvel com mapa antes do circuito e paleta/comandos fixos no rodapé está em preparação, fora desta revisão de documentação. Ela ainda requer validação visual e de interação antes da integração e publicação.
+- Em telas intermediárias, os painéis se reorganizam; no layout vertical, a partir de 1280 px ficam lado a lado. Ramos largos usam a região rolável do circuito.
+- Arraste uma peça ou selecione-a por clique/toque e depois escolha o espaço. Tab e Enter permitem ativar controles; os atalhos da oficina devem ser conferidos em `Oficina.jsx` antes de serem alterados.
+- Preserve rolagem, foco, tamanho dos alvos de toque e preferências de movimento reduzido ao modificar o layout. Verifique celulares, tablets e desktop; inspeção do CSS não substitui testes no navegador.
 
-## Layout do circuito: vertical ou horizontal
-- O padrão é o **vertical** (peças | circuito de cima para baixo | mapa). O horizontal continua no código, mas sem botão: para testar, troque `layout="vertical"` por `layout="horizontal"` no `src/App.jsx`.
-- **Horizontal:** o circuito corre da esquerda para a direita, com "fio de volta" no REPETIR e bifurcação no SE/SENÃO, e as peças ficam numa bandeja embaixo dele.
-- Quando o grupo escolher um dos dois, basta apagar o outro: `direcao` em `src/components/Circuito.jsx`, `modo` em `src/components/Paleta.jsx` e `layout` em `src/pages/Oficina.jsx`.
-- Os pontinhos que correm nos canos horizontais são a animação `.cano-h` em `src/index.css` (some se o aparelho pedir menos movimento).
+## Menu e personagens
 
-## Nexus (aluno) e Nexi (guia)
-- **Nexus** é o avatar do aluno: a criatura abstrata que ele monta em *Meu Nexus* e que **anda no mapa**. Fica salvo no aparelho.
-- **Nexi** é o robozinho amarelo que **guia**: aparece nos tutoriais, nos avisos e no menu.
-- Nos textos do jogo, quem anda é sempre "o Nexus".
+Os itens do aluno ficam em `ITENS`, dentro de `BarraLateral.jsx`: Início, Trilhas,
+Fase atual, Meu Nexus e Conquistas. As telas correspondentes ficam em `V`, no
+`App.jsx`. A área do professor tem fluxo autenticado separado.
 
-## Como funciona o jogo
+O menu mostra o apelido do aluno ou identifica a demonstração, nunca o código
+secreto. A preferência de recolhimento é local; sem preferência salva, começa
+recolhido em larguras menores que 1280 px. Internet informa o estado da conexão;
+não é um interruptor para simular rede. Som controla o áudio da aplicação.
+
+**Nexus** é o avatar personalizável do aluno que percorre o mapa. **Nexi** é o robô
+guia, cuja imagem compartilhada está em `src/assets/nexi.png`. Avatar, progresso
+e circuitos são separados por perfil: na demonstração permanecem locais; para
+alunos autenticados, são sincronizados com o servidor.
+
+## Fluxo de uma tentativa
+
+```text
+Paleta → espaços do circuito → rascunho por perfil/fase
+  → montarPrograma → simular
+  → registrar tentativa com ação
+  → ExecucaoPrograma: mapa, instruções e eventos passo a passo
+  → CaminhoPopup: resultado, orientação e estrelas quando houver conclusão
 ```
-Criança escolhe uma peça (Paleta) e toca num espaço do circuito (Circuito)
-   -> Oficina.jsx guarda isso em "estado"  { slots: {a:'andar'}, vezes: {r:3} }
-   -> ao tocar em Executar: motor.js monta o programa (montarPrograma) e simula o Nexi (simular)
-   -> abre o pop-up "Caminho do Nexi" (a tela escurece)
-   -> DEU CERTO: o Nexi anda passo a passo no pop-up; depois aparecem as estrelas (avaliacao.js)
-   -> DEU ERRADO: o Nexi NÃO anda; o pop-up explica o que aconteceu e o circuito marca "Parou aqui"
-```
-O motor não usa React: dá para testar sozinho (`npm test`).
 
-## Como criar uma fase nova
-1. Abra `src/data/fases.js` e copie uma fase parecida.
-2. Mude `id` (próximo número), `titulo`, `conceito` e os textos (`historia`, `novo`, `dica`, `aprendeu`).
-3. Monte o `mundo`: tamanho (até 5x5), onde o Nexi começa, lavas, pedras e estrelas. As posições são `[x, y]` começando em 0.
-4. Escolha as `pecas` e desenhe o `circuito` com `esp`, `repetir` e `se`.
-4b. Defina a meta de estrelas em `ideal: { passos, segundos }` (passos = quantas ações o Nexi faz na melhor solução).
-5. Em `src/game/motor.test.js`, copie um teste e confira que a solução certa vence e as erradas não.
-6. Na trilha, acrescente o número da fase em `LINHAS` (`src/pages/Trilha.jsx`).
+`ExecucaoPrograma` permite pausar, avançar uma etapa ou ver o resultado. Tentativas
+que falham também podem ser observadas até o erro. O motor é independente de React.
 
-## Ideia pedagógica das 8 fases
-1 Sequência, 2 Direção, 3 Escolher a peça certa, 4 Repetição, 5 Repetir um padrão, 6 Decisão (SE/SENÃO), 7 Repetir + SE/SENÃO, 8 A mesma regra em outro mapa. Cada fase traz **uma** ideia nova.
+Na regra atual (v2), concluir concede uma estrela; atingir a meta de movimentos
+concede outra; atingir a meta de peças de ação escritas concede a terceira. Peças
+nos dois ramos contam, sem multiplicá-las pelo número de repetições. O tempo de
+leitura não reduz a pontuação. `ideal` usa `{ passos, pecas }`.
 
-## Dicas para não quebrar
-- Deixe o `npm run dev` aberto: a página atualiza ao salvar.
-- Rode `npm test` antes de enviar ao GitHub.
-- Cor nova? Coloque em `tokens.js` (não escreva `#2B4DFF` direto nas telas).
-- Faça commits pequenos e use uma branch por tarefa.
+O backend valida a tentativa com seu catálogo e motor antes de persistir o
+resultado. A versão v1 continua aceita para eventos antigos e mantém seu critério
+histórico de tempo. Consulte [Compatibilidade](COMPATIBILIDADE-JOGO.md).
 
-## Origem dos indicadores
-- `hooks/useProgresso.js` recebe `FASES`, conta conclusões válidas e soma os melhores resultados.
-- `services/atividade.js` calcula datas civis locais, dias únicos e sequência. `hooks/useAtividade.js` persiste por perfil; `Oficina.jsx` registra tentativas com ações.
-- `hooks/useConquistas.js` registra IDs desbloqueados e vistos por perfil, sem repetir a recompensa ao abrir a tela.
-- `Base.jsx`, `BarraLateral.jsx` e `Nivel.jsx` exibem esses dados. Não há XP nem nível numérico: essas regras ainda não foram definidas.
-- `liberar todas as fases` só permite experimentar na sessão de demonstração; não cria progresso. `zerar progresso` limpa fases/estrelas, preservando o histórico de atividade e conquistas já ganhas.
+## Criar ou modificar uma fase
+
+1. Em `src/data/fases.js`, defina `id`, título, conceito, mundo, peças, circuito e textos. Mantenha IDs coerentes com a progressão sequencial, que usa a fase anterior/próxima.
+2. Defina coordenadas `[x, y]` a partir de zero, direção inicial e posições de obstáculos/estrelas. Os mapas atuais são pequenos; dimensões maiores exigem revisão de layout e validação do servidor.
+3. Defina `ideal: { passos, pecas }`. Se houver estratégias alternativas, cadastre seus circuitos e verifique a troca e restauração dos rascunhos.
+4. Prepare a aula correspondente em `src/data/aulas.js` e atualize `LINHAS`, em `src/pages/Trilha.jsx`, para incluir a fase no mapa da trilha.
+5. Adicione cenários de sucesso, erro e limites aos testes do motor. Mudanças nas peças ou regras exigem correspondência em `GameRules.java`; exportar o catálogo não implementa novas ações no servidor.
+6. Para alterações incompatíveis em mapas, estruturas ou pontuação, planeje uma nova versão das regras. Preserve catálogos históricos e eventos já enfileirados; não sobrescreva os catálogos numerados para mudar a interpretação de tentativas antigas.
+7. Execute `npm run backend:catalog` e `npm run backend:fixtures`. Revise os arquivos gerados e rode `npm test`, `npm run build` e os testes Java pertinentes conforme [BACKEND.md](BACKEND.md).
+8. Confira trilha, aula, oficina, metas, rascunhos, conquistas e desbloqueios de cosméticos no navegador. Não altere apenas o número exibido de fases.
+
+## Conteúdo pedagógico atual
+
+1. Sequência.
+2. Direção.
+3. Escolha da peça adequada ao obstáculo.
+4. Repetição.
+5. Repetição de um padrão.
+6. Decisão com SE/SENÃO.
+7. Repetição e decisão combinadas.
+8. Aplicação da regra em outro mapa.
+
+As aulas usam Veja, Preveja e Experimente, com atividades visuais e pseudocódigo.
+A progressão técnica não substitui avaliação pedagógica com o público-alvo.
+
+## Indicadores e personalização
+
+- `useProgresso.js` usa `FASES`, conta conclusões válidas e soma os melhores resultados.
+- `atividade.js` calcula dias únicos e sequências. `useAtividade.js` usa o fuso da turma no acesso autenticado e o do navegador na demonstração.
+- `useConquistas.js` registra desbloqueios e visualizações por perfil. Reabrir uma tela não concede novamente uma conquista.
+- `personalizacao.json` define os requisitos dos cosméticos. `personalizacao.js` calcula as opções disponíveis; o servidor também verifica o desbloqueio antes de persistir o avatar.
+- `Base.jsx`, `BarraLateral.jsx` e `Nivel.jsx` mostram indicadores registrados. Não há XP nem nível numérico.
+- A liberação de todas as fases é exclusiva da demonstração e não concede estrelas. Zerar o progresso da demo preserva os registros de atividade e conquistas já obtidas.
+
+Veja [Dados e progresso](DADOS-E-PROGRESSO.md) para persistência e
+[Escopo](ESCOPO.md) para funcionalidades parciais e pendências.

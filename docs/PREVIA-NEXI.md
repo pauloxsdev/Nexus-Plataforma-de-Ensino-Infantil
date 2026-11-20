@@ -1,10 +1,10 @@
 # Nexi e personalização por progresso
 
-Prévia preparada em 11/11/2026, sobre `9af2a65`, e posteriormente aprovada para envio ao GitHub. O repositório estava limpo antes deste trabalho. Este relatório registra a validação local; não comprova a publicação no Render.
+Registro técnico da atualização de 11/11/2026, baseada na revisão `9af2a65`. Os resultados de teste abaixo correspondem à validação local dessa atualização, não à versão atual nem à disponibilidade do serviço publicado.
 
 ## Interface
 
-- `src/assets/nexi.png` e `src/components/Nexi.jsx`: nova arte do guia, adaptada da referência fornecida com transparência. O componente compartilhado atualiza o login, menu, aulas, tutoriais, missões e mensagens. O personagem personalizável do aluno continua sendo o Nexus.
+- `src/assets/nexi.png` e `src/components/Nexi.jsx`: arte do guia com fundo transparente. O componente compartilhado atualiza o login, menu, aulas, tutoriais, missões e mensagens. O personagem personalizável do aluno continua sendo o Nexus.
 - `src/components/CabecalhoAventura.jsx` e `src/index.css`: cabeçalho ilustrado, fundo pontilhado, cores claras, cartões de descoberta, coleção e adaptações para telas menores. Decorações não recebem eventos de ponteiro; as preferências de movimento reduzido continuam respeitadas.
 - `src/pages/Login.jsx`, `Base.jsx`, `Nivel.jsx`, `Conquistas.jsx` e `Professor.jsx`: apresentação mais preenchida, orientações e ilustrações nos estados vazios, preservando as ações existentes. O início também oferece acesso direto ao resumo de progresso.
 - `src/pages/Avatar.jsx`: prévia do personagem, contagem de itens, grupos de opções, cadeados com requisitos, indicação do item equipado e mensagens acessíveis. O sorteio usa somente itens liberados.
@@ -53,11 +53,11 @@ Eventos antigos na fila de sincronização podem conter cosméticos que antes er
 | Inspeção visual das capturas | Login, início, personalização e professor conferidos; fundo, arte, textos e controles preservados |
 | `git diff --check` | Sem erros de whitespace |
 
-O ambiente inicialmente não tinha Maven nem JDK completo. Ambos foram preparados em `/tmp`, com Java 21 e as configurações de rede do ambiente, sem modificar dependências do projeto. O banco de testes foi criado em um contêiner separado. Os problemas iniciais de ambiente foram resolvidos antes das verificações acima.
+As verificações utilizaram Java 21 e Maven, com banco de testes em um contêiner separado do banco de uso.
 
 ## Como conferir localmente
 
-1. Use esta cópia de trabalho com Node compatível com `package.json`; execute `npm ci` se necessário.
+1. Use uma versão de Node compatível com `package.json`; execute `npm ci` se necessário.
 2. Execute `npm run dev` e abra o endereço informado pelo Vite. Se o backend estiver desligado, o login pode mostrar indisponibilidade; a demonstração permite avaliar o visual sem autenticação.
 3. Entre em **Explorar demonstração** e abra **Meu Nexus**. Verifique os 7 itens iniciais e os requisitos nos cadeados.
 4. Complete a primeira fase com três peças de andar. Volte a **Meu Nexus**: gota, rosa, piscando e antena ficam disponíveis, totalizando 11 itens.

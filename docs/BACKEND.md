@@ -29,7 +29,7 @@ O provisionamento e recuperação de senha são operações administrativas loca
    e guarde o arquivo somente no computador. `.env` está ignorado pelo Git.
 
 ```powershell
-Copy-Item .env.example .env
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 notepad .env
 docker compose up -d db
 npm ci
@@ -40,6 +40,7 @@ npm run build
    O Spring não lê `.env` automaticamente; Docker Compose e Spring têm configurações separadas.
 
 ```powershell
+# Substitua pelo diretório real do seu JDK; omita se JAVA_HOME já estiver correto.
 $env:JAVA_HOME = 'C:\caminho\do\jdk-21'
 $env:DATABASE_URL = 'jdbc:postgresql://localhost:5432/nexus'
 $env:DATABASE_USER = 'nexus'
@@ -57,11 +58,16 @@ mvn -f backend/pom.xml package -DskipTests
 $env:TEACHER_LOGIN = Read-Host 'Usuário do professor'
 $credencialProfessor = Read-Host 'Senha inicial do professor' -AsSecureString
 $env:TEACHER_PASSWORD = [System.Net.NetworkCredential]::new('', $credencialProfessor).Password
-java -jar backend/target/nexus-api-1.0.0.jar --provision-teacher
-Remove-Item Env:TEACHER_PASSWORD
-Remove-Item Env:TEACHER_LOGIN
+try {
+    java -jar backend/target/nexus-api-1.0.0.jar --provision-teacher
+    if ($LASTEXITCODE -ne 0) { throw 'Provisionamento falhou. Confira o erro antes de iniciar o servidor.' }
+} finally {
+    Remove-Item Env:TEACHER_PASSWORD, Env:TEACHER_LOGIN -ErrorAction SilentlyContinue
+    Remove-Variable credencialProfessor -ErrorAction SilentlyContinue
+}
 ```
 
+Só prossiga se o provisionamento terminar com sucesso.
 Esse comando aplica as migrações, cria o professor e encerra o processo. Se o usuário
 já existir, redefine a senha e revoga suas sessões. É também o procedimento de recuperação.
 Não há senha padrão. Execute novamente com outro usuário para criar outro professor.
@@ -108,7 +114,9 @@ o banco armazena somente seu hash. Não coloque códigos em URLs ou capturas pú
 ## Persistência e sincronização
 
 - Flyway cria o esquema com chaves estrangeiras e exclusões em cascata. O volume
-  `nexus-db` preserva dados ao reiniciar o container. Não execute `down -v` para reiniciar:
+  `nexus-db` preserva dados ao reiniciar o container. Alterar `POSTGRES_PASSWORD` no
+  `.env` não redefine a senha de um banco já inicializado; use a senha existente
+  ou um procedimento administrativo de troca de senha. Não execute `down -v` para reiniciar:
   esse comando elimina o volume.
 - Sessões opacas de 8 horas são persistidas no banco. Cookie `HttpOnly`, `SameSite=Strict`,
   e `Secure` em produção. Não há token de sessão em localStorage.
@@ -198,7 +206,8 @@ quando autenticado, `X-CSRF-Token` retornado pela sessão. Não há CORS aberto.
 | GET `/api/aluno/estado` | Aluno | Recuperar seus dados |
 | POST `/api/aluno/eventos` | Aluno | Aplicar evento idempotente |
 
-Eventos `tentativa`: `{id, perfil:{tipo:"aluno",id}, tipo:"tentativa", faseId, estado:{slots,vezes}, segundos, ocorridoEm}`.
+Eventos `tentativa`: `{id, perfil:{tipo:"aluno",id}, tipo:"tentativa", faseId, estado:{slots,vezes,versaoRegras:2}, segundos, ocorridoEm}`.
+Quando uma estratégia alternativa é usada, `estado` também inclui `estrutura`.
 Eventos `dado`: `{id, perfil, tipo:"dado", chave, valor}`; chaves permitidas são `avatar`,
 `conquistas` (somente marcação de visualização) e `circuito:trilha-principal:fase:N`.
 
